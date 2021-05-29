@@ -1,10 +1,10 @@
-#+TITLE: mgraph
+#+TITLE: gmetab
 #+AUTHOR: ZGUANG@LZU
 #+DATE:
 #+OPTIONS: H:4 toc:nil ^:{} num:t html-style:nil html-scripts:nil
 #+STARTUP: content
 
-mgraph: R package for metabolic network construction, visualization and analysis with igraph.
+gmetab: R package for metabolic network construction, visualization and analysis with igraph.
 
 NOTE: The package is still under active development. Implemented functions may be changed in future versions.
 
@@ -12,28 +12,18 @@ NOTE: The package is still under active development. Implemented functions may b
 #+begin_src R :exports code :tangle yes :eval never :ravel eval=FALSE
   ## install.packages('devtools')
   require('devtools')
-  install_github('zgzhao/mgraph')
+  install_github('zgzhao/gmetab')
 #+end_src
 
 * classes
-** Reactions
-Reactions are core data of KEGG pathways and metabolic networks/graphs.
-They also play central roles in "mgraph" package: all network (KEGGmeta and mgraph objects) modifications are reaction-based.
-
-Although reactions are presented as list in both KEGGmeta and mgraph, they differ slightly:
-- In KEGGmeta, reactions are items parsed from KEGG xml file. No further processing are applied except for compound IDs to names translation in order to retain more native information.
-- In mgraph objects, reactions are rearranged for sake of graph construction, modification, visualization and statistics.
-  - Each reversible reaction is converted into two reactions (reversible attribute discarded).
-  - Reactions are identified by substrates and products: reactions with identical substrates and products are merged.
-  - New names are assigned to reactions since KEGG identifiers for reactions are not unique.
-
-** KEGGmeta (kmeta)
-Although only reaction-related information are mined extensively in the package,
-KEGGmeta object contains all information parsed from KEGG xml file, keeping as natively as possible.
-
 ** KEGGdata (kdata)
+- virtual class (list) represents different type of data parsed from KEGG xml file.
+** KEGGmeta (kmeta)
+- S4 class holding all information parsed from KEGG xml file.
 ** mgraph
-
+- virtual class: igraph with attributes holding specific metabolic network data
+** MReactions
+- S4 class holding reaction data in mgraph
 * graph/network construction
 - mgraph_from_kmeta
 - mgraph_from_kos
