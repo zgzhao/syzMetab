@@ -1,5 +1,5 @@
 Package: gmetab
-Title: gmetab: a package for handling KEGG metabolic graph (network)
+Title: gmetab: R package for metabolic network analysis
 Version: 0.2.1
 Authors@R: 
     person(given = "Zhiguang", family = "Zhao", role = c("aut", "cre"),
