@@ -1,9 +1,3 @@
-#!/usr/bin/env Rscript
-# -*- coding:utf-8 -*-
-# File: stat.struct.R
-# Description: structural robustness/probality calculations.
-# AUTHOR: ZG Zhao; zgzhao@foxmail.com
-# 2020-09-01 10:40:38
 
 XCHEM1 <- "PRI_SUBSTRATE"
 XCHEM2 <- "END_PRODUCT"

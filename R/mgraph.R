@@ -13,13 +13,13 @@
 #' @export
 mgraph_from_kmeta <- function(kinfo) {
     if(! is.kmeta(kinfo)) stop("Not a KEGGmeta object!")
-    rtns <- as_mreacts(kinfo)
-    g <- mgraph_from_mreacts(rtns)
+    rtns <- as_rset(kinfo)
+    g <- mgraph_from_rset(rtns)
     g
 }
 
-mgraph_from_mreacts <- function(robj) {
-    if(! is.mreacts(robj)) stop("Require MReactions object.")
+mgraph_from_rset <- function(robj) {
+    if(! is.rset(robj)) stop("Require RSet object.")
     vv <- getCPDs(robj)
     g <- make_empty_graph(n=length(vv))
     V(g)$name <- vv
@@ -57,8 +57,8 @@ mgraph_from_kos <- function(kos, d.path = "KEGG") {
         xinfo <- kmeta_from_ko(kx, d.path)
         rtns <- c(rtns, getReactions(xinfo))
     }
-    robj <- as_mreacts(rtns, org)
-    g <- mgraph_from_mreacts(robj)
+    robj <- as_rset(rtns, org)
+    g <- mgraph_from_rset(robj)
     g
 }
 
@@ -90,8 +90,8 @@ mgraph_x_org <- function(g, org, d.path = "KEGG"){
     })
     ss <- sapply(rtns, FUN=function(x) ! is.empty(x$gene))
     rtns <- rtns[ss]
-    robj <- as_mreacts(rtns, org)
-    g <- mgraph_from_mreacts(robj)
+    robj <- as_rset(rtns, org)
+    g <- mgraph_from_rset(robj)
     g
 }
 
@@ -118,12 +118,12 @@ mgraph_append <- function(g, df) {
         pp <- strsplit(df[i, 2], "[ ;,]+")[[1]]
         genes <- strsplit(df[i, 4], "[ ;,]+")[[1]]
         ne1 <- length(robj)
-        robj <- mreacts_append(robj, ss, pp, genes)
+        robj <- rset_append(robj, ss, pp, genes)
         ne2 <- length(robj)
         ## add edge if only new reaction added
         if(ne2 > ne1) g <- g %>% add.edges(t(expand.grid(ss, pp)), reaction=paste0("RX", ne2))
         if(df[i, 3]) {
-            robj <- mreacts_append(robj, pp, ss, genes)
+            robj <- rset_append(robj, pp, ss, genes)
             ne3 <- length(robj)
             if(ne3 > ne2) g <- g %>% add.edges(t(expand.grid(pp, ss)), reaction=paste0("RX", ne3))
         }
@@ -145,13 +145,13 @@ mgraph_append <- function(g, df) {
 setGeneric("mgraph_clean", function(object, s, p) standardGeneric("mgraph_clean"))
 setMethod("mgraph_clean", "mgraph", function(object, s, p){
     robj <- getReactions(object, list.only=FALSE)
-    robj <- mreacts_merge_chems(robj, s, XCHEM1)
-    robj <- mreacts_merge_chems(robj, p, XCHEM2)
+    robj <- rset_merge_chems(robj, s, XCHEM1)
+    robj <- rset_merge_chems(robj, p, XCHEM2)
     ## build graph for filter
-    g <- mgraph_from_mreacts(robj)
+    g <- mgraph_from_rset(robj)
     exx <- all_spaths_edges(g, XCHEM1, XCHEM2)
     ## build graph again
-    g <- mgraph_from_mreacts(robj, e.names=exx)
+    g <- mgraph_from_rset(robj, e.names=exx)
     g
 })
 

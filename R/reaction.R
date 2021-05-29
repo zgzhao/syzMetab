@@ -2,27 +2,65 @@
 #'
 #' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
 #' @title reaction names
-#' @param object mgraph or MReactions object
+#' @param object mgraph or RSet object
 #' @author ZG Zhao
 #' @export
 setGeneric("rnames", function(object) standardGeneric("rnames"))
 setMethod("rnames", "mgraph", function(object){
     E(object)$reaction
 })
-setMethod("rnames", "MReactions", function(object){
+setMethod("rnames", "RSet", function(object){
     names(Reactions(object))
 })
 
-#' Mostly for internal use.
+#' Get or set reaction data
 #'
-#' "MReactions" (mreacts) is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
-#' @title generate MReactions object
-#' @param kinfo KEGGmeta or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
-#' @param org character, a KEGG organism string. Use if only kinfo is a plain list.
-#' @return MReactions object
+#' Friendly function for edge data/attributes retrieving or setting. See "Example".
+#' @title reaction data
+#' @param g mgraph or RSet object
+#' @param a.name character, attribute name
+#' @param e.names vector of character (edge names) or integer (indices)
+#' @seealso \code{\link{vdata}}
 #' @author ZG Zhao
 #' @export
-as_mreacts <- function(kinfo, org="ko") {
+rdata <- function(g, a.name, e.names) {
+    if(! is.mgraph(g)) return(NULL)
+    a.name <- unlist(a.name)[1]
+    rtns <- Reactions(g)
+    rx <- sapply(rtns, FUN=function(rr) rr[[a.name]])
+    if(missing(e.names)) return(rx)
+
+    ss <- (1:ecount(g) %in% e.names) | (enames(g) %in% e.names)
+    r.names <- E(g)$reaction
+    r.names <- r.names[ss]
+    if(sum(ss) < 1) return(NULL)
+    else if(sum(ss) == 1) return(rx[[r.names]])
+    else return(rx[r.names])
+}
+
+#' @export
+`rdata<-` <- function(g, a.name, value) {
+    a.name <- a.name[1]
+    if(! a.name %in% c("reaction", "organism", "alias"))
+        stop("Attributes must be: reaction, organism or alias.")
+    rtns <- Reactions(g, list.only=FALSE)
+    ee <- substitute(rtns@`attx` <- value, list(attx=a.name, value=value))
+    eval(ee)
+    attr(g, "reactions") <- rtns
+    g
+}
+
+
+#' Mostly for internal use.
+#'
+#' "RSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
+#' @title generate RSet object
+#' @param kinfo KEGGmeta or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
+#' @param org character, a KEGG organism string. Use if only kinfo is a plain list.
+#' @return RSet object
+#' @author ZG Zhao
+#' @export
+as_rset <- function(kinfo, org="ko") {
     if(is.kmeta(kinfo)) {
         org <- pathInfo(kinfo)$org
         kinfo <- getReactions(kinfo)
@@ -37,28 +75,28 @@ as_mreacts <- function(kinfo, org="ko") {
             rtns <- rlist_append(rtns, pp, ss, genes)
     }
     names(rtns) <- paste0("RX", 1:length(rtns))
-    new("MReactions", rtns, org)
+    new("RSet", rtns, org)
 }
 
-#' Append reaction to MReactions object
+#' Append reaction to RSet object
 #'
 #'
 #' @title append reaction
-#' @param robj MReactions object
+#' @param robj RSet object
 #' @param s character, name of substrate
 #' @param p character, name of product
 #' @param genes character vector, names of genes involved in the reaction
-#' @return  MReactions object
+#' @return  RSet object
 #' @author ZG Zhao
 #' @export
-mreacts_append <- function(robj, s, p, genes) {
+rset_append <- function(robj, s, p, genes) {
     rlist <- rlist_append(robj@reaction, s, p, genes)
     robj@reaction <- rlist
     robj
 }
 
 #' @export
-mreacts_merge_chems <- function(robj, chems, alias) {
+rset_merge_chems <- function(robj, chems, alias) {
     chems <- intersect(Chemicals(robj), chems)
     if(is.empty(chems)) return(robj)
 
@@ -86,7 +124,7 @@ mreacts_merge_chems <- function(robj, chems, alias) {
     ss <- sapply(rlist, FUN=is.empty)
     rlist <- rlist[!ss]
     ## rebuild object: merge some reactions
-    robj <- as_mreacts(rlist, Organism(robj))
+    robj <- as_rset(rlist, Organism(robj))
     robj@alias <- xalias
     robj
 }

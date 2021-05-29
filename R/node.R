@@ -1,3 +1,4 @@
+
 #' get node names
 #'
 #' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
@@ -20,14 +21,14 @@ setMethod("vnames", "mgraph", function(object){
 #' @seealso \code{\link{edata}}
 #' @author ZG Zhao
 #' @examples
-#' library(mgraph)
-#' d.path <- file.path(path.package("mgraph"), "KEGG")
+#' library(gmetab)
+#' d.path <- file.path(path.package("gmetab"), "KEGG")
 #' gg <- mgraph_from_kos("ko00010", d.path)
 #' ## igraph style
 #' V(gg)$name
 #' V(gg)$EP <- sample(vcount(gg))
 #' V(gg)$EP[1:3]
-#' ## mgraph style
+#' ## gmetab style
 #' vdata(gg, "name")
 #' vdata(gg, "name", 1:3)
 #' (vv <- vnames(gg))
@@ -232,13 +233,6 @@ nodesHubNearest <- function(g, v, hubs){
     hubs[hubs %in% res]
 }
 
-deleteNodes <- function(g, nss){
-    nss <- intersect(nodes(g), nss)
-    if(length(nss) < 1) return(g)
-    for(vv in nss) g <- removeNode(vv, g)
-    g
-}
-
 #' simple paths info: list, nodes and edges
 #'
 #' Friendly wrapers for \code{\link{igraph::all_simple_paths}}.
@@ -257,8 +251,8 @@ deleteNodes <- function(g, nss){
 #' @return character list or vector
 #' @author ZG Zhao
 #' @examples
-#' library(mgraph)
-#' d.path <- file.path(path.package("mgraph"), "KEGG")
+#' library(gmetab)
+#' d.path <- file.path(path.package("gmetab"), "KEGG")
 #' gg <- mgraph_from_kos("ko00010", d.path)
 #' vv <- vnames(gg)
 #' (splist <- all_spaths_list(gg, vv[1], vv[6]))

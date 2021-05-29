@@ -6,7 +6,6 @@
 
 gmetab: R package for metabolic network construction, visualization and analysis with igraph.
 
-NOTE: The package is still under active development. Implemented functions may be changed in future versions.
 
 * Installation
 #+begin_src R :exports code :tangle yes :eval never :ravel eval=FALSE
@@ -15,20 +14,5 @@ NOTE: The package is still under active development. Implemented functions may b
   install_github('zgzhao/gmetab')
 #+end_src
 
-* classes
-** KEGGdata (kdata)
-- virtual class (list) represents different type of data parsed from KEGG xml file.
-** KEGGmeta (kmeta)
-- S4 class holding all information parsed from KEGG xml file.
-** mgraph
-- virtual class: igraph with attributes holding specific metabolic network data
-** MReactions
-- S4 class holding reaction data in mgraph
-* graph/network construction
-- mgraph_from_kmeta
-- mgraph_from_kos
-
-* visualization
-- plot.mgraph
-
-* network analysis
+* Warning
+The package is still under active development. All components may be changed in future versions.

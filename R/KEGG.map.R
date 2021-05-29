@@ -1,10 +1,3 @@
-#!/usr/bin/env Rscript
-# -*- coding:utf-8 -*-
-# File: mapping.R
-# Description: id mapping functions
-# AUTHOR: ZG Zhao; zgzhao@foxmail.com
-# 2021-01-16 13:42:49
-
 
 #' Get KOG to gene mapping list for an organism. KEGG brite file will be download if needed.
 #'

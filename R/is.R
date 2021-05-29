@@ -1,11 +1,11 @@
 #' @title object test
 #' @description helper functions for object test
 #' @name helpers_is
-#' @aliases is.kdata is.mreacts is.igraph is.mgraph is.xgraph is.chemset
+#' @aliases is.kdata is.rset is.igraph is.mgraph is.xgraph is.chemset
 #' @details Most function names are self-explanatory:
 #' - is.kmeta: KEGGmeta test
 #' - is.kdata: KEGGtest test
-#' - is.mreacts: MReactions test
+#' - is.rset: RSet test
 #' - is.igraph(x)
 #' - is.mgraph(x)
 #' - is.xgraph: igraph or mgraph
@@ -26,8 +26,8 @@ is.kdata<- function(x) {
 }
 
 #' @export
-is.mreacts <- function(x) {
-    inherits(x, "MReactions")
+is.rset <- function(x) {
+    inherits(x, "RSet")
 }
 
 #' @export

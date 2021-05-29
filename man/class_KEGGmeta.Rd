@@ -11,7 +11,7 @@
 Typically, a KEGGmeta object can be obtained by \code{\link{kmeta_from_ko}} function, which will download and parse the KEGG xml file.
 }
 \seealso{
-\code{\link{KEGGdata}}, \code{\link{MReactions}}
+\code{\link{KEGGdata}}, \code{\link{RSet}}
 }
 \author{
 zhao

@@ -1,10 +1,3 @@
-#!/usr/bin/env Rscript
-# -*- coding:utf-8 -*-
-# File: a_classes.R
-# Description:
-# AUTHOR: ZG Zhao; zgzhao@foxmail.com
-# 2021-02-12 12:03:13
-
 #' @name class_virtual
 #' @title virtual classes
 #' @aliases igraph mgraph KEGGdata
@@ -24,7 +17,7 @@ setClassUnion("KEGGdata", "list")
 #' @name class_KEGGmeta
 #' @title S4 class: KEGGmeta
 #' @aliases KEGGmeta
-#' @seealso \code{\link{KEGGdata}}, \code{\link{MReactions}}
+#' @seealso \code{\link{KEGGdata}}, \code{\link{RSet}}
 #' @description "KEGGmeta" is S4 class designed for holding KEGG pathway information: entries, reactions, relations, graphics and other general information (pathInfo).
 #' @details Typically, a KEGGmeta object can be obtained by \code{\link{kmeta_from_ko}} function, which will download and parse the KEGG xml file.
 #' @author zhao
@@ -132,9 +125,9 @@ kmeta_x_org <- function(kinfo, org=NA, d.path="KEGG"){
 }
 
 
-#' @name class_MReactions
-#' @title S4 class: MReactions
-#' @description MReactions: S4 class holding reaction infos.
+#' @name class_RSet
+#' @title S4 class: RSet
+#' @description RSet: S4 class holding reaction infos.
 #' @details Three slots: reaction, organism and alias.
 #' - reaction: list of reaction info (substrate, product and genes)
 #' - organism: KEGG organism identifier
@@ -142,27 +135,27 @@ kmeta_x_org <- function(kinfo, org=NA, d.path="KEGG"){
 #' @author ZG Zhao
 NULL
 
-setClass("MReactions",
+setClass("RSet",
          slots=c(reaction="list",
                  organism="character",
                  alias="list"))
-setMethod("initialize", "MReactions", function(.Object, reactions, organism="ko"){
+setMethod("initialize", "RSet", function(.Object, reactions, organism="ko"){
     .Object@reaction <- reactions
     .Object@organism <- organism
     .Object@alias <- list()
     return(.Object)
 })
 
-setMethod("show", "MReactions", function(object) {
+setMethod("show", "RSet", function(object) {
     cat("Reactions: S4 object holding KEGG reaction data\n")
     cat("\tOrganism: ", object@organism,"\n")
     cat("\tReactions: ", length(getReactions(object)), "\n")
     cat("\tCompounds: ", length(getCPDs(object)), "\n")
 })
 
-names.MReactions <- function(x){
+names.RSet <- function(x){
     names(getReactions(x))
 }
-length.MReactions <- function(x){
+length.RSet <- function(x){
     length(getReactions(x))
 }

@@ -3,7 +3,7 @@
 \name{helpers_is}
 \alias{helpers_is}
 \alias{is.kdata}
-\alias{is.mreacts}
+\alias{is.rset}
 \alias{is.igraph}
 \alias{is.mgraph}
 \alias{is.xgraph}
@@ -20,7 +20,7 @@ Most function names are self-explanatory:
 \itemize{
 \item is.kmeta: KEGGmeta test
 \item is.kdata: KEGGtest test
-\item is.mreacts: MReactions test
+\item is.rset: RSet test
 \item is.igraph(x)
 \item is.mgraph(x)
 \item is.xgraph: igraph or mgraph

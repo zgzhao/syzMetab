@@ -1,3 +1,4 @@
+
 #' @title general helper function
 #' @description general helpers for retrieving data from KEGGmeta, reactions list or mgraph object
 #' @name helpers_general
@@ -7,7 +8,7 @@
 #' - getOrganism(object)
 #' - getGenes(object): all genes/orthologs
 #' - getCPDs(object): all compounds
-#' - getReactions(object, list.only=TRUE): reactions list or MReactions object (list.only=FALSE for mgraph object)
+#' - getReactions(object, list.only=TRUE): reactions list or RSet object (list.only=FALSE for mgraph object)
 #' - getAliases(object)
 #'
 #' Alias functions:
@@ -19,8 +20,8 @@
 #' - Reactions(object, list.only=TRUE)
 #' - Aliases(object)
 #' @examples
-#' library(mgraph)
-#' d.path <- file.path(path.package("mgraph"), "KEGG")
+#' library(gmetab)
+#' d.path <- file.path(path.package("gmetab"), "KEGG")
 #' kinfo <- kmeta_from_ko("ko00010", d.path)
 #' gg <- mgraph_from_kmeta(kinfo)
 #' ##
@@ -85,7 +86,7 @@ setMethod("pathInfo", "KEGGmeta", function(object){
 setMethod("getOrganism", "KEGGmeta", function(object){
     object@pathInfo$org
 })
-setMethod("getOrganism", "MReactions", function(object){
+setMethod("getOrganism", "RSet", function(object){
     object@organism
 })
 setMethod("getOrganism", "mgraph", function(object){
@@ -105,7 +106,7 @@ setMethod("getCPDs", "KEGGdata", function(object){
     names(rx) <- NULL
     return(rx)
 })
-setMethod("getCPDs", "MReactions", function(object){
+setMethod("getCPDs", "RSet", function(object){
     rx <- sapply(object@reaction, FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
@@ -130,7 +131,7 @@ setMethod("getGenes", "KEGGdata", function(object){
     names(rx) <- NULL
     return(rx)
 })
-setMethod("getGenes", "MReactions", function(object){
+setMethod("getGenes", "RSet", function(object){
     genes <- sapply(object@reaction, FUN=function(rr) rr[["gene"]])
     genes <- unlist(genes)
     sort(unique(genes))
@@ -145,7 +146,7 @@ setMethod("getGenes", "mgraph", function(object){
 setMethod("getReactions", "KEGGmeta", function(object){
     object@reactions
 })
-setMethod("getReactions", "MReactions", function(object){
+setMethod("getReactions", "RSet", function(object){
     object@reaction
 })
 setMethod("getReactions", "mgraph", function(object, list.only=TRUE){
@@ -154,7 +155,7 @@ setMethod("getReactions", "mgraph", function(object, list.only=TRUE){
     else return(x)
 })
 
-setMethod("getAliases", "MReactions", function(object){
+setMethod("getAliases", "RSet", function(object){
     rx <- object@alias
     rx
 })
