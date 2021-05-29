@@ -1,0 +1,23 @@
+Package: gmetab
+Title: gmetab: a package for handling KEGG metabolic graph (network)
+Version: 0.2.1
+Authors@R: 
+    person(given = "Zhiguang", family = "Zhao", role = c("aut", "cre"),
+           email = "zgzhao@lzu.edu.cn")
+Description: R package "gmetab" is designed for processing metabolic networks, especially for KEGG pathways/networks. The package is still under development.
+License: GPL-3
+Encoding: UTF-8
+Depends:
+    R (> 4.0),
+    xml2,
+    scales,
+    RColorBrewer,
+    parallel,
+    igraph
+Suggests:
+    diagram,
+    testthat (>= 3.0.0)
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Config/testthat/edition: 3
