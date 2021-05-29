@@ -40,8 +40,8 @@ Alias functions:
 }
 }
 \examples{
-library(mgraph)
-d.path <- file.path(path.package("mgraph"), "KEGG")
+library(gmetab)
+d.path <- file.path(path.package("gmetab"), "KEGG")
 kinfo <- kmeta_from_ko("ko00010", d.path)
 gg <- mgraph_from_kmeta(kinfo)
 ##

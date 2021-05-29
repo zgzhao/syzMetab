@@ -31,8 +31,8 @@ simple paths info: list, nodes and edges
 Friendly wrapers for \code{\link{igraph::all_simple_paths}}.
 }
 \examples{
-library(mgraph)
-d.path <- file.path(path.package("mgraph"), "KEGG")
+library(gmetab)
+d.path <- file.path(path.package("gmetab"), "KEGG")
 gg <- mgraph_from_kos("ko00010", d.path)
 vv <- vnames(gg)
 (splist <- all_spaths_list(gg, vv[1], vv[6]))

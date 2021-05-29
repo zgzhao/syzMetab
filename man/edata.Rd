@@ -20,14 +20,14 @@ Get or set edge attribute/data
 Friendly function for edge data/attributes retrieving or setting. See "Example".
 }
 \examples{
-library(mgraph)
-d.path <- file.path(path.package("mgraph"), "KEGG")
+library(gmetab)
+d.path <- file.path(path.package("gmetab"), "KEGG")
 gg <- mgraph_from_kos("ko00010", d.path)
 ## igraph style
 E(gg)$reaction
 E(gg)$reaction[1:3]
 E(gg)$MP <- 0
-## mgraph style
+## gmetab style
 edata(gg, "reaction")
 edata(gg, "reaction", 1:3)
 (ee <- enames(gg))

@@ -20,14 +20,14 @@ Get or set node data/attributes
 Friendly function for node data/attributes retrieving or setting. See "Example".
 }
 \examples{
-library(mgraph)
-d.path <- file.path(path.package("mgraph"), "KEGG")
+library(gmetab)
+d.path <- file.path(path.package("gmetab"), "KEGG")
 gg <- mgraph_from_kos("ko00010", d.path)
 ## igraph style
 V(gg)$name
 V(gg)$EP <- sample(vcount(gg))
 V(gg)$EP[1:3]
-## mgraph style
+## gmetab style
 vdata(gg, "name")
 vdata(gg, "name", 1:3)
 (vv <- vnames(gg))
