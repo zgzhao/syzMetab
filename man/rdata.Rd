@@ -4,14 +4,14 @@
 \alias{rdata}
 \title{reaction data}
 \usage{
-rdata(g, a.name, e.names)
+rdata(g, a.name, x.names)
 }
 \arguments{
 \item{g}{mgraph or RSet object}
 
 \item{a.name}{character, attribute name}
 
-\item{e.names}{vector of character (edge names) or integer (indices)}
+\item{x.names}{vector of character (reaction names) or integer (ids)}
 }
 \description{
 Get or set reaction data

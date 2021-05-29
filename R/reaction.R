@@ -13,29 +13,40 @@ setMethod("rnames", "RSet", function(object){
     names(Reactions(object))
 })
 
+#' @export
+setGeneric("rcount", function(object) standardGeneric("rcount"))
+setMethod("rcount", "mgraph", function(object){
+    length(Reactions(object))
+})
+setMethod("rcount", "RSet", function(object){
+    length(Reactions(object))
+})
+
 #' Get or set reaction data
 #'
 #' Friendly function for edge data/attributes retrieving or setting. See "Example".
 #' @title reaction data
 #' @param g mgraph or RSet object
 #' @param a.name character, attribute name
-#' @param e.names vector of character (edge names) or integer (indices)
+#' @param x.names vector of character (reaction names) or integer (ids)
 #' @seealso \code{\link{vdata}}
 #' @author ZG Zhao
 #' @export
-rdata <- function(g, a.name, e.names) {
+rdata <- function(g, a.name, x.names) {
     if(! is.mgraph(g)) return(NULL)
     a.name <- unlist(a.name)[1]
-    rtns <- Reactions(g)
-    rx <- sapply(rtns, FUN=function(rr) rr[[a.name]])
-    if(missing(e.names)) return(rx)
+    if(tolower(a.name) == "organism") Organism(g)
+    else if(tolower(a.name) == "alias") Aliases(g)
 
-    ss <- (1:ecount(g) %in% e.names) | (enames(g) %in% e.names)
-    r.names <- E(g)$reaction
-    r.names <- r.names[ss]
+    rtns <- Reactions(g)
+    rx <- lapply(rtns, FUN=function(rr) rr[[a.name]])
+    if(missing(x.names)) return(rx)
+
+    ss <- (1:length(rx) %in% x.names) | (names(rx) %in% x.names)
+    x.names <- names(rx)[ss]
     if(sum(ss) < 1) return(NULL)
-    else if(sum(ss) == 1) return(rx[[r.names]])
-    else return(rx[r.names])
+    else if(sum(ss) == 1) return(rx[[x.names]])
+    else return(rx[x.names])
 }
 
 #' @export
