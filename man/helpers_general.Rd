@@ -24,7 +24,7 @@ All functions below are generic functions. Function names are self-explanatory:
 \item getOrganism(object)
 \item getGenes(object): all genes/orthologs
 \item getCPDs(object): all compounds
-\item getReactions(object, list.only=TRUE): reactions list or RSet object (list.only=FALSE for mgraph object)
+\item getReactions(object, list.only=TRUE): reactions list or ReactionSet object (list.only=FALSE for mgraph object)
 \item getAliases(object)
 }
 

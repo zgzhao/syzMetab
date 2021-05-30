@@ -7,7 +7,7 @@
 rset_append(robj, s, p, genes)
 }
 \arguments{
-\item{robj}{RSet object}
+\item{robj}{ReactionSet object}
 
 \item{s}{character, name of substrate}
 
@@ -16,10 +16,10 @@ rset_append(robj, s, p, genes)
 \item{genes}{character vector, names of genes involved in the reaction}
 }
 \value{
-RSet object
+ReactionSet object
 }
 \description{
-Append reaction to RSet object
+Append reaction to ReactionSet object
 }
 \author{
 ZG Zhao

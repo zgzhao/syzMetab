@@ -7,6 +7,9 @@
 #' @author ZG Zhao
 #' @export
 setGeneric("enames", function(object) standardGeneric("enames"))
+setMethod("enames", "igraph", function(object){
+    as_ids(E(object))
+})
 setMethod("enames", "mgraph", function(object){
     as_ids(E(object))
 })
@@ -67,3 +70,31 @@ edata <- function(g, a.name, e.names) {
 }
 
 
+#' delete edges from igraph or mgraph object
+#'
+#' Refer to \code{\link{igraph::delete.edges}}
+#' @title delete edges
+#' @aliases delete_edges delete.edges
+#' @param object igraph/mgraph object
+#' @param es vector: edge ids (integer) or names (character)
+#' @return igraph/mgraph object
+#' @author ZG Zhao
+#' @export
+setGeneric("esdelete", function(object, es) standardGeneric("esdelete"))
+#' @export
+delete.edges <- function(...) esdelete(...)
+#' @export
+delete_edges <- function(...) esdelete(...)
+
+setMethod("esdelete", "igraph", function(object, es) {
+    igraph::delete.edges(object, es)
+})
+
+setMethod("esdelete", "mgraph", function(object, es) {
+    ss1 <- 1:ecount(object) %in% es
+    ss2 <- enames(object) %in% es
+    ss3 <- rnames(object) %in% es
+    g <- igraph::delete.edges(object, which(ss1 | ss2 | ss3))
+    attributes(g) <- attributes(object)
+    g
+})

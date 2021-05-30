@@ -59,11 +59,11 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
     rlist <- lapply(rlist, FUN=function(x) {
         rx <- x[setdiff(names(x), c("id", "link"))]
         rx <- gsub("\\b[a-z]+:", "", rx, ignore.case=TRUE)
-        rx <- sapply(rx, FUN=function(z) strsplit(z, " +")[[1]])
+        rx <- sapply(rx, FUN=function(z) sort(strsplit(z, " +")[[1]]))
         as.list(rx)
     })
     names(rlist) <- rids
-    class(rlist) <- c("KEGGdata", class(rlist))
+    class(rlist) <- "EntryList"
     rlist
 }
 
@@ -71,6 +71,7 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
     itype <- xml_name(kdata)
     items <- kdata[itype == "reaction"]
     if(length(items) < 1) return(NA)
+    rids <- xml_attr(items, "id")
     rlist <- lapply(items, FUN=function(x){
         xid <- xml_attr(x, "id")
         rtype <- xml_attr(x, "type") == "reversible"
@@ -80,11 +81,12 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
         chem2 <- sapply(chem2, FUN=function(aa) entries[[aa]][["name"]])
         names(chem1) <- NULL
         names(chem2) <- NULL
+        r.names <- entries[[xid]][["reaction"]]
         genes <- entries[[xid]][["name"]]
-        list(substrate=chem1, product=chem2, reversible=rtype, gene=genes)
+        list(substrate=chem1, product=chem2, reversible=rtype, gene=genes, name=r.names)
     })
-    names(rlist) <- NULL
-    class(rlist) <- c("KEGGdata", class(rlist))
+    names(rlist) <- rids
+    class(rlist) <- "ReactionList"
     rlist
 }
 
@@ -93,7 +95,7 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
     ids <- xml_attr(xml_parent(items), "id")
     rlist <- xml_attrs(items)
     names(rlist) <- ids
-    class(rlist) <- c("KEGGdata", class(rlist))
+    class(rlist) <- "GraphicList"
     rlist
 }
 
@@ -106,8 +108,17 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
         rx2 <- unlist(xml_attrs(xml_children(x)))
         c(rx1, rx2)
     })
-    class(rlist) <- c("KEGGdata", class(rlist))
+    class(rlist) <- "RelationList"
     rlist
+}
+
+.filterEList <- function(entries, by, vals) {
+    by <- unlist(by)[1]
+    ss <- sapply(entries, FUN=function(x) {
+        if(by %in% names(x)) x[by] %in% vals
+        else FALSE
+    })
+    entries[ss]
 }
 
 ## download and parse CPD info
@@ -127,39 +138,9 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
     results
 }
 
-## used by KEGGmeta initializer.
-.transReacts <- function(reactions, entries) {
-    rownames(entries) <- entries$id
-    reactions$from <- sapply(reactions$substrate, FUN=function(xid){
-        rex <- entries[xid, "name"]
-        unique(unlist(rex))
-    })
-    reactions$to <- sapply(reactions$product, FUN=function(xid){
-        rex <- entries[xid, "name"]
-        unique(unlist(rex))
-    })
-    reactions$KOG <- sapply(reactions$id, FUN=function(xid){
-        rex <- entries[xid, "name"]
-        unique(unlist(rex))
-    })
-    cns <- colnames(reactions)
-    colnames(reactions)[cns == "type"] <- "rev"
-    reactions$rev <- reactions$rev == "reversible"
-    reactions
-}
-
 .setKEGGLocalPath <- function(d.path, type){
     if(grepl("KEGG$", d.path, ignore.case = TRUE))
         return(file.path(d.path, type))
     ## left for user
     return(d.path)
-}
-
-.filterEList <- function(entries, by, vals) {
-    by <- unlist(by)[1]
-    ss <- sapply(entries, FUN=function(x) {
-        if(by %in% names(x)) x[by] %in% vals
-        else FALSE
-    })
-    entries[ss]
 }

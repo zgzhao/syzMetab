@@ -3,97 +3,6 @@
 ## 2. Reaction info are important for downstream calculations, they must be retained in graph object.
 ## 3. Save these info as attributes.
 
-#' Reconstruction of KEGG metabolic network represented by an mgraph object.
-#'
-#' After conversion, compounds are represented by nodes and reactions by edges in the igraph object. Other information of KEGG metabolic networks are hold as attributes.
-#' @title make graph from KEGGmeta object
-#' @param kinfo \code{\link{KEGGmeta}} object
-#' @return igraph object
-#' @author zhao
-#' @export
-mgraph_from_kmeta <- function(kinfo) {
-    if(! is.kmeta(kinfo)) stop("Not a KEGGmeta object!")
-    rtns <- as_rset(kinfo)
-    g <- mgraph_from_rset(rtns)
-    g
-}
-
-mgraph_from_rset <- function(robj) {
-    if(! is.rset(robj)) stop("Require RSet object.")
-    vv <- getCPDs(robj)
-    g <- make_empty_graph(n=length(vv))
-    V(g)$name <- vv
-    rlist <- getReactions(robj)
-    for(ndx in names(rlist)) {
-        rx <- rlist[[ndx]]
-        genes <- rx[["gene"]]
-        ss <- rx[["substrate"]]
-        pp <- rx[["product"]]
-        ess <- t(expand.grid(ss, pp))
-        g <- g %>% add.edges(ess, reaction=ndx)
-    }
-    attr(g, "reactions") <- robj
-    class(g) <- c("mgraph", class(g))
-    g
-}
-
-#' Reconstruct a KEGG pathway as mgraph network directly by providing the pathway identifiers (kos).
-#'
-#' KGML file will be downloaded online if you do not supply.
-#' @title make graph from kos
-#' @param kos character vector, KEGG pathway id(s). Mixing pathway ids of different organisms is not allowed.
-#' @param d.path file path for \code{\link{KEGG_get}}.
-#' @return mgraph object.
-#' @author ZG Zhao
-#' @export
-mgraph_from_kos <- function(kos, d.path = "KEGG") {
-    org <- unique(gsub("[0-9]+", "", kos))
-    org <- setdiff(org, c("", "ko"))
-    if(length(org) > 1) stop("Only one organism is allowed.")
-    if(length(org) < 1) org <- "ko"
-    kndx <- unique(gsub("[a-z]+", org, kos))
-    rtns <- list()
-    for(kx in kndx) {
-        xinfo <- kmeta_from_ko(kx, d.path)
-        rtns <- c(rtns, getReactions(xinfo))
-    }
-    robj <- as_rset(rtns, org)
-    g <- mgraph_from_rset(robj)
-    g
-}
-
-#' Normalize KEGG generic pathway to species specific pathway.
-#'
-#' Adjust and filter reactions, and rebuild graph object from reactions list.
-#' @title general to organism-specific mgraph conversion
-#' @param g mgraph object
-#' @param org character
-#' @param d.path file path for \code{\link{KEGG_get}}.
-#' @return mgraph with organism set
-#' @author ZG Zhao
-#' @export
-mgraph_x_org <- function(g, org, d.path = "KEGG"){
-    if(! is.mgraph(g)) stop("Not a metabolic graph.")
-    if(Species(g) != "ko") stop("Not a generic metabolic graph!")
-
-    rtns <- getReactions(g)
-    org <- org[1]
-    gmap <- kogs_list(org, d.path)
-    kogs <- names(gmap)
-    rtns <- lapply(rtns, FUN=function(rr){
-        gg <- intersect(rr$gene, kogs)
-        gg <- if(length(gg) < 1) NA else unlist(gmap[gg])
-        names(gg) <- NULL
-        rr$gene <- gg
-        rr$reversible <- FALSE
-        rr
-    })
-    ss <- sapply(rtns, FUN=function(x) ! is.empty(x$gene))
-    rtns <- rtns[ss]
-    robj <- as_rset(rtns, org)
-    g <- mgraph_from_rset(robj)
-    g
-}
 
 #' Append additional reactions to KEGG pathway.
 #'
@@ -147,11 +56,6 @@ setMethod("mgraph_clean", "mgraph", function(object, s, p){
     robj <- getReactions(object, list.only=FALSE)
     robj <- rset_merge_chems(robj, s, XCHEM1)
     robj <- rset_merge_chems(robj, p, XCHEM2)
-    ## build graph for filter
-    g <- mgraph_from_rset(robj)
-    exx <- all_spaths_edges(g, XCHEM1, XCHEM2)
-    ## build graph again
-    g <- mgraph_from_rset(robj, e.names=exx)
     g
 })
 

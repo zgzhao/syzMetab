@@ -7,17 +7,18 @@
 rdata(g, a.name, x.names)
 }
 \arguments{
-\item{g}{mgraph or RSet object}
+\item{g}{mgraph or ReactionSet object}
 
 \item{a.name}{character, attribute name}
 
 \item{x.names}{vector of character (reaction names) or integer (ids)}
 }
 \description{
-Get or set reaction data
+Get reaction data
 }
 \details{
-Friendly function for edge data/attributes retrieving or setting. See "Example".
+Helper function for reaction data retrieving.
+NOTE: please don't try to set reaction data alone; it may mess all thing up!
 }
 \seealso{
 \code{\link{vdata}}

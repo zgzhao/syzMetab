@@ -20,7 +20,7 @@ Most function names are self-explanatory:
 \itemize{
 \item is.kmeta: KEGGmeta test
 \item is.kdata: KEGGtest test
-\item is.rset: RSet test
+\item is.rset: ReactionSet test
 \item is.igraph(x)
 \item is.mgraph(x)
 \item is.xgraph: igraph or mgraph

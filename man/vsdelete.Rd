@@ -11,16 +11,16 @@ vsdelete(object, vs)
 \arguments{
 \item{object}{igraph/mgraph object}
 
-\item{vs}{vertices (indices or names)}
+\item{vs}{vector: vertex ids (integer) or names (character)}
 }
 \value{
 igraph/mgraph object
 }
 \description{
-delete nodes/vertices from igraph or mgraph object
+delete vertices/nodes from igraph or mgraph object
 }
 \details{
-Unlike \code{\link{igraph::delete_vertices}}, graph attributes are retained after nodes removed.
+Refer to \code{\link{igraph::delete.vertices}}
 }
 \author{
 ZG Zhao

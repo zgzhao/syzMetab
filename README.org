@@ -7,6 +7,8 @@
 gmetab: R package for metabolic network construction, visualization and analysis with igraph.
 
 
+* Warning
+The package is still under active development. All components may be changed in future versions.
 * Installation
 #+begin_src R :exports code :tangle yes :eval never :ravel eval=FALSE
   ## install.packages('devtools')
@@ -14,5 +16,22 @@ gmetab: R package for metabolic network construction, visualization and analysis
   install_github('zgzhao/gmetab')
 #+end_src
 
-* Warning
-The package is still under active development. All components may be changed in future versions.
+* Terms: components of metablic network
+** Reactions
+*** Reaction components
+- substrates
+- products
+- genes
+*** Reprentations
+- ReactionList: list
+- ReactionSet: S4 Class
+** KEGGdata
+List of metabolic pathway data parsed from KEGG xml file
+- ReactionList
+- EntryList
+- RelationList
+- GraphicList
+** KEGGmeta
+Represents a whole set of KEGGdata parsed from a KEGG xml file.
+** mgraph
+igraph object with special attributes related to a metabolic network.

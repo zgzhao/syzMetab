@@ -7,7 +7,7 @@
 rnames(object)
 }
 \arguments{
-\item{object}{mgraph or RSet object}
+\item{object}{mgraph or ReactionSet object}
 }
 \description{
 get reaction names

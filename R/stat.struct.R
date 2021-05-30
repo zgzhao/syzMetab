@@ -1,22 +1,6 @@
 
-XCHEM1 <- "PRI_SUBSTRATE"
-XCHEM2 <- "END_PRODUCT"
-
-.transNames <- function(chems, g) {
-    xnames <- Aliases(g)
-    if(! is.empty(xnames)) {
-        for (nn in names(xnames)) {
-            ss <- chems %in% xnames[[nn]]
-            chems[ss] <- nn
-        }
-    }
-    intersect(Chemicals(g), chems)
-}
-
 #' @export
 OP_chem <- function(g, chem, substrates, ex.genes=NULL) {
-    chem <- .transNames(chem, g)
-    substrates <- .transNames(substrates, g)
     if(chem %in% substrates) {
         pp <- vdata(g, "PP", chem)
         return(pp)

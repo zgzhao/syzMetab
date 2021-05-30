@@ -2,14 +2,14 @@
 #'
 #' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
 #' @title reaction names
-#' @param object mgraph or RSet object
+#' @param object mgraph or ReactionSet object
 #' @author ZG Zhao
 #' @export
 setGeneric("rnames", function(object) standardGeneric("rnames"))
 setMethod("rnames", "mgraph", function(object){
     E(object)$reaction
 })
-setMethod("rnames", "RSet", function(object){
+setMethod("rnames", "ReactionSet", function(object){
     names(Reactions(object))
 })
 
@@ -18,15 +18,16 @@ setGeneric("rcount", function(object) standardGeneric("rcount"))
 setMethod("rcount", "mgraph", function(object){
     length(Reactions(object))
 })
-setMethod("rcount", "RSet", function(object){
+setMethod("rcount", "ReactionSet", function(object){
     length(Reactions(object))
 })
 
-#' Get or set reaction data
+#' Get reaction data
 #'
-#' Friendly function for edge data/attributes retrieving or setting. See "Example".
+#' Helper function for reaction data retrieving.
+#' NOTE: please don't try to set reaction data alone; it may mess all thing up!
 #' @title reaction data
-#' @param g mgraph or RSet object
+#' @param g mgraph or ReactionSet object
 #' @param a.name character, attribute name
 #' @param x.names vector of character (reaction names) or integer (ids)
 #' @seealso \code{\link{vdata}}
@@ -49,7 +50,7 @@ rdata <- function(g, a.name, x.names) {
     else return(rx[x.names])
 }
 
-#' @export
+## internal use only!!
 `rdata<-` <- function(g, a.name, value) {
     a.name <- a.name[1]
     if(! a.name %in% c("reaction", "organism", "alias"))
@@ -64,11 +65,11 @@ rdata <- function(g, a.name, x.names) {
 
 #' Mostly for internal use.
 #'
-#' "RSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
-#' @title generate RSet object
+#' "ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
+#' @title generate ReactionSet object
 #' @param kinfo KEGGmeta or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
 #' @param org character, a KEGG organism string. Use if only kinfo is a plain list.
-#' @return RSet object
+#' @return ReactionSet object
 #' @author ZG Zhao
 #' @export
 as_rset <- function(kinfo, org="ko") {
@@ -86,57 +87,24 @@ as_rset <- function(kinfo, org="ko") {
             rtns <- rlist_append(rtns, pp, ss, genes)
     }
     names(rtns) <- paste0("RX", 1:length(rtns))
-    new("RSet", rtns, org)
+    class(rtns) <- "ReactionList"
+    new("ReactionSet", rtns, org)
 }
 
-#' Append reaction to RSet object
+#' Append reaction to ReactionSet object
 #'
-#'
+#' Useful for adding to network spontaneous reactions without associated genes.
 #' @title append reaction
-#' @param robj RSet object
+#' @param robj ReactionSet object
 #' @param s character, name of substrate
 #' @param p character, name of product
 #' @param genes character vector, names of genes involved in the reaction
-#' @return  RSet object
+#' @return  ReactionSet object
 #' @author ZG Zhao
 #' @export
 rset_append <- function(robj, s, p, genes) {
     rlist <- rlist_append(robj@reaction, s, p, genes)
     robj@reaction <- rlist
-    robj
-}
-
-#' @export
-rset_merge_chems <- function(robj, chems, alias) {
-    chems <- intersect(Chemicals(robj), chems)
-    if(is.empty(chems)) return(robj)
-
-    alias <- alias[1]
-    xalias <- Aliases(robj)
-    xalias[alias] <- chems
-    rlist <- Reactions(robj)
-    rlist <- lapply(rlist, FUN=function(rx){
-        chem1 <- rx[["substrate"]]
-        chem1[chem1 %in% chems] <- alias
-        chem1 <- unique(chem1)
-        chem2 <- rx[["substrate"]]
-        chem2[chem2 %in% chems] <- alias
-        chem2 <- unique(chem2)
-        if(alias %in% chem1 && alias %in% chem2) {
-            chem1 <- setdiff(chem1, alias)
-            chem2 <- setdiff(chem2, alias)
-        }
-        if(is.empty(chem1) || is.empty(chem2)) return(NA)
-        rx[["substrate"]] <- chem1
-        rx[["product"]] <- chem2
-        rx[["reversible"]] <- FALSE
-        rx
-    })
-    ss <- sapply(rlist, FUN=is.empty)
-    rlist <- rlist[!ss]
-    ## rebuild object: merge some reactions
-    robj <- as_rset(rlist, Organism(robj))
-    robj@alias <- xalias
     robj
 }
 

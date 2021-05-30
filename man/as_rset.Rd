@@ -2,7 +2,7 @@
 % Please edit documentation in R/reaction.R
 \name{as_rset}
 \alias{as_rset}
-\title{generate RSet object}
+\title{generate ReactionSet object}
 \usage{
 as_rset(kinfo, org = "ko")
 }
@@ -12,13 +12,13 @@ as_rset(kinfo, org = "ko")
 \item{org}{character, a KEGG organism string. Use if only kinfo is a plain list.}
 }
 \value{
-RSet object
+ReactionSet object
 }
 \description{
 Mostly for internal use.
 }
 \details{
-"RSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
+"ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
 }
 \author{
 ZG Zhao

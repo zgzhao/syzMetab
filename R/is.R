@@ -1,3 +1,16 @@
+setIs("EntryList", "KEGGdata")
+setIs("ReactionList", "KEGGdata")
+setIs("RelationList", "KEGGdata")
+setIs("GraphicList", "KEGGdata")
+setAs("KEGGdata", "list", function(from) {
+    class(from) <- NULL
+    return(from)
+})
+setAs("mgraph", "igraph", function(from) {
+    class(from) <- "igraph"
+    return(from)
+})
+
 #' @title object test
 #' @description helper functions for object test
 #' @name helpers_is
@@ -5,7 +18,7 @@
 #' @details Most function names are self-explanatory:
 #' - is.kmeta: KEGGmeta test
 #' - is.kdata: KEGGtest test
-#' - is.rset: RSet test
+#' - is.rset: ReactionSet test
 #' - is.igraph(x)
 #' - is.mgraph(x)
 #' - is.xgraph: igraph or mgraph
@@ -27,7 +40,7 @@ is.kdata<- function(x) {
 
 #' @export
 is.rset <- function(x) {
-    inherits(x, "RSet")
+    inherits(x, "ReactionSet")
 }
 
 #' @export

@@ -7,6 +7,9 @@
 #' @author ZG Zhao
 #' @export
 setGeneric("vnames", function(object) standardGeneric("vnames"))
+setMethod("vnames", "igraph", function(object){
+    as_ids(V(object))
+})
 setMethod("vnames", "mgraph", function(object){
     as_ids(V(object))
 })
@@ -60,13 +63,13 @@ vdata <- function(g, a.name, v.names) {
     g
 }
 
-#' delete nodes/vertices from igraph or mgraph object
+#' delete vertices/nodes from igraph or mgraph object
 #'
-#' Unlike \code{\link{igraph::delete_vertices}}, graph attributes are retained after nodes removed.
+#' Refer to \code{\link{igraph::delete.vertices}}
 #' @title delete vertices
 #' @aliases delete_vertices delete.vertices
 #' @param object igraph/mgraph object
-#' @param vs vertices (indices or names)
+#' @param vs vector: vertex ids (integer) or names (character)
 #' @return igraph/mgraph object
 #' @author ZG Zhao
 #' @export
@@ -75,23 +78,18 @@ setGeneric("vsdelete", function(object, vs) standardGeneric("vsdelete"))
 delete.vertices <- function(...) vsdelete(...)
 #' @export
 delete_vertices <- function(...) vsdelete(...)
+#' @export
+delete.chemicals <- function(...) vsdelete(...)
+#' @export
+delete_chemicals <- function(...) vsdelete(...)
 
 setMethod("vsdelete", "igraph", function(object, vs) {
-    atts <- attributes(object)
-    g <- igraph::delete.vertices(object, vs)
-    for (ax in names(atts)) attr(g, ax) <- atts[[ax]]
-    g
+    igraph::delete.vertices(object, vs)
 })
+
 setMethod("vsdelete", "mgraph", function(object, vs) {
-    atts <- attributes(object)
     g <- igraph::delete.vertices(object, vs)
-    ## restore attributes
-    for (ax in names(atts)) attr(g, ax) <- atts[[ax]]
-    ## filter reactions
-    rtns <- Reactions(g, list.only=FALSE)
-    rs <- unique(rnames(g))
-    rtns@reaction <- rtns@reaction[rs]
-    attr(g, "reactions") <- rtns
+    attributes(g) <- attributes(object)
     g
 })
 

@@ -8,7 +8,7 @@
 #' - getOrganism(object)
 #' - getGenes(object): all genes/orthologs
 #' - getCPDs(object): all compounds
-#' - getReactions(object, list.only=TRUE): reactions list or RSet object (list.only=FALSE for mgraph object)
+#' - getReactions(object, list.only=TRUE): reactions list or ReactionSet object (list.only=FALSE for mgraph object)
 #' - getAliases(object)
 #'
 #' Alias functions:
@@ -86,7 +86,7 @@ setMethod("pathInfo", "KEGGmeta", function(object){
 setMethod("getOrganism", "KEGGmeta", function(object){
     object@pathInfo$org
 })
-setMethod("getOrganism", "RSet", function(object){
+setMethod("getOrganism", "ReactionSet", function(object){
     object@organism
 })
 setMethod("getOrganism", "mgraph", function(object){
@@ -95,58 +95,59 @@ setMethod("getOrganism", "mgraph", function(object){
 })
 
 setMethod("getCPDs", "KEGGmeta", function(object){
-    rx <- .filterEList(object@entries, by="type", vals="compound")
-    rx <- sapply(rx, FUN=function(x) x["name"])
+    rx <- sapply(object@reactions, FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
+    names(rx) <- NULL
     return(rx)
 })
-setMethod("getCPDs", "KEGGdata", function(object){
+setMethod("getCPDs", "ReactionList", function(object){
     rx <- sapply(object, FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
     return(rx)
 })
-setMethod("getCPDs", "RSet", function(object){
+setMethod("getCPDs", "ReactionSet", function(object){
     rx <- sapply(object@reaction, FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
     return(rx)
 })
 setMethod("getCPDs", "mgraph", function(object){
-    V(object)$name
+    vnames(object)
 })
 setMethod("getCPDs", "igraph", function(object){
-    V(object)$name
+    vnames(object)
 })
 
 setMethod("getGenes", "KEGGmeta", function(object){
-    rx <- .filterEList(object@entries, by="type", vals=c("gene", "ortholog"))
-    rx <- sapply(rx, FUN=function(x) x["name"])
+    rx <- sapply(object@reactions, FUN=function(x) x[["gene"]])
     rx <- sort(unique(unlist(rx)))
+    names(rx) <- NULL
     return(rx)
 })
-setMethod("getGenes", "KEGGdata", function(object){
+setMethod("getGenes", "ReactionList", function(object){
     rx <- sapply(object, FUN=function(x) x[["gene"]])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
     return(rx)
 })
-setMethod("getGenes", "RSet", function(object){
-    genes <- sapply(object@reaction, FUN=function(rr) rr[["gene"]])
-    genes <- unlist(genes)
-    sort(unique(genes))
+setMethod("getGenes", "ReactionSet", function(object){
+    rx <- sapply(object@reaction, FUN=function(rr) rr[["gene"]])
+    rx <- sort(unique(unlist(rx)))
+    names(rx) <- NULL
+    return(rx)
 })
 setMethod("getGenes", "mgraph", function(object){
     rtns <- getReactions(object)
-    genes <- sapply(rtns, FUN=function(rr) rr[["gene"]])
-    genes <- unlist(genes)
-    sort(unique(genes))
+    rx <- sapply(rtns, FUN=function(rr) rr[["gene"]])
+    rx <- unlist(rx)
+    sort(unique(rx))
 })
 
 setMethod("getReactions", "KEGGmeta", function(object){
     object@reactions
 })
-setMethod("getReactions", "RSet", function(object){
+setMethod("getReactions", "ReactionSet", function(object){
     object@reaction
 })
 setMethod("getReactions", "mgraph", function(object, list.only=TRUE){
@@ -155,7 +156,7 @@ setMethod("getReactions", "mgraph", function(object, list.only=TRUE){
     else return(x)
 })
 
-setMethod("getAliases", "RSet", function(object){
+setMethod("getAliases", "ReactionSet", function(object){
     rx <- object@alias
     rx
 })
