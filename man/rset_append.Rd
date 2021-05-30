@@ -21,6 +21,9 @@ ReactionSet object
 \description{
 Append reaction to ReactionSet object
 }
+\details{
+Useful for adding to network spontaneous reactions without associated genes.
+}
 \author{
 ZG Zhao
 }
