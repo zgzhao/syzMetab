@@ -4,7 +4,7 @@ Version: 0.2.1
 Authors@R: 
     person(given = "Zhiguang", family = "Zhao", role = c("aut", "cre"),
            email = "zgzhao@lzu.edu.cn")
-Description: R package "gmetab" is designed for processing metabolic networks, especially for KEGG pathways/networks. The package is still under development.
+Description: R package "gmetab" is designed for processing metabolic networks, especially for KEGG pathways/networks.
 License: GPL-3
 Encoding: UTF-8
 Depends:

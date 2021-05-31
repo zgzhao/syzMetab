@@ -18,7 +18,7 @@ helper functions for object test
 \details{
 Most function names are self-explanatory:
 \itemize{
-\item is.kmeta: KEGGmeta test
+\item is.mpath: keggPATH test
 \item is.kdata: KEGGtest test
 \item is.rset: ReactionSet test
 \item is.igraph(x)

@@ -4,7 +4,7 @@
 \alias{class_virtual}
 \alias{igraph}
 \alias{mgraph}
-\alias{KEGGdata}
+\alias{KEntityList}
 \title{virtual classes}
 \description{
 Virtual classes designed in mgraph package.
@@ -14,7 +14,7 @@ There following classes are set as virutal:
 \itemize{
 \item igraph
 \item mgraph
-\item KEGGdata: actually list
+\item KEntityList: actually list
 }
 }
 \author{

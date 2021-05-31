@@ -1,37 +1,39 @@
 
-#' Refer to \code{\link{KEGGmeta}} for class information.
+#' Make metabolic pathway (keggPATH object)
 #'
 #' This function reads from local folder (d.path) a KEGG xml file, which will be downloaded if not exists. Make sure internet is accessible.
-#' @title Generate KEGGmeta object
+#' Refer to \code{\link{keggPATH}} for class information.
+#' TODO: make pathway from local KGML file regardless of d.path
+#' @title make metabolic pathway
 #' @param ko character, KEGG pathway ortholog (ko) index string such as ko00010, 00010 or ath00010
 #' @param d.path file path for \code{\link{KEGG_get}}.
-#' @return KEGGmeta object
+#' @return keggPATH object
 #' @author ZG Zhao
 #' @export
-kmeta_from_ko <- function(ko, d.path="KEGG"){
+make_mpath <- function(ko, d.path="KEGG"){
     ko <- tolower(ko[1])
-    new("KEGGmeta", ko, d.path)
+    new("keggPATH", ko, d.path)
 }
 
 
-#' Convert KOG names of a KEGGmeta object to real gene names
+#' Convert KOG names of a keggPATH object to real gene names
 #'
-#' In KEGGmeta objects, genes involved in reactions are generally represented by KEGG entry names (k genes or KOG).
-#' @title General to organism-specific KEGGmeta conversion
-#' @param kinfo a KEGGmeta object
+#' In keggPATH objects, genes involved in reactions are generally represented by KEGG entry names (k genes or KOG).
+#' @title General to organism-specific keggPATH conversion
+#' @param kobj a keggPATH object
 #' @param org abbreviation of an organism such as "ath"
 #' @param d.path file path for \code{\link{KEGG_get}}
-#' @return KEGGmeta object
+#' @return keggPATH object
 #' @author ZG Zhao
 #' @export
-kmeta_x_org <- function(kinfo, org=NA, d.path="KEGG"){
-    if(kinfo@pathInfo$org != "ko") stop("No a general KEGG pathway (eg. ko00010)!")
-    if( is.empty(org) ) return(kinfo)
+mpath_x_org <- function(kobj, org=NA, d.path="KEGG"){
+    if(Organism(kobj) != "ko") stop("No a general KEGG pathway (eg. ko00010)!")
+    if( is.empty(org) ) return(kobj)
     org <- tolower(org)
     gmap <- kogs_list(org, d.path)
     kogs <- names(gmap)
     ## filter reactions
-    rns <- Reactions(kinfo)
+    rns <- Reactions(kobj)
     rns <- lapply(rns, FUN=function(rr){
         gg <- intersect(rr$gene, kogs)
         gg <- if(length(gg) < 1) NA else unlist(gmap[gg])
@@ -42,11 +44,11 @@ kmeta_x_org <- function(kinfo, org=NA, d.path="KEGG"){
     ss <- sapply(rns, FUN=function(x) ! is.empty(x$gene))
     rns <- rns[ss]
     class(rns) <- "ReactionList"
-    kinfo@reactions <- rns
-    ## if(reaction.only) return(kinfo)
+    kobj@reactions <- rns
+    ## if(reaction.only) return(kobj)
 
     ## filter entries
-    ents <- kinfo@entries
+    ents <- kobj@entries
     ents <- lapply(ents, FUN=function(rr){
         if(! rr$type %in% "ortholog") return(rr)
         oo <- intersect(rr$name, kogs)
@@ -60,10 +62,10 @@ kmeta_x_org <- function(kinfo, org=NA, d.path="KEGG"){
     ss <- sapply(ents, FUN=function(x) ! is.empty(x$name))
     ents <- ents[ss]
     class(ents) <- "EntryList"
-    kinfo@entries <- ents
-    kinfo@pathInfo <- lapply(kinfo@pathInfo, FUN=function(x) {
+    kobj@entries <- ents
+    kobj@pathInfo <- lapply(kobj@pathInfo, FUN=function(x) {
         gsub("ko([0-9]+)", paste0(org, "\\1"), x)
     })
-    kinfo@pathInfo$org <- org
-    kinfo
+    kobj@pathInfo$org <- org
+    kobj
 }

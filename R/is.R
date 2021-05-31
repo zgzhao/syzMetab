@@ -1,8 +1,8 @@
-setIs("EntryList", "KEGGdata")
-setIs("ReactionList", "KEGGdata")
-setIs("RelationList", "KEGGdata")
-setIs("GraphicList", "KEGGdata")
-setAs("KEGGdata", "list", function(from) {
+setIs("EntryList", "KEntityList")
+setIs("ReactionList", "KEntityList")
+setIs("RelationList", "KEntityList")
+setIs("GraphicList", "KEntityList")
+setAs("KEntityList", "list", function(from) {
     class(from) <- NULL
     return(from)
 })
@@ -16,7 +16,7 @@ setAs("mgraph", "igraph", function(from) {
 #' @name helpers_is
 #' @aliases is.kdata is.rset is.igraph is.mgraph is.xgraph is.chemset
 #' @details Most function names are self-explanatory:
-#' - is.kmeta: KEGGmeta test
+#' - is.mpath: keggPATH test
 #' - is.kdata: KEGGtest test
 #' - is.rset: ReactionSet test
 #' - is.igraph(x)
@@ -29,13 +29,13 @@ setAs("mgraph", "igraph", function(from) {
 NULL
 
 #' @export
-is.kmeta <- function(x) {
-    inherits(x, "KEGGmeta")
+is.mpath <- function(x) {
+    inherits(x, "keggPATH")
 }
 
 #' @export
 is.kdata<- function(x) {
-    inherits(x, "KEGGdata")
+    inherits(x, "KEntityList")
 }
 
 #' @export

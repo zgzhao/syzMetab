@@ -7,7 +7,7 @@
 as_rset(kinfo, org = "ko")
 }
 \arguments{
-\item{kinfo}{KEGGmeta or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.}
+\item{kinfo}{keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.}
 
 \item{org}{character, a KEGG organism string. Use if only kinfo is a plain list.}
 }
@@ -18,7 +18,7 @@ ReactionSet object
 Mostly for internal use.
 }
 \details{
-"ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
+"ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{keggPATH}}.
 }
 \author{
 ZG Zhao

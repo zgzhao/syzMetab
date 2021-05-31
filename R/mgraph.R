@@ -51,13 +51,18 @@ mgraph_append <- function(g, df) {
 #' @return mgraph object
 #' @author ZG Zhao
 #' @export
-setGeneric("mgraph_clean", function(object, s, p) standardGeneric("mgraph_clean"))
-setMethod("mgraph_clean", "mgraph", function(object, s, p){
-    robj <- getReactions(object, list.only=FALSE)
-    robj <- rset_merge_chems(robj, s, XCHEM1)
-    robj <- rset_merge_chems(robj, p, XCHEM2)
+mgraph_clean <- function(g, s, p){
+    spp <- all_spaths_list(g, s, p)
+    vss <- all_spaths_nodes(spp)
+    ess <- all_spaths_edges(spp)
+    vxx <- setdiff(vnames(g), vss)
+    g <- vsdelete(g, vxx)
+    exx <- setdiff(enames(g), ess)
+    g <- esdelete(g, exx)
+    ## save time-consuming results
+    attr(g, "spaths") <- spp
     g
-})
+}
 
 
 #' This function will: (1) merge any serial or parallel reactions; (2) update edge EP data accordingly.

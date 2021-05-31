@@ -1,6 +1,6 @@
 
 #' @title general helper function
-#' @description general helpers for retrieving data from KEGGmeta, reactions list or mgraph object
+#' @description general helpers for retrieving data from keggPATH, reactions list or mgraph object
 #' @name helpers_general
 #' @aliases getOrganism getCPDs getGenes getReactions getAliases Reactions Compounds Species Organism Genes Aliases
 #' @details All functions below are generic functions. Function names are self-explanatory:
@@ -22,8 +22,8 @@
 #' @examples
 #' library(gmetab)
 #' d.path <- file.path(path.package("gmetab"), "KEGG")
-#' kinfo <- kmeta_from_ko("ko00010", d.path)
-#' gg <- mgraph_from_kmeta(kinfo)
+#' kinfo <- make_mpath("ko00010", d.path)
+#' gg <- mgraph_from_mpath(kinfo)
 #' ##
 #' pathInfo(kinfo)
 #' getOrganism(kinfo)
@@ -79,11 +79,11 @@ Species <- function(object, ...) getOrganism(object, ...)
 Organism <- function(object, ...) getOrganism(object, ...)
 
 ## ================================================================================
-setMethod("pathInfo", "KEGGmeta", function(object){
+setMethod("pathInfo", "keggPATH", function(object){
     object@pathInfo
 })
 
-setMethod("getOrganism", "KEGGmeta", function(object){
+setMethod("getOrganism", "keggPATH", function(object){
     object@pathInfo$org
 })
 setMethod("getOrganism", "ReactionSet", function(object){
@@ -94,7 +94,7 @@ setMethod("getOrganism", "mgraph", function(object){
     x@organism
 })
 
-setMethod("getCPDs", "KEGGmeta", function(object){
+setMethod("getCPDs", "keggPATH", function(object){
     rx <- sapply(object@reactions, FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
@@ -119,7 +119,7 @@ setMethod("getCPDs", "igraph", function(object){
     vnames(object)
 })
 
-setMethod("getGenes", "KEGGmeta", function(object){
+setMethod("getGenes", "keggPATH", function(object){
     rx <- sapply(object@reactions, FUN=function(x) x[["gene"]])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
@@ -144,7 +144,7 @@ setMethod("getGenes", "mgraph", function(object){
     sort(unique(rx))
 })
 
-setMethod("getReactions", "KEGGmeta", function(object){
+setMethod("getReactions", "keggPATH", function(object){
     object@reactions
 })
 setMethod("getReactions", "ReactionSet", function(object){

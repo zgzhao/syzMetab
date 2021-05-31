@@ -3,19 +3,19 @@
 \name{make_mgraph}
 \alias{make_mgraph}
 \alias{class_mgraph}
-\title{make graph from KEGGmeta object}
+\title{make graph from keggPATH object}
 \usage{
 make_mgraph(object, org=NULL)
 }
 \arguments{
-\item{object}{KEGGmeta, ReactionSet ReactionList, list or even igrph object.}
+\item{object}{keggPATH, ReactionSet ReactionList, list or even igrph object.}
 
 \item{org}{character, organism/species indentifier, parameter for "object" without organism info: ReactionList and list}
 
 \item{d.path}{character, refer to \code{\link{KEGG_get}} for detail. Used when "object" is a KO vecter (KOs).}
 }
 \description{
-Make mgraph object from various type of data: KEGGmeta, ReactionSet, ReactionList, list or KOs (KEGG pathway identifiers).
+Make mgraph object from various type of data: keggPATH, ReactionSet, ReactionList, list or KOs (KEGG pathway identifiers).
 }
 \details{
 "mgraph" is a virtual S3 class defined in "gmetab" package.

@@ -4,14 +4,14 @@
 \alias{mgraph_clean}
 \title{clean metabolic network}
 \usage{
-mgraph_clean(object, s, p)
+mgraph_clean(g, s, p)
 }
 \arguments{
-\item{object}{mgraph object}
-
 \item{s}{character vector, primary substrate names}
 
 \item{p}{character vecter, end product names}
+
+\item{object}{mgraph object}
 }
 \value{
 mgraph object

@@ -1,5 +1,5 @@
 #' @export
-print.KEGGdata <- function(x) {
+print.KEntityList <- function(x) {
     str(x)
 }
 

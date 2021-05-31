@@ -15,7 +15,7 @@
 \alias{Aliases}
 \title{general helper function}
 \description{
-general helpers for retrieving data from KEGGmeta, reactions list or mgraph object
+general helpers for retrieving data from keggPATH, reactions list or mgraph object
 }
 \details{
 All functions below are generic functions. Function names are self-explanatory:
@@ -42,8 +42,8 @@ Alias functions:
 \examples{
 library(gmetab)
 d.path <- file.path(path.package("gmetab"), "KEGG")
-kinfo <- kmeta_from_ko("ko00010", d.path)
-gg <- mgraph_from_kmeta(kinfo)
+kinfo <- make_mpath("ko00010", d.path)
+gg <- mgraph_from_mpath(kinfo)
 ##
 pathInfo(kinfo)
 getOrganism(kinfo)

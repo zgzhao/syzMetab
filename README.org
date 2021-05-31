@@ -16,22 +16,31 @@ The package is still under active development. All components may be changed in 
   install_github('zgzhao/gmetab')
 #+end_src
 
-* Terms: components of metablic network
-** Reactions
-*** Reaction components
-- substrates
-- products
-- genes
-*** Reprentations
-- ReactionList: list
-- ReactionSet: S4 Class
-** KEGGdata
-List of metabolic pathway data parsed from KEGG xml file
-- ReactionList
-- EntryList
-- RelationList
-- GraphicList
-** KEGGmeta
-Represents a whole set of KEGGdata parsed from a KEGG xml file.
-** mgraph
-igraph object with special attributes related to a metabolic network.
+* Terms
+Followings are terms used in "gmetab" package.
+** metabolic pathway
+A metabolic pathway refer to meta data parsed from a KEGG xml (KGML) file and is represented by keggPATH S4 class.
+
+Data slots in "keggPATH" object:
+- pathInfo: list
+- entries: EntryList
+- reactions: ReactionList
+- relations: RelationList
+- graphics: GraphicList
+
+** metabolic graph
+It is an igraph object with "mgraph" class attribute and additional attributes holding reactions associated data.
+
+Most network algorithms for igraph can apply to mgraph directly; however, since metabolic networks have their uniqe natures, some algorithms should be adjusted accordingly.
+
+** reaction
+Reactions play key roles in metabolic network construction and downstream analysis.
+Two classes are designed in gmetab package for reactions handling: "ReactionList" and "ReactionSet".
+The former is virtual class of "list" and the latter is a S4 class.
+
+Generally, a reaction should contain minimun data of:
+- substrate(s)
+- product(s)
+- gene(s)/enzyme(s)
+- identifier
+After translated into graph components, relations among substrates or products will lose. Therefore, reaction identifiers (or other mechanisms) are required to keep these traces.

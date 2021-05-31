@@ -1,11 +1,11 @@
 #' @name class_virtual
 #' @title virtual classes
-#' @aliases igraph mgraph KEGGdata
+#' @aliases igraph mgraph KEntityList
 #' @description Virtual classes designed in mgraph package.
 #' @details There following classes are set as virutal:
 #' - igraph
 #' - mgraph
-#' - KEGGdata: actually list
+#' - KEntityList: actually list
 #' @author zhao
 NULL
 
@@ -19,12 +19,12 @@ NULL
 #' @author ZG Zhao
 NULL
 
-#' @name class_KEGGmeta
-#' @title S4 class: KEGGmeta
-#' @aliases KEGGmeta
-#' @seealso \code{\link{KEGGdata}}, \code{\link{ReactionSet}}
-#' @description "KEGGmeta" is S4 class designed for holding KEGG pathway information: entries, reactions, relations, graphics and other general information (pathInfo).
-#' @details Typically, a KEGGmeta object can be obtained by \code{\link{kmeta_from_ko}} function, which will download and parse the KEGG xml file.
+#' @name class_keggPATH
+#' @title S4 class: keggPATH
+#' @aliases keggPATH
+#' @seealso \code{\link{KEntityList}}, \code{\link{ReactionSet}}
+#' @description "keggPATH" is S4 class designed for holding KEGG pathway information: entries, reactions, relations, graphics and other general information (pathInfo).
+#' @details Typically, a keggPATH object can be obtained by \code{\link{make_mpath}} function, which will download and parse the KEGG xml file.
 #' @author zhao
 NULL
 
@@ -33,7 +33,7 @@ setClassUnion("EntryList", "list")
 setClassUnion("ReactionList", "list")
 setClassUnion("RelationList", "list")
 setClassUnion("GraphicList", "list")
-setClassUnion("KEGGdata", "list")
+setClassUnion("KEntityList", "list")
 setClassUnion("igraph", "list")
 setClassUnion("mgraph", "list")
 
@@ -48,14 +48,14 @@ setMethod("initialize", "ReactionSet", function(.Object, reactions, organism="")
     return(.Object)
 })
 
-setClass("KEGGmeta",
+setClass("keggPATH",
          slots=c(pathInfo="list",
                  entries="EntryList",
                  reactions="ReactionList",
                  relations="RelationList",
                  graphics="GraphicList"))
 
-setMethod("initialize", "KEGGmeta", function(.Object, ko, d.path) {
+setMethod("initialize", "keggPATH", function(.Object, ko, d.path) {
     if(missing(ko) || is.empty(ko)) {
         return(.Object)
     }

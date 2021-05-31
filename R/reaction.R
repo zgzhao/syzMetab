@@ -65,15 +65,15 @@ rdata <- function(g, a.name, x.names) {
 
 #' Mostly for internal use.
 #'
-#' "ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KEGGmeta}}.
+#' "ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{keggPATH}}.
 #' @title generate ReactionSet object
-#' @param kinfo KEGGmeta or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
+#' @param kinfo keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
 #' @param org character, a KEGG organism string. Use if only kinfo is a plain list.
 #' @return ReactionSet object
 #' @author ZG Zhao
 #' @export
 as_rset <- function(kinfo, org="ko") {
-    if(is.kmeta(kinfo)) {
+    if(is.mpath(kinfo)) {
         org <- pathInfo(kinfo)$org
         kinfo <- getReactions(kinfo)
     }
