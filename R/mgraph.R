@@ -21,7 +21,7 @@ mgraph_append <- function(g, df) {
     else
         warning("Column names do not match. The first four columns are used for from, to, reversible and genes!")
 
-    robj <- getReactions(g, list.only=FALSE)
+    robj <- Reactions(g, list.only=FALSE)
     for(i in 1:nrow(df)) {
         ss <- strsplit(df[i, 1], "[ ;,]+")[[1]]
         pp <- strsplit(df[i, 2], "[ ;,]+")[[1]]
@@ -64,38 +64,3 @@ mgraph_clean <- function(g, s, p){
     g
 }
 
-
-#' This function will: (1) merge any serial or parallel reactions; (2) update edge EP data accordingly.
-#'
-#' A simplified network contains no serial or parallel reactions.
-#' @title Simplify the structure of a metabolic network
-#' @param g metgraph object
-#' @return metgraph object
-#' @author ZG Zhao
-#' @export
-mgraph_simplify <- function(g) {
-    ## NOTE: parallel robust
-    if(! is.mgraph(g)) return(g)
-    if(is.chemSet(g)) g <- mgraph_clean(g)
-    g <- mgraph_update(g)
-
-    while(TRUE) {
-        dd <- graph::degree(g)
-        ss <- dd$inDegree == 1 & dd$outDegree == 1
-        if(sum(ss) < 1) break
-        vx <- names(which(ss)[1])
-        v1 <- unlist(inEdges(vx, g))
-        v2 <- unlist(graph::adj(g, vx))
-        p1 <- edgesEP(g, v1, vx)
-        p2 <- edgesEP(g, vx, v2)
-        px <- 1 - (1 - p1) * (1 - p2)
-        g <- removeNode(vx, g)
-        if(is.adjacentVs(g, v1, v2, "out")) px <- px * edgesEP(g, v1, v2)
-        else g <- addEdge(v1, v2, g)
-        names(px) <- NULL
-        edgeData(g, v1, v2, "EP") <- px
-    }
-    ## update simple path info
-    if(is.chemSet(g)) g@metaData$paths <- allReactionChains(g, VCHEM1, VCHEM2)
-    g
-}

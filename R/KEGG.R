@@ -144,3 +144,71 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
     ## left for user
     return(d.path)
 }
+
+#' Get KOG to gene mapping list for an organism. KEGG brite file will be download if needed.
+#'
+#' Refer to \code{\link{kogs_table}} if you want gene to KOG mapping table.
+#' @title KOG to gene mapping list for an organism
+#' @param org character, KEGG organism abbreviation
+#' @param d.path file path for \code{\link{KEGG_get}}
+#' @param KOGs character vector, names of KOGs. Subset if not empty.
+#' @return list of genes named by KOGs.
+#' @author ZG Zhao
+#' @export
+kogs_list <- function(org, d.path="KEGG", KOGs=NA) {
+    if(is.empty(org)) return(NULL)
+    if("KGDF" %in% class(org)) dtx <- org
+    else  dtx <- kogs_table(org, d.path, KOGs)
+
+    if(is.empty(dtx)) return(NULL)
+    dtx <- aggregate(gene~KOG, data = dtx, FUN = unique)
+    if(nrow(dtx) < 1) return(list())
+    genes <- dtx$gene
+    if(! is.list(genes)) genes <- as.list(genes)
+    names(genes) <- dtx$KOG
+    genes
+}
+
+#' Get gene to KOG mapping table for an organism. KEGG brite file will be download if needed.
+#'
+#' If org="ko", there are only two types of data: KOG (KEGG gene entries) and description. To provide a general interface, these data is also named "gene" and are duplicated in "ko" column. KEGG brite file for the organism will be downloaded automatically if not exists.
+#' @title Gene to KOG mapping table for an organism
+#' @param org character, KEGG organism abbreviation
+#' @param d.path file path for \code{\link{KEGG_get}}
+#' @param KOGs character vector, names of KOGs. Subset if not empty.
+#' @return  data.frame with three columns: gene, KOG and desc (functional description). NOTE: Some KEGG brite file may have no gene info, NULL is return without warning!
+#' @author ZG Zhao
+#' @export
+kogs_table <- function(org, d.path="KEGG", KOGs=NA){
+    f.brite <- KEGG_get(org, d.path)
+    if(! file.exists(f.brite)) stop("KEGG brite file not exists and downloaded failed!")
+    kinfo <- grep("^D", readLines(f.brite), value = TRUE)
+    kinfo <- gsub("^D\\s+", "", kinfo)
+    if(length(kinfo) < 1) return(NULL)
+
+    isGeneral <- grepl("^K", kinfo[1])
+    results <- sapply(kinfo, FUN = function(x){
+        gene <- sub("^(\\S+)\\s.+$", "\\1", x)
+        if(isGeneral) {
+            kog <- gene
+            desc <- sub("^\\S+\\s+(.+)$", "\\1", x)
+            desc <- sub("\\s+\\[.+$", "", desc)
+        } else {
+            kog <- NA
+            desc <- NA
+            if(grepl("^.+\\bK[0-9]{5}\\b.+$", x[1])) {
+                kog <- sub("^.+\\b(K[0-9]{5})\\b.+$", "\\1", x)
+                desc <- sub("^\\S+\\b+(.+)\\s+K[0-9]{5}.*$", "\\1", x)
+            }
+        }
+        c(gene, kog, desc)
+    })
+    results <- as.data.frame(t(results))
+    rownames(results) <- NULL
+    colnames(results) <- c("gene", "KOG", "desc")
+    results <- results[!is.na(results$KOG), ]
+    KOGs <- intersect(KOGs, results$KOG)
+    if(length(KOGs) > 0) results <- results[results$KOG %in% KOGs, ]
+    class(results) <- c(class(results), "KGDF")
+    results
+}

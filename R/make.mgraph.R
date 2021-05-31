@@ -17,10 +17,10 @@ NULL
 setGeneric("make_mgraph", function(object, ...) standardGeneric("make_mgraph"))
 setMethod("make_mgraph", "ReactionSet", function(object){
     ## basic method called by other methods!
-    vv <- getCPDs(object)
+    vv <- Compounds(object)
     g <- make_empty_graph(n=length(vv))
     V(g)$name <- vv
-    rlist <- getReactions(object)
+    rlist <- Reactions(object)
     for(ndx in names(rlist)) {
         rx <- rlist[[ndx]]
         genes <- rx[["gene"]]
@@ -46,7 +46,7 @@ setMethod("make_mgraph", "character", function(object, d.path="KEGG"){
     rtns <- list()
     for(kx in kndx) {
         xinfo <- make_mpath(kx, d.path)
-        rtns <- c(rtns, getReactions(xinfo))
+        rtns <- c(rtns, Reactions(xinfo))
     }
     rsobj <- as_rset(rtns, org)
     make_mgraph(rsobj)
@@ -78,7 +78,7 @@ mgraph_x_org <- function(g, org, d.path = "KEGG"){
     if(! is.mgraph(g)) stop("Not a metabolic graph.")
     if(Species(g) != "ko") stop("Not a generic metabolic graph!")
 
-    rtns <- getReactions(g)
+    rtns <- Reactions(g)
     org <- org[1]
     gmap <- kogs_list(org, d.path)
     kogs <- names(gmap)

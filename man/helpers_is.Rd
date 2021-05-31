@@ -2,7 +2,7 @@
 % Please edit documentation in R/is.R
 \name{helpers_is}
 \alias{helpers_is}
-\alias{is.kdata}
+\alias{is.klist}
 \alias{is.rset}
 \alias{is.igraph}
 \alias{is.mgraph}
@@ -19,7 +19,7 @@ helper functions for object test
 Most function names are self-explanatory:
 \itemize{
 \item is.mpath: keggPATH test
-\item is.kdata: KEGGtest test
+\item is.klist: KEGGtest test
 \item is.rset: ReactionSet test
 \item is.igraph(x)
 \item is.mgraph(x)

@@ -1,8 +1,8 @@
 setMethod("show", "ReactionSet", function(object) {
     cat("Reactions: S4 object holding KEGG reaction data\n")
     cat("\tOrganism: ", object@organism,"\n")
-    cat("\tReactions: ", length(getReactions(object)), "\n")
-    cat("\tCompounds: ", length(getCPDs(object)), "\n")
+    cat("\tReactions: ", length(Reactions(object)), "\n")
+    cat("\tCompounds: ", length(Compounds(object)), "\n")
 })
 
 setMethod("show", "keggPATH", function(object) {
@@ -11,6 +11,6 @@ setMethod("show", "keggPATH", function(object) {
     cat("\tTitle: ", object@pathInfo$title, "\n")
     cat("\tOrganism: ", object@pathInfo$org,"\n")
     cat("\tReactions: ", length(object@reactions), "\n")
-    cat("\tCompounds: ", length(getCPDs(object)), "\n")
-    cat("\tGenes/Orthologs: ", length(getGenes(object)), "\n")
+    cat("\tCompounds: ", length(Compounds(object)), "\n")
+    cat("\tGenes/Orthologs: ", length(Genes(object)), "\n")
 })

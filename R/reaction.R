@@ -36,8 +36,8 @@ setMethod("rcount", "ReactionSet", function(object){
 rdata <- function(g, a.name, x.names) {
     if(! is.mgraph(g)) return(NULL)
     a.name <- unlist(a.name)[1]
-    if(tolower(a.name) == "organism") Organism(g)
-    else if(tolower(a.name) == "alias") Aliases(g)
+    if(tolower(a.name) == "organism")
+        return(Organism(g))
 
     rtns <- Reactions(g)
     rx <- lapply(rtns, FUN=function(rr) rr[[a.name]])
@@ -75,7 +75,7 @@ rdata <- function(g, a.name, x.names) {
 as_rset <- function(kinfo, org="ko") {
     if(is.mpath(kinfo)) {
         org <- pathInfo(kinfo)$org
-        kinfo <- getReactions(kinfo)
+        kinfo <- Reactions(kinfo)
     }
     rtns <- list()
     for(rx in kinfo) {

@@ -7,13 +7,13 @@ print.KEntityList <- function(x) {
 print.mgraph <- function(g) {
     cat("KEGG metabolic network represented by igraph object:\n")
     cat("\tCompounds/Nodes: ", vcount(g), "\n")
-    cat("\tReactions: ", length(getReactions(g)), "\n")
+    cat("\tReactions: ", length(Reactions(g)), "\n")
     cat("\tEdges: ", ecount(g), "\n")
 }
 
 names.ReactionSet <- function(x){
-    names(getReactions(x))
+    names(Reactions(x))
 }
 length.ReactionSet <- function(x){
-    length(getReactions(x))
+    length(Reactions(x))
 }

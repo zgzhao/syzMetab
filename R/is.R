@@ -1,7 +1,3 @@
-setIs("EntryList", "KEntityList")
-setIs("ReactionList", "KEntityList")
-setIs("RelationList", "KEntityList")
-setIs("GraphicList", "KEntityList")
 setAs("KEntityList", "list", function(from) {
     class(from) <- NULL
     return(from)
@@ -11,13 +7,18 @@ setAs("mgraph", "igraph", function(from) {
     return(from)
 })
 
+setIs("EntryList", "KEntityList")
+setIs("ReactionList", "KEntityList")
+setIs("RelationList", "KEntityList")
+setIs("GraphicList", "KEntityList")
+
 #' @title object test
 #' @description helper functions for object test
 #' @name helpers_is
-#' @aliases is.kdata is.rset is.igraph is.mgraph is.xgraph is.chemset
+#' @aliases is.klist is.rset is.igraph is.mgraph is.xgraph is.chemset
 #' @details Most function names are self-explanatory:
 #' - is.mpath: keggPATH test
-#' - is.kdata: KEGGtest test
+#' - is.klist: KEGGtest test
 #' - is.rset: ReactionSet test
 #' - is.igraph(x)
 #' - is.mgraph(x)
@@ -34,7 +35,7 @@ is.mpath <- function(x) {
 }
 
 #' @export
-is.kdata<- function(x) {
+is.klist <- function(x) {
     inherits(x, "KEntityList")
 }
 
@@ -54,8 +55,8 @@ is.xgraph <- function(x){
 }
 
 is.chemset <- function(x){
-    ss <- getSubstrate(x)
-    pp <- getProduct(x)
+    ss <- Substrates(x)
+    pp <- Products(x)
     if(is.empty(c(ss, pp))) return(FALSE)
     return(TRUE)
 }
