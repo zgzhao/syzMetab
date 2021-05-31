@@ -28,7 +28,7 @@ character list or vector
 simple paths info: list, nodes and edges
 }
 \details{
-Friendly wrapers for \code{\link{igraph::all_simple_paths}}.
+Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked for more than one sources or targets.
 }
 \examples{
 library(gmetab)

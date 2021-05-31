@@ -2,7 +2,7 @@ setAs("KEntityList", "list", function(from) {
     class(from) <- NULL
     return(from)
 })
-setAs("mgraph", "igraph", function(from) {
+setAs("xgraph", "igraph", function(from) {
     class(from) <- "igraph"
     return(from)
 })
@@ -11,6 +11,9 @@ setIs("EntryList", "KEntityList")
 setIs("ReactionList", "KEntityList")
 setIs("RelationList", "KEntityList")
 setIs("GraphicList", "KEntityList")
+setIs("mgraph", "xgraph")
+setIs("ggraph", "xgraph")
+setIs("rgraph", "xgraph")
 
 #' @title object test
 #' @description helper functions for object test
@@ -48,10 +51,18 @@ is.rset <- function(x) {
 is.mgraph <- function(x) {
     inherits(x, "mgraph")
 }
+#' @export
+is.rgraph <- function(x) {
+    inherits(x, "rgraph")
+}
+#' @export
+is.ggraph <- function(x) {
+    inherits(x, "ggraph")
+}
 
 #' @export
 is.xgraph <- function(x){
-    is.igraph(x) || is.mgraph(x)
+    any(c("mgraph", "ggraph", "rgraph") %in% class(x))
 }
 
 is.chemset <- function(x){

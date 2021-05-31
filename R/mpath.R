@@ -1,3 +1,9 @@
+#!/usr/bin/env Rscript
+# -*- coding:utf-8 -*-
+# File: mpath.R
+# Description: handlng KEGG metabolic pathway (mpath) objects
+# AUTHOR: ZG Zhao; zgzhao@foxmail.com
+# 2021-05-31 12:12:17
 
 #' Make metabolic pathway (keggPATH object)
 #'

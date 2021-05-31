@@ -1,8 +1,98 @@
-## NOTE:
-## 1. DON'T TRY to put all essential infos of a KEGG reaction to nodes or edges of igraph object.
-## 2. Reaction info are important for downstream calculations, they must be retained in graph object.
-## 3. Save these info as attributes.
+#!/usr/bin/env Rscript
+# -*- coding:utf-8 -*-
+# File: mgraph.R
+# Description: handling metabolic graph (mgraph) objects
+# AUTHOR: ZG Zhao; zgzhao@foxmail.com
+# 2021-05-31 12:10:39
 
+#' @name make_mgraph
+#' @title make graph from keggPATH object
+#' @aliases class_mgraph
+#' @description Make mgraph object from various type of data: keggPATH, ReactionSet, ReactionList, list or KOs (KEGG pathway identifiers).
+#' @details "mgraph" is a virtual S3 class defined in "gmetab" package.
+#' - A mgraph object is actually a igraph object with a key attribute: "reactions", which is vital for downstream metwork analysis.
+#' - Edges of a mgraph object have a "reactions" attribute holding the names of reactions involved, helpful for mapping edges back to reactions and genes.
+#' - Users can set other graph, node or edge attributes
+#' @usage make_mgraph(object, org=NULL)
+#' @param object keggPATH, ReactionSet ReactionList, list or even igrph object.
+#' @param org character, organism/species indentifier, parameter for "object" without organism info: ReactionList and list
+#' @param d.path character, refer to \code{\link{KEGG_get}} for detail. Used when "object" is a KO vecter (KOs).
+#' @author zhao
+NULL
+
+#' @export
+setGeneric("make_mgraph", function(object, ...) standardGeneric("make_mgraph"))
+setMethod("make_mgraph", "ReactionSet", function(object){
+    ## basic method called by other methods!
+    vv <- Compounds(object)
+    g <- make_empty_graph(n=length(vv))
+    V(g)$name <- vv
+    rlist <- Reactions(object)
+    for(ndx in names(rlist)) {
+        rx <- rlist[[ndx]]
+        genes <- rx[["gene"]]
+        ss <- rx[["substrate"]]
+        pp <- rx[["product"]]
+        ess <- t(expand.grid(ss, pp))
+        g <- g %>% add.edges(ess, reaction=ndx)
+    }
+    attr(g, "reactions") <- object
+    class(g) <- c("mgraph", class(g))
+    g
+})
+setMethod("make_mgraph", "keggPATH", function(object){
+    rsobj <- as_rset(object)
+    make_mgraph(rsobj)
+})
+setMethod("make_mgraph", "character", function(object, d.path="KEGG"){
+    rsobj <- rset_from_kos(object, d.path)
+    make_mgraph(rsobj)
+})
+setMethod("make_mgraph", "ReactionList", function(object, org){
+    rsobj <- as_rset(object, org)
+    make_mgraph(rsobj)
+})
+setMethod("make_mgraph", "list", function(object, org){
+    rvalid <- sapply(object, FUN=function(x){
+        all(c("substrate", "product", "gene", "reversible") %in% names(x))
+    })
+    if(! all(rvalid)) stop("Invalid reaction list.")
+    rsobj <- as_rset(rtns, org)
+    make_mgraph(rsobj)
+})
+
+#' Normalize KEGG generic pathway to species specific pathway.
+#'
+#' Adjust and filter reactions, and rebuild graph object from reactions list.
+#' @title general to organism-specific mgraph conversion
+#' @param g mgraph object
+#' @param org character
+#' @param d.path file path for \code{\link{KEGG_get}}.
+#' @return mgraph with organism set
+#' @author ZG Zhao
+#' @export
+mgraph_x_org <- function(g, org, d.path = "KEGG"){
+    if(! is.mgraph(g)) stop("Not a metabolic graph.")
+    if(Species(g) != "ko") stop("Not a generic metabolic graph!")
+
+    rtns <- Reactions(g)
+    org <- org[1]
+    gmap <- kogs_list(org, d.path)
+    kogs <- names(gmap)
+    rtns <- lapply(rtns, FUN=function(rr){
+        gg <- intersect(rr$gene, kogs)
+        gg <- if(length(gg) < 1) NA else unlist(gmap[gg])
+        names(gg) <- NULL
+        rr$gene <- gg
+        rr$reversible <- FALSE
+        rr
+    })
+    ss <- sapply(rtns, FUN=function(x) ! is.empty(x$gene))
+    rtns <- rtns[ss]
+    robj <- as_rset(rtns, org)
+    g <- mgraph_from_rset(robj)
+    g
+}
 
 #' Append additional reactions to KEGG pathway.
 #'
@@ -38,29 +128,6 @@ mgraph_append <- function(g, df) {
         }
     }
     attr(g, "reactions") <- robj
-    g
-}
-
-#' Get "clean" metabolic network with given substrates and products.
-#'
-#' Given primary substrates and end products, a "clean" metabolic network is a network in which all chemicals (vertices) and reactions (edges) are in the reaction chains from primary substrates to end products.
-#' @title clean metabolic network
-#' @param object mgraph object
-#' @param s character vector, primary substrate names
-#' @param p character vecter, end product names
-#' @return mgraph object
-#' @author ZG Zhao
-#' @export
-mgraph_clean <- function(g, s, p){
-    spp <- all_spaths_list(g, s, p)
-    vss <- all_spaths_nodes(spp)
-    ess <- all_spaths_edges(spp)
-    vxx <- setdiff(vnames(g), vss)
-    g <- vsdelete(g, vxx)
-    exx <- setdiff(enames(g), ess)
-    g <- esdelete(g, exx)
-    ## save time-consuming results
-    attr(g, "spaths") <- spp
     g
 }
 

@@ -10,7 +10,7 @@ setGeneric("enames", function(object) standardGeneric("enames"))
 setMethod("enames", "igraph", function(object){
     as_ids(E(object))
 })
-setMethod("enames", "mgraph", function(object){
+setMethod("enames", "xgraph", function(object){
     as_ids(E(object))
 })
 
@@ -90,7 +90,7 @@ setMethod("esdelete", "igraph", function(object, es) {
     igraph::delete.edges(object, es)
 })
 
-setMethod("esdelete", "mgraph", function(object, es) {
+setMethod("esdelete", "xgraph", function(object, es) {
     ss1 <- 1:ecount(object) %in% es
     ss2 <- enames(object) %in% es
     ss3 <- rnames(object) %in% es

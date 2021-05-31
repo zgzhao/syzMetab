@@ -2,13 +2,14 @@
 #'
 #' Specified igraph plot function for mgraph
 #' @title plot mgraph
+#' @aliases plot.ggraph
 #' @param g mgraph or igraph object
 #' @param show.name logi. Show chemical names if TRUE (default).
 #' @param ... pars passed to plot.igraph
 #' @return NULL
 #' @author zhao
 #' @export
-plot.mgraph <- function(g, show.name=TRUE, ...) {
+plot.mgraph <- function(g, show.name=TRUE, vlcex=1, ...) {
     opar <- par("mar")
     ipar <- igraph.options()
     par(mar=rep(0,4))
@@ -19,10 +20,19 @@ plot.mgraph <- function(g, show.name=TRUE, ...) {
         vcolor <- "#6495ED"
         vlcol <- "transparent"
     }
+    if(!is.empty(Substrates(g))) {
+        ss <- vnames(g) %in% Substrates(g)
+        vlcol[ss] <- "red"
+        vlcex[ss] <- vlcex * 1.2
+    }
+    if(!is.empty(Products(g))) {
+        ss <- vnames(g) %in% Products(g)
+        vlcol[ss] <- "blue"
+        vlcex[ss] <- vlcex * 1.2
+    }
     igraph.options(vertex.size=10,
                    vertex.color=vcolor,
                    vertex.frame.color=vcolor,
-                   vertex.label.cex = 1,
                    vertex.label.color=vlcol,
                    plot.layout=layout.kamada.kawai,
                    plot.margin=0,
@@ -31,9 +41,14 @@ plot.mgraph <- function(g, show.name=TRUE, ...) {
                    edge.label.cex=0.8,
                    edge.label.color="red",
                    edge.color="gray40")
-    plot.igraph(g, ...)
+    plot.igraph(g, vertex.label.cex=vlcex, ...)
     par(mar=opar)
 }
+
+#' @export
+plot.rgraph <- function(...) plot.mgraph(...)
+#' @export
+plot.ggraph <- function(...) plot.mgraph(...)
 
 #' This function is not relevant to KEGG pathway. It is designed for illustration only.
 #'

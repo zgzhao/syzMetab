@@ -6,7 +6,7 @@
 #' @author ZG Zhao
 #' @export
 setGeneric("rnames", function(object) standardGeneric("rnames"))
-setMethod("rnames", "mgraph", function(object){
+setMethod("rnames", "xgraph", function(object){
     E(object)$reaction
 })
 setMethod("rnames", "ReactionSet", function(object){
@@ -15,7 +15,7 @@ setMethod("rnames", "ReactionSet", function(object){
 
 #' @export
 setGeneric("rcount", function(object) standardGeneric("rcount"))
-setMethod("rcount", "mgraph", function(object){
+setMethod("rcount", "xgraph", function(object){
     length(Reactions(object))
 })
 setMethod("rcount", "ReactionSet", function(object){
@@ -82,9 +82,10 @@ as_rset <- function(kinfo, org="ko") {
         ss <- sort(rx[["substrate"]])
         pp <- sort(rx[["product"]])
         genes <- rx[["gene"]]
-        rtns <- rlist_append(rtns, ss, pp, genes)
+        ids <- rx[["name"]]
+        rtns <- rlist_append(rtns, ss, pp, genes, ids)
         if(rx[["reversible"]])
-            rtns <- rlist_append(rtns, pp, ss, genes)
+            rtns <- rlist_append(rtns, pp, ss, genes, ids)
     }
     names(rtns) <- paste0("RX", 1:length(rtns))
     class(rtns) <- "ReactionList"
@@ -99,19 +100,20 @@ as_rset <- function(kinfo, org="ko") {
 #' @param s character, name of substrate
 #' @param p character, name of product
 #' @param genes character vector, names of genes involved in the reaction
+#' @param ids additional identifers for reaction
 #' @return  ReactionSet object
 #' @author ZG Zhao
 #' @export
-rset_append <- function(robj, s, p, genes) {
-    rlist <- rlist_append(robj@reaction, s, p, genes)
+rset_append <- function(robj, s, p, genes, ids=NULL) {
+    rlist <- rlist_append(robj@reaction, s, p, genes, ids)
     robj@reaction <- rlist
     robj
 }
 
-rlist_append <- function(rlist, s, p, genes) {
+rlist_append <- function(rlist, s, p, genes, ids=NULL) {
     s <- sort(s)
     p <- sort(p)
-    rx <- list(substrate=s, product=p, gene=genes)
+    rx <- list(substrate=s, product=p, gene=genes, ids=ids)
 
     if(length(rlist) < 1) {
         rlist[["RX1"]] <- rx
@@ -127,10 +129,26 @@ rlist_append <- function(rlist, s, p, genes) {
             ndx <- which(r.names == xname)
             genes <- c(genes, rlist[[ndx]][["gene"]])
             rlist[[ndx]][["gene"]] <- unique(genes)
+            ids <- c(ids, rlist[[ndx]][["ids"]])
+            rlist[[ndx]][["ids"]] <- unique(ids)
         } else {
             xndx <- paste0("RX", length(rlist) + 1)
             rlist[[xndx]] <- rx
         }
     }
     rlist
+}
+
+rset_from_kos <- function(kos, d.path="KEGG") {
+    org <- unique(gsub("[0-9]+", "", kos))
+    org <- setdiff(org, c("", "ko"))
+    if(length(org) > 1) stop("Only one organism is allowed.")
+    if(length(org) < 1) org <- "ko"
+    kndx <- unique(gsub("[a-z]+", org, kos))
+    rtns <- list()
+    for(kx in kndx) {
+        xinfo <- make_mpath(kx, d.path)
+        rtns <- c(rtns, Reactions(xinfo))
+    }
+    as_rset(rtns, org)
 }

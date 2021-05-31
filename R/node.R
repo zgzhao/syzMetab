@@ -10,7 +10,7 @@ setGeneric("vnames", function(object) standardGeneric("vnames"))
 setMethod("vnames", "igraph", function(object){
     as_ids(V(object))
 })
-setMethod("vnames", "mgraph", function(object){
+setMethod("vnames", "xgraph", function(object){
     as_ids(V(object))
 })
 
@@ -87,7 +87,7 @@ setMethod("vsdelete", "igraph", function(object, vs) {
     igraph::delete.vertices(object, vs)
 })
 
-setMethod("vsdelete", "mgraph", function(object, vs) {
+setMethod("vsdelete", "xgraph", function(object, vs) {
     g <- igraph::delete.vertices(object, vs)
     attributes(g) <- attributes(object)
     g

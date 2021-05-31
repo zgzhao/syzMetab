@@ -2,9 +2,10 @@
 % Please edit documentation in R/plot.R
 \name{plot.mgraph}
 \alias{plot.mgraph}
+\alias{plot.ggraph}
 \title{plot mgraph}
 \usage{
-\method{plot}{mgraph}(g, show.name = TRUE, ...)
+\method{plot}{mgraph}(g, show.name = TRUE, vlcex = 1, ...)
 }
 \arguments{
 \item{g}{mgraph or igraph object}

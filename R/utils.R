@@ -1,6 +1,7 @@
+
 #' simple paths info: list, nodes and edges
 #'
-#' Friendly wrapers for \code{\link{igraph::all_simple_paths}}.
+#' Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked for more than one sources or targets.
 #' @title info of all simple paths
 #' @aliases all_spaths_nodes all_spaths_edges
 #' @usage
@@ -27,13 +28,15 @@
 #' all_spaths_edges(gg, vv[1], vv[6])
 #' @export
 all_spaths_list <- function(obj, from, to, mc.cores=detectCores() - 1){
-    vss <- Chemicals(obj)
+    vss <- vnames(obj)
     from <- intersect(from, vss)
     to <- intersect(to, vss)
     if(length(from) < 1 || length(to) < 1) return(NULL)
-    mc.cores <- min(length(from), mc.cores)
-    spp <- mclapply(from, FUN=function(ss){
-        xpp <- all_simple_paths(obj, ss, to)
+    nsets <- expand.grid(from, to)
+    nsets <- as.data.frame(t(nsets))
+    colnames(nsets) <- NULL
+    spp <- .xlapply(nsets, FUN=function(xx){
+        xpp <- all_simple_paths(obj, xx[1], xx[2])
         lapply(xpp, names)
     }, mc.cores=mc.cores)
     spp <- unlist(spp, recursive = FALSE)
@@ -67,4 +70,11 @@ all_spaths_nodes <- function(obj, from, to, mc.cores=detectCores() - 1) {
     vss <- unlist(splist)
     names(vss) <- NULL
     vss
+}
+
+.xlapply <- function(lst, FUN, mc.cores, ...) {
+    if(length(lst) < 2) return(lapply(lst, FUN=FUN, ...))
+    if(missing(mc.cores)) mc.cores <- detectCores() - 1
+    mc.cores <- min(length(lst), mc.cores)
+    mclapply(lst, FUN=FUN, mc.cores=mc.cores, ...)
 }

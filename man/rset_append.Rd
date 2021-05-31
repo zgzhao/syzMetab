@@ -4,7 +4,7 @@
 \alias{rset_append}
 \title{append reaction}
 \usage{
-rset_append(robj, s, p, genes)
+rset_append(robj, s, p, genes, ids = NULL)
 }
 \arguments{
 \item{robj}{ReactionSet object}
@@ -14,6 +14,8 @@ rset_append(robj, s, p, genes)
 \item{p}{character, name of product}
 
 \item{genes}{character vector, names of genes involved in the reaction}
+
+\item{ids}{additional identifers for reaction}
 }
 \value{
 ReactionSet object

@@ -42,11 +42,13 @@ setGeneric("pathInfo", function(object) standardGeneric("pathInfo"))
 setGeneric("Genes", function(object) standardGeneric("Genes"))
 #' @export
 setGeneric("Compounds", function(object) standardGeneric("Compounds"))
+#' @export
 Chemicals <- function(...) Compounds(...)
 #' @export
 setGeneric("Reactions", function(object, ...) standardGeneric("Reactions"))
 #' @export
 setGeneric("Organism", function(object) standardGeneric("Organism"))
+#' @export
 Species <- function(...) Species(...)
 #' @export
 setGeneric("Substrates", function(object) standardGeneric("Substrates"))
@@ -68,7 +70,7 @@ setMethod("Organism", "keggPATH", function(object){
 setMethod("Organism", "ReactionSet", function(object){
     object@organism
 })
-setMethod("Organism", "mgraph", function(object){
+setMethod("Organism", "xgraph", function(object){
     x <- attr(object, "reactions")
     x@organism
 })
@@ -91,7 +93,7 @@ setMethod("Compounds", "ReactionSet", function(object){
     names(rx) <- NULL
     return(rx)
 })
-setMethod("Compounds", "mgraph", function(object){
+setMethod("Compounds", "xgraph", function(object){
     vnames(object)
 })
 setMethod("Compounds", "igraph", function(object){
@@ -116,7 +118,7 @@ setMethod("Genes", "ReactionSet", function(object){
     names(rx) <- NULL
     return(rx)
 })
-setMethod("Genes", "mgraph", function(object){
+setMethod("Genes", "xgraph", function(object){
     rtns <- Reactions(object)
     rx <- sapply(rtns, FUN=function(rr) rr[["gene"]])
     rx <- unlist(rx)
@@ -129,26 +131,26 @@ setMethod("Reactions", "keggPATH", function(object){
 setMethod("Reactions", "ReactionSet", function(object){
     object@reaction
 })
-setMethod("Reactions", "mgraph", function(object, list.only=TRUE){
+setMethod("Reactions", "xgraph", function(object, list.only=TRUE){
     x <- attr(object, "reactions")
     if(list.only) return(x@reaction)
     else return(x)
 })
 
-setMethod("Substrates", "mgraph", function(object){
+setMethod("Substrates", "xgraph", function(object){
     attr(object, "substrates")
 })
 
-setMethod("Products", "mgraph", function(object){
+setMethod("Products", "xgraph", function(object){
     attr(object, "products")
 })
 
-setReplaceMethod("Substrates", c("mgraph", "character"),
+setReplaceMethod("Substrates", c("xgraph", "character"),
                  function(object, value){
     attr(object, "substrates") <- value
     object
 })
-setReplaceMethod("Products", c("mgraph", "character"),
+setReplaceMethod("Products", c("xgraph", "character"),
                  function(object, value){
     attr(object, "products") <- value
     object
