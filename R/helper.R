@@ -25,7 +25,7 @@
 #' # Reactions(pp)
 #' ##
 #' ## metabolic graph
-#' gg <- mgraph_from_mpath(pp)
+#' gg <- make_mpath(pp)
 #' pathInfo(gg)
 #' Organism(gg)
 #' Compounds(gg)
@@ -59,11 +59,12 @@ setGeneric("Products", function(object) standardGeneric("Products"))
 #' @export
 setGeneric("Products<-", function(object, value) standardGeneric("Products<-"))
 
-## ================================================================================
+## pathInfo =========================================
 setMethod("pathInfo", "keggPATH", function(object){
     object@pathInfo
 })
 
+## Organism/Species ==================================
 setMethod("Organism", "keggPATH", function(object){
     object@pathInfo$org
 })
@@ -75,8 +76,22 @@ setMethod("Organism", "xgraph", function(object){
     x@organism
 })
 
+## Reactions ==================================
+setMethod("Reactions", "keggPATH", function(object){
+    object@reactions
+})
+setMethod("Reactions", "ReactionSet", function(object){
+    object@reaction
+})
+setMethod("Reactions", "xgraph", function(object, list.only=TRUE){
+    x <- attr(object, "reactions")
+    if(list.only) return(x@reaction)
+    else return(x)
+})
+
+## Compounds/Chemicals ==================================
 setMethod("Compounds", "keggPATH", function(object){
-    rx <- sapply(object@reactions, FUN=function(x) x[c("substrate", "product")])
+    rx <- sapply(Reactions(object), FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
     return(rx)
@@ -88,18 +103,19 @@ setMethod("Compounds", "ReactionList", function(object){
     return(rx)
 })
 setMethod("Compounds", "ReactionSet", function(object){
-    rx <- sapply(object@reaction, FUN=function(x) x[c("substrate", "product")])
+    rx <- sapply(Reactions(object), FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
     return(rx)
 })
 setMethod("Compounds", "xgraph", function(object){
-    vnames(object)
-})
-setMethod("Compounds", "igraph", function(object){
-    vnames(object)
+    rx <- sapply(Reactions(object), FUN=function(x) x[c("substrate", "product")])
+    rx <- sort(unique(unlist(rx)))
+    names(rx) <- NULL
+    return(rx)
 })
 
+## Genes ==================================
 setMethod("Genes", "keggPATH", function(object){
     rx <- sapply(object@reactions, FUN=function(x) x[["gene"]])
     rx <- sort(unique(unlist(rx)))
@@ -125,18 +141,7 @@ setMethod("Genes", "xgraph", function(object){
     sort(unique(rx))
 })
 
-setMethod("Reactions", "keggPATH", function(object){
-    object@reactions
-})
-setMethod("Reactions", "ReactionSet", function(object){
-    object@reaction
-})
-setMethod("Reactions", "xgraph", function(object, list.only=TRUE){
-    x <- attr(object, "reactions")
-    if(list.only) return(x@reaction)
-    else return(x)
-})
-
+## Substrates and products ==================================
 setMethod("Substrates", "xgraph", function(object){
     attr(object, "substrates")
 })

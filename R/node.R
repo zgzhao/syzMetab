@@ -26,7 +26,7 @@ setMethod("vnames", "xgraph", function(object){
 #' @examples
 #' library(gmetab)
 #' d.path <- file.path(path.package("gmetab"), "KEGG")
-#' gg <- mgraph_from_kos("ko00010", d.path)
+#' gg <- make_mgraph("ko00010", d.path)
 #' ## igraph style
 #' V(gg)$name
 #' V(gg)$EP <- sample(vcount(gg))
@@ -67,27 +67,21 @@ vdata <- function(g, a.name, v.names) {
 #'
 #' Refer to \code{\link{igraph::delete.vertices}}
 #' @title delete vertices
-#' @aliases delete_vertices delete.vertices
+#' @aliases delete_vertices
 #' @param object igraph/mgraph object
 #' @param vs vector: vertex ids (integer) or names (character)
 #' @return igraph/mgraph object
 #' @author ZG Zhao
 #' @export
-setGeneric("vsdelete", function(object, vs) standardGeneric("vsdelete"))
+setGeneric("delete.vertices", function(object, vs) standardGeneric("delete.vertices"))
 #' @export
-delete.vertices <- function(...) vsdelete(...)
-#' @export
-delete_vertices <- function(...) vsdelete(...)
-#' @export
-delete.chemicals <- function(...) vsdelete(...)
-#' @export
-delete_chemicals <- function(...) vsdelete(...)
+delete_vertices <- function(...) delete.vertices(...)
 
-setMethod("vsdelete", "igraph", function(object, vs) {
+setMethod("delete.vertices", "igraph", function(object, vs) {
     igraph::delete.vertices(object, vs)
 })
 
-setMethod("vsdelete", "xgraph", function(object, vs) {
+setMethod("delete.vertices", "xgraph", function(object, vs) {
     g <- igraph::delete.vertices(object, vs)
     attributes(g) <- attributes(object)
     g

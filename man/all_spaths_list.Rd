@@ -20,6 +20,8 @@ all_spath_edges(obj)
 \item{to}{character vector of length 1, name of end node}
 
 \item{mc.cores}{refer to \code{\link{mclapply}}}
+
+\item{n.max}{numeric, max number of nodes allowed in the graph. Don't set big number (default 50) since simple path searching for big network is very very time-consuming.}
 }
 \value{
 character list or vector
@@ -28,12 +30,12 @@ character list or vector
 simple paths info: list, nodes and edges
 }
 \details{
-Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked for more than one sources or targets.
+Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked if source or target number is more than one. In these series of functions, \code{all_spath_list} is the basic function; \code{all_spath_nodes} and \code{all_spath_edges} extract infos from the results of \code{all_spath_list} implicitly or explicitly.
 }
 \examples{
 library(gmetab)
 d.path <- file.path(path.package("gmetab"), "KEGG")
-gg <- mgraph_from_kos("ko00010", d.path)
+gg <- make_mgraph("ko00010", d.path)
 vv <- vnames(gg)
 (splist <- all_spaths_list(gg, vv[1], vv[6]))
 all_spaths_nodes(splist)

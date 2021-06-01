@@ -9,7 +9,8 @@
 #' @return NULL
 #' @author zhao
 #' @export
-plot.mgraph <- function(g, show.name=TRUE, vlcex=1, ...) {
+plot.mgraph <- function(g, show.name=TRUE,  ...) {
+    options(warn=FALSE)
     opar <- par("mar")
     ipar <- igraph.options()
     par(mar=rep(0,4))
@@ -23,17 +24,16 @@ plot.mgraph <- function(g, show.name=TRUE, vlcex=1, ...) {
     if(!is.empty(Substrates(g))) {
         ss <- vnames(g) %in% Substrates(g)
         vlcol[ss] <- "red"
-        vlcex[ss] <- vlcex * 1.2
     }
     if(!is.empty(Products(g))) {
         ss <- vnames(g) %in% Products(g)
         vlcol[ss] <- "blue"
-        vlcex[ss] <- vlcex * 1.2
     }
     igraph.options(vertex.size=10,
                    vertex.color=vcolor,
                    vertex.frame.color=vcolor,
                    vertex.label.color=vlcol,
+                   vertex.label.cex=1,
                    plot.layout=layout.kamada.kawai,
                    plot.margin=0,
                    edge.arrow.size = 0.5,
@@ -41,7 +41,7 @@ plot.mgraph <- function(g, show.name=TRUE, vlcex=1, ...) {
                    edge.label.cex=0.8,
                    edge.label.color="red",
                    edge.color="gray40")
-    plot.igraph(g, vertex.label.cex=vlcex, ...)
+    plot.igraph(g, ...)
     par(mar=opar)
 }
 

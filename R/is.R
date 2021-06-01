@@ -7,31 +7,22 @@ setAs("xgraph", "igraph", function(from) {
     return(from)
 })
 
-setIs("EntryList", "KEntityList")
-setIs("ReactionList", "KEntityList")
-setIs("RelationList", "KEntityList")
-setIs("GraphicList", "KEntityList")
-setIs("mgraph", "xgraph")
-setIs("ggraph", "xgraph")
-setIs("rgraph", "xgraph")
-
 #' @title object test
-#' @description helper functions for object test
-#' @name helpers_is
-#' @aliases is.klist is.rset is.igraph is.mgraph is.xgraph is.chemset
+#' @description functions for object test
+#' @aliases is.klist is.rset is.mgraph is.rgraph is.ggraph is.xgraph is.chemset
 #' @details Most function names are self-explanatory:
 #' - is.mpath: keggPATH test
 #' - is.klist: KEGGtest test
 #' - is.rset: ReactionSet test
-#' - is.igraph(x)
 #' - is.mgraph(x)
-#' - is.xgraph: igraph or mgraph
+#' - is.rgraph(x)
+#' - is.ggraph(x)
+#' - is.xgraph: mgraph, rgraph or mgraph
 #' - is.chemset: test if primary substrates and end products were set.
 #' - is.empty: test whether all objects are "empty". "Empty" objects are those of NULL, all NA, zero length and string containing spaces only. Graph objects without any edge are also regarded as "empty". S4 objects are not "empty" whatever data they have.
+#' @param x object to be tested
 #' @return TRUE/FALSE
 #' @author ZG Zhao
-NULL
-
 #' @export
 is.mpath <- function(x) {
     inherits(x, "keggPATH")

@@ -5,7 +5,7 @@
 \alias{plot.ggraph}
 \title{plot mgraph}
 \usage{
-\method{plot}{mgraph}(g, show.name = TRUE, vlcex = 1, ...)
+\method{plot}{mgraph}(g, show.name = TRUE, ...)
 }
 \arguments{
 \item{g}{mgraph or igraph object}

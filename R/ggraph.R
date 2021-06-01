@@ -22,16 +22,8 @@ setMethod("make_ggraph", "ReactionSet", function(object){
             else return(NULL)
         })
         gnp <- unlist(gnp)
-        names(gnp) <- NULL
         gnp <- setdiff(gnp, gns)
-        if(length(gnp) < 1) next
-        ess <- expand.grid(gns, gnp)
-        enn <- apply(ess, 1, paste, collapse="|")
-        tt <- ! enn %in% enames(g)
-        if(sum(tt) > 0) {
-            ess <- t(ess[tt, ])
-            g <- g %>% add.edges(ess)
-        }
+        g <- xaddEdges(g, gns, gnp)
     }
     attr(g, "reactions") <- object
     class(g) <- c("ggraph", class(g))

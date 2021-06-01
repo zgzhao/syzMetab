@@ -22,7 +22,7 @@ Friendly function for node data/attributes retrieving or setting. See "Example".
 \examples{
 library(gmetab)
 d.path <- file.path(path.package("gmetab"), "KEGG")
-gg <- mgraph_from_kos("ko00010", d.path)
+gg <- make_mgraph("ko00010", d.path)
 ## igraph style
 V(gg)$name
 V(gg)$EP <- sample(vcount(gg))

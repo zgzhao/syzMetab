@@ -33,12 +33,12 @@ setClassUnion("EntryList", "list")
 setClassUnion("ReactionList", "list")
 setClassUnion("RelationList", "list")
 setClassUnion("GraphicList", "list")
-setClassUnion("KEntityList", "list")
+setClassUnion("KEntityList", c("EntryList", "ReactionList", "RelationList", "GraphicList"))
 setClassUnion("igraph", "list")
 setClassUnion("mgraph", "list")
 setClassUnion("ggraph", "list")
 setClassUnion("rgraph", "list")
-setClassUnion("xgraph", "list")
+setClassUnion("xgraph", c("mgraph", "ggraph", "rgraph"))
 
 setClass("ReactionSet",
          slots=c(reaction="ReactionList",

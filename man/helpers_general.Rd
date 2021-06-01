@@ -38,7 +38,7 @@ Genes(pp)
 # Reactions(pp)
 ##
 ## metabolic graph
-gg <- mgraph_from_mpath(pp)
+gg <- make_mpath(pp)
 pathInfo(gg)
 Organism(gg)
 Compounds(gg)

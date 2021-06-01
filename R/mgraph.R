@@ -33,8 +33,7 @@ setMethod("make_mgraph", "ReactionSet", function(object){
         genes <- rx[["gene"]]
         ss <- rx[["substrate"]]
         pp <- rx[["product"]]
-        ess <- t(expand.grid(ss, pp))
-        g <- g %>% add.edges(ess, reaction=ndx)
+        g <- xaddEdges(g, ss, pp, reaction=ndx)
     }
     attr(g, "reactions") <- object
     class(g) <- c("mgraph", class(g))
@@ -90,12 +89,13 @@ mgraph_x_org <- function(g, org, d.path = "KEGG"){
     ss <- sapply(rtns, FUN=function(x) ! is.empty(x$gene))
     rtns <- rtns[ss]
     robj <- as_rset(rtns, org)
-    g <- mgraph_from_rset(robj)
+    g <- make_mgraph(robj)
     g
 }
 
 #' Append additional reactions to KEGG pathway.
 #'
+#' TODO: may not work
 #' Reactions without KEGG index cannot be extrated from KGML files. This function help you add these reactions manually.
 #' @title append reactions to mgraph manually
 #' @param g graphMET object
@@ -120,11 +120,11 @@ mgraph_append <- function(g, df) {
         robj <- rset_append(robj, ss, pp, genes)
         ne2 <- length(robj)
         ## add edge if only new reaction added
-        if(ne2 > ne1) g <- g %>% add.edges(t(expand.grid(ss, pp)), reaction=paste0("RX", ne2))
+        if(ne2 > ne1) g <- xaddEdges(g, ss, pp, reaction=paste0("RX", ne2))
         if(df[i, 3]) {
             robj <- rset_append(robj, pp, ss, genes)
             ne3 <- length(robj)
-            if(ne3 > ne2) g <- g %>% add.edges(t(expand.grid(pp, ss)), reaction=paste0("RX", ne3))
+            if(ne3 > ne2) g <- xaddEdges(g, pp, ss, reaction=paste0("RX", ne3))
         }
     }
     attr(g, "reactions") <- robj

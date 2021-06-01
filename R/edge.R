@@ -1,4 +1,3 @@
-
 #' get edge names
 #'
 #' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
@@ -27,7 +26,7 @@ setMethod("enames", "xgraph", function(object){
 #' @examples
 #' library(gmetab)
 #' d.path <- file.path(path.package("gmetab"), "KEGG")
-#' gg <- mgraph_from_kos("ko00010", d.path)
+#' gg <- make_mgraph("ko00010", d.path)
 #' ## igraph style
 #' E(gg)$reaction
 #' E(gg)$reaction[1:3]
@@ -74,23 +73,20 @@ edata <- function(g, a.name, e.names) {
 #'
 #' Refer to \code{\link{igraph::delete.edges}}
 #' @title delete edges
-#' @aliases delete_edges delete.edges
+#' @aliases delete_edges
 #' @param object igraph/mgraph object
 #' @param es vector: edge ids (integer) or names (character)
 #' @return igraph/mgraph object
 #' @author ZG Zhao
 #' @export
-setGeneric("esdelete", function(object, es) standardGeneric("esdelete"))
+setGeneric("delete.edges", function(object, es) standardGeneric("delete.edges"))
 #' @export
-delete.edges <- function(...) esdelete(...)
-#' @export
-delete_edges <- function(...) esdelete(...)
+delete_edges <- function(...) delete.edges(...)
 
-setMethod("esdelete", "igraph", function(object, es) {
+setMethod("delete.edges", "igraph", function(object, es) {
     igraph::delete.edges(object, es)
 })
-
-setMethod("esdelete", "xgraph", function(object, es) {
+setMethod("delete.edges", "xgraph", function(object, es) {
     ss1 <- 1:ecount(object) %in% es
     ss2 <- enames(object) %in% es
     ss3 <- rnames(object) %in% es
@@ -98,3 +94,48 @@ setMethod("esdelete", "xgraph", function(object, es) {
     attributes(g) <- attributes(object)
     g
 })
+
+## #' add edges for igraph or mgraph object
+## #'
+## #' Refer to \code{\link{igraph::add.edges}}
+## #' @title add edges
+## #' @aliases add_edges add_reactions add.reactions
+## #' @param object igraph/mgraph object
+## #' @param es vector: edge ids (integer) or names (character)
+## #' @return igraph/mgraph object
+## #' @author ZG Zhao
+## #' @export
+## setGeneric("add.edges", function(object, es, ...) standardGeneric("add.edges"))
+## #' @export
+## add_edges <- function(...) add.edges(...)
+## add.reactions <- function(...) add.edges(...)
+## add_reactions <- function(...) add.edges(...)
+
+## setMethod("add.edges", "igraph", function(object, es, ...) {
+##     igraph::add.edges(object, es, ...)
+## })
+## ## TODO
+## setMethod("add.edges", "mgraph", function(object, es, genes, ...) {
+##     g <- igraph::add.edges(object, es, gene=genes, ...)
+##     attributes(g) <- attributes(object)
+##     g
+## })
+## setMethod("add.edges", "rgraph", function(object, es, genes, ...) {
+##     g <- igraph::add.edges(object, es, gene=genes, ...)
+##     attributes(g) <- attributes(object)
+##     g
+## })
+
+xaddEdges <- function(g, from, to, ...) {
+    if(is.empty(from) || is.empty(to))
+        return(g)
+    names(from) <- names(to) <- NULL
+    ess <- expand.grid(from, to)
+    enn <- apply(ess, 1, paste, collapse="|")
+    tt <- ! enn %in% enames(g)
+    if(sum(tt) > 0) {
+        ess <- t(ess[tt, ])
+        g <- g %>% add.edges(ess, ...)
+    }
+    g
+}

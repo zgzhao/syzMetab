@@ -18,6 +18,7 @@ mgraph_append(g, df)
 Append additional reactions to KEGG pathway.
 }
 \details{
+TODO: may not work
 Reactions without KEGG index cannot be extrated from KGML files. This function help you add these reactions manually.
 }
 \author{
