@@ -4,7 +4,7 @@
 \alias{xgraph_setchems}
 \title{set substrates and products for a graph}
 \usage{
-xgraph_setchems(object, s, p, mc.cores, n.max)
+xgraph_setchems(object, s, p, mc.cores, n.max = 50)
 }
 \arguments{
 \item{object}{xgraph object}
@@ -13,9 +13,9 @@ xgraph_setchems(object, s, p, mc.cores, n.max)
 
 \item{p}{character vecter, names of end products}
 
-\item{mc.cores}{integer, for \code{\link{all_spath_list}}, refer to \code{\link{mclapply}} for details.}
+\item{mc.cores}{integer, for \code{\link{all_spaths_list}}, refer to \code{\link{mclapply}} for details.}
 
-\item{n.max}{numeric, for \code{\link{all_spath_list}}.}
+\item{n.max}{numeric, for \code{\link{all_spaths_list}}.}
 }
 \value{
 xgraph object

@@ -9,16 +9,16 @@
 #' @param object xgraph object
 #' @param s character vecter, names of primary substrates
 #' @param p character vecter, names of end products
-#' @param mc.cores integer, for \code{\link{all_spath_list}}, refer to \code{\link{mclapply}} for details.
-#' @param n.max numeric, for \code{\link{all_spath_list}}.
+#' @param mc.cores integer, for \code{\link{all_spaths_list}}, refer to \code{\link{mclapply}} for details.
+#' @param n.max numeric, for \code{\link{all_spaths_list}}.
 #' @return xgraph object
 #' @author ZG Zhao
 #' @export
 setGeneric("xgraph_setchems",
-           function(object, s, p, mc.cores, n.max) standardGeneric("xgraph_setchems"))
+           function(object, s, p, mc.cores, n.max=50) standardGeneric("xgraph_setchems"))
 
 setMethod("xgraph_setchems", "mgraph",
-          function(object, s, p, mc.cores, n.max=50){
+          function(object, s, p, mc.cores, n.max){
     if(is.chemset(object)) stop("Chemicals set already!")
     vns <- vnames(object)
     s <- intersect(s, vns)
@@ -27,7 +27,7 @@ setMethod("xgraph_setchems", "mgraph",
     .setChems(object, s, p, mc.cores, n.max)
 })
 setMethod("xgraph_setchems", "rgraph",
-          function(object, s, p, mc.cores, n.max=50){
+          function(object, s, p, mc.cores, n.max){
     if(is.chemset(object)) stop("Chemicals set already!")
     ## add nodes to reaction graph
     vns <- Compounds(object)
@@ -51,7 +51,7 @@ setMethod("xgraph_setchems", "rgraph",
     g
 })
 setMethod("xgraph_setchems", "ggraph",
-          function(object, s, p, mc.cores, n.max=50){
+          function(object, s, p, mc.cores, n.max){
     if(is.chemset(object)) stop("Chemicals set already!")
     ## add nodes to reaction graph
     vns <- Compounds(object)

@@ -1,16 +1,15 @@
-
-#' simple paths info: list, nodes and edges
-#'
-#' Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked if source or target number is more than one. In these series of functions, `all_spath_list` is the basic function; `all_spath_nodes` and `all_spath_edges` extract infos from the results of `all_spath_list` implicitly or explicitly.
+#' @name all_spaths_list
 #' @title info of all simple paths
+#' @description simple paths info: list, nodes and edges
+#' @details Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked if source or target number is more than one. In these series of functions, `all_spaths_list` is the basic function; `all_spaths_nodes` and `all_spaths_edges` extract infos from the results of `all_spaths_list` implicitly or explicitly.
 #' @aliases all_spaths_nodes all_spaths_edges
 #' @usage
-#' all_spath_list(obj, from, to, mc.cores)
-#' all_spath_nodes(obj, from, to, mc.cores)
-#' all_spath_nodes(obj)
-#' all_spath_edges(obj, from, to, mc.cores)
-#' all_spath_edges(obj)
-#' @param obj igraph/mgraph object or list returned by all_spaths_list
+#' all_spaths_list(obj, from, to, mc.cores)
+#' all_spaths_nodes(obj, from, to, mc.cores)
+#' all_spaths_nodes(obj)
+#' all_spaths_edges(obj, from, to, mc.cores)
+#' all_spaths_edges(obj)
+#' @param object xgraph object or list returned by all_spaths_list
 #' @param from character vector of length 1, name of start node
 #' @param to character vector of length 1, name of end node
 #' @param mc.cores refer to \code{\link{mclapply}}
@@ -27,12 +26,18 @@
 #' all_spaths_nodes(gg, vv[1], vv[6])
 #' all_spaths_edges(splist)
 #' all_spaths_edges(gg, vv[1], vv[6])
+NULL
+
+
 #' @export
-all_spaths_list <- function(obj, from, to, mc.cores, n.max=50){
-    if(vcount(obj) > n.max)
+setGeneric("all_spaths_list", function(object, from, to, mc.cores, n.max) standardGeneric("all_spaths_list"))
+
+setMethod("all_spaths_list", "xgraph",
+          function(object, from, to, mc.cores, n.max=50){
+    if(vcount(object) > n.max)
         stop("Node number exceeds `n.max` setting.")
     stime <- Sys.time()
-    vss <- vnames(obj)
+    vss <- vnames(object)
     from <- intersect(from, vss)
     to <- intersect(to, vss)
     if(length(from) < 1 || length(to) < 1) return(NULL)
@@ -40,7 +45,7 @@ all_spaths_list <- function(obj, from, to, mc.cores, n.max=50){
     nsets <- as.data.frame(t(nsets))
     colnames(nsets) <- NULL
     spp <- .xlapply(nsets, FUN=function(xx){
-        xpp <- all_simple_paths(obj, xx[1], xx[2])
+        xpp <- all_simple_paths(object, xx[1], xx[2])
         lapply(xpp, names)
     }, mc.cores=mc.cores)
     spp <- unlist(spp, recursive = FALSE)
@@ -52,13 +57,13 @@ all_spaths_list <- function(obj, from, to, mc.cores, n.max=50){
         "Found", length(spp), "simple paths in",
         as.numeric(Sys.time() - stime), "seconds.\n")
     spp
-}
+})
 
 #' @export
-all_spaths_edges <- function(obj, from, to, mc.cores, n.max=50) {
-    if(is.xgraph(obj))
-        splist <- all_spaths_list(obj, from, to, mc.cores, n.max)
-    else splist <- obj
+all_spaths_edges <- function(object, from, to, mc.cores, n.max=50) {
+    if(is.xgraph(object))
+        splist <- all_spaths_list(object, from, to, mc.cores, n.max)
+    else splist <- object
 
     if(is.empty(splist)) return(NULL)
     ess <- sapply(splist, FUN=function(pp){
@@ -73,10 +78,10 @@ all_spaths_edges <- function(obj, from, to, mc.cores, n.max=50) {
 }
 
 #' @export
-all_spaths_nodes <- function(obj, from, to, mc.cores, n.max=50) {
-    if(is.xgraph(obj))
-        splist <- all_spaths_list(obj, from, to, mc.cores, n.max)
-    else splist <- obj
+all_spaths_nodes <- function(object, from, to, mc.cores, n.max=50) {
+    if(is.xgraph(object))
+        splist <- all_spaths_list(object, from, to, mc.cores, n.max)
+    else splist <- object
     vss <- unique(unlist(splist))
     names(vss) <- NULL
     class(vss) <- c("sp.nodes", class(vss))

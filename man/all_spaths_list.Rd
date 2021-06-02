@@ -6,14 +6,14 @@
 \alias{all_spaths_edges}
 \title{info of all simple paths}
 \usage{
-all_spath_list(obj, from, to, mc.cores)
-all_spath_nodes(obj, from, to, mc.cores)
-all_spath_nodes(obj)
-all_spath_edges(obj, from, to, mc.cores)
-all_spath_edges(obj)
+all_spaths_list(obj, from, to, mc.cores)
+all_spaths_nodes(obj, from, to, mc.cores)
+all_spaths_nodes(obj)
+all_spaths_edges(obj, from, to, mc.cores)
+all_spaths_edges(obj)
 }
 \arguments{
-\item{obj}{igraph/mgraph object or list returned by all_spaths_list}
+\item{object}{xgraph object or list returned by all_spaths_list}
 
 \item{from}{character vector of length 1, name of start node}
 
@@ -30,7 +30,7 @@ character list or vector
 simple paths info: list, nodes and edges
 }
 \details{
-Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked if source or target number is more than one. In these series of functions, \code{all_spath_list} is the basic function; \code{all_spath_nodes} and \code{all_spath_edges} extract infos from the results of \code{all_spath_list} implicitly or explicitly.
+Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked if source or target number is more than one. In these series of functions, \code{all_spaths_list} is the basic function; \code{all_spaths_nodes} and \code{all_spaths_edges} extract infos from the results of \code{all_spaths_list} implicitly or explicitly.
 }
 \examples{
 library(gmetab)
