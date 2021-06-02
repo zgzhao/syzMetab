@@ -3,7 +3,7 @@
 S3method(plot,ggraph)
 S3method(plot,mgraph)
 S3method(plot,rgraph)
-S3method(print,KEntityList)
+S3method(print,KLists)
 S3method(print,mgraph)
 export("Products<-")
 export("Substrates<-")

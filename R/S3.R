@@ -1,5 +1,5 @@
 #' @export
-print.KEntityList <- function(x) {
+print.KLists <- function(x) {
     str(x)
 }
 

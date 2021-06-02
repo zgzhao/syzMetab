@@ -1,31 +1,37 @@
-#' @name class_virtual
-#' @title virtual classes
-#' @aliases igraph mgraph KEntityList
+#' @name classes
+#' @title package class designs
 #' @description Virtual classes designed in mgraph package.
-#' @details There following classes are set as virutal:
-#' - igraph
-#' - mgraph
-#' - KEntityList: actually list
+#' @details
+#' Virtual classes:
+#' - EntryList:: list
+#' - ReactionList:: list
+#' - RelationList:: list
+#' - GraphicList:: list
+#' - KLists:: EntryList, ReactionList, RelationList or GraphicList
+#' - igraph: igraph
+#' - mgraph: metabolite graph
+#' - rgraph: reaction graph
+#' - ggraph: gene graph
+#' - xgraph: virtual class of mgraph, rgraph and ggraph
+#'
+#' S4 Classes:
+#' - keggPATH: complete set of pathway data parsed from a KEGG xml file
+#' - ReactionSet: reactions container used in xgraph object
+#'
+#' Short names or aliases:
+#' - mpath: for `keggPATH`, metabolic pathway
+#' - klist: for `KLists`
+#' - rset: for `ReactionSet`
+#' - rdata/rnames/rcount: reaction data/names/count
+#' - edata/enames/ecount: edge data/names/count
+#' - vdata/vnames/vcount: vertex data/names/count
 #' @author zhao
-NULL
-
-#' @name class_ReactionSet
-#' @title S4 class: ReactionSet
-#' @description ReactionSet: S4 class holding reaction infos.
-#' @details Three slots: reaction, organism and alias.
-#' - reaction: list of reaction info (substrate, product and genes)
-#' - organism: KEGG organism identifier
-#' - alias: named list of chemical aliases. Set when merging chemicals.
-#' @author ZG Zhao
-NULL
-
-#' @name class_keggPATH
-#' @title S4 class: keggPATH
-#' @aliases keggPATH
-#' @seealso \code{\link{KEntityList}}, \code{\link{ReactionSet}}
-#' @description "keggPATH" is S4 class designed for holding KEGG pathway information: entries, reactions, relations, graphics and other general information (pathInfo).
-#' @details Typically, a keggPATH object can be obtained by \code{\link{make_mpath}} function, which will download and parse the KEGG xml file.
-#' @author zhao
+#' @examples
+#' library(gmetab)
+#' showClass("keggPATH")
+#' showClass("ReactionSet")
+#' showClass("mgraph")
+#' showClass("xgraph")
 NULL
 
 ## virtual classes
@@ -33,7 +39,7 @@ setClassUnion("EntryList", "list")
 setClassUnion("ReactionList", "list")
 setClassUnion("RelationList", "list")
 setClassUnion("GraphicList", "list")
-setClassUnion("KEntityList", c("EntryList", "ReactionList", "RelationList", "GraphicList"))
+setClassUnion("KLists", c("EntryList", "ReactionList", "RelationList", "GraphicList"))
 setClassUnion("igraph", "list")
 setClassUnion("mgraph", "list")
 setClassUnion("ggraph", "list")
@@ -42,12 +48,11 @@ setClassUnion("xgraph", c("mgraph", "ggraph", "rgraph"))
 
 setClass("ReactionSet",
          slots=c(reaction="ReactionList",
-                 organism="character",
-                 alias="list"))
+                 organism="character"
+                 ))
 setMethod("initialize", "ReactionSet", function(.Object, reactions, organism=""){
     .Object@reaction <- reactions
     .Object@organism <- organism
-    .Object@alias <- list()
     return(.Object)
 })
 

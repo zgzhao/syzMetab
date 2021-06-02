@@ -13,7 +13,7 @@ xgraph_setchems(object, s, p, mc.cores, n.max)
 
 \item{p}{character vecter, names of end products}
 
-\item{mc.cores}{integer, for \code{\link{all_simple_paths}}, refer to \code{\link{mclapply}} for details.}
+\item{mc.cores}{integer, for \code{\link{all_spath_list}}, refer to \code{\link{mclapply}} for details.}
 
 \item{n.max}{numeric, for \code{\link{all_spath_list}}.}
 }

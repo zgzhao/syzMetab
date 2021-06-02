@@ -1,4 +1,4 @@
-setAs("KEntityList", "list", function(from) {
+setAs("KLists", "list", function(from) {
     class(from) <- NULL
     return(from)
 })
@@ -30,7 +30,7 @@ is.mpath <- function(x) {
 
 #' @export
 is.klist <- function(x) {
-    inherits(x, "KEntityList")
+    inherits(x, "KLists")
 }
 
 #' @export

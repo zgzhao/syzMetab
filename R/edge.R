@@ -1,3 +1,11 @@
+#!/usr/bin/env Rscript
+# -*- coding:utf-8 -*-
+# File: edge.R
+# Description: handling edge associates
+# AUTHOR: ZG Zhao; zgzhao@foxmail.com
+# 2021-06-02 08:39:08
+
+
 #' get edge names
 #'
 #' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}

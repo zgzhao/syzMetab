@@ -1,3 +1,10 @@
+#!/usr/bin/env Rscript
+# -*- coding:utf-8 -*-
+# File: node.R
+# Description: handling node/vertex associates
+# AUTHOR: ZG Zhao; zgzhao@foxmail.com
+# 2021-06-02 08:37:18
+
 
 #' get node names
 #'

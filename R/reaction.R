@@ -1,3 +1,10 @@
+#!/usr/bin/env Rscript
+# -*- coding:utf-8 -*-
+# File: reaction.R
+# Description: handling reaction associates
+# AUTHOR: ZG Zhao; zgzhao@foxmail.com
+# 2021-06-02 08:31:27
+
 #' get reaction names
 #'
 #' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
