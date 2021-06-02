@@ -5,6 +5,8 @@
 # AUTHOR: ZG Zhao; zgzhao@foxmail.com
 # 2021-05-31 16:16:37
 
+## refer to make_mgraph for manul
+
 #' @export
 setGeneric("make_ggraph", function(object, ...) standardGeneric("make_ggraph"))
 setMethod("make_ggraph", "ReactionSet", function(object){

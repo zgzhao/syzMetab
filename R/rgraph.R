@@ -5,6 +5,7 @@
 # AUTHOR: ZG Zhao; zgzhao@foxmail.com
 # 2021-05-31 17:36:10
 
+## refer to make_mgraph for manul
 
 #' @export
 setGeneric("make_rgraph", function(object, ...) standardGeneric("make_rgraph"))

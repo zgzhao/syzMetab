@@ -6,15 +6,15 @@
 # 2021-05-31 12:10:39
 
 #' @name make_mgraph
-#' @title make graph from keggPATH object
-#' @aliases class_mgraph
-#' @description Make mgraph object from various type of data: keggPATH, ReactionSet, ReactionList, list or KOs (KEGG pathway identifiers).
-#' @details "mgraph" is a virtual S3 class defined in "gmetab" package.
-#' - A mgraph object is actually a igraph object with a key attribute: "reactions", which is vital for downstream metwork analysis.
-#' - Edges of a mgraph object have a "reactions" attribute holding the names of reactions involved, helpful for mapping edges back to reactions and genes.
-#' - Users can set other graph, node or edge attributes
-#' @usage make_mgraph(object, org=NULL)
-#' @param object keggPATH, ReactionSet ReactionList, list or even igrph object.
+#' @title make graph from various data
+#' @aliases make_rgraph make_ggraph
+#' @description Make metabolic graph from various type of data: keggPATH, ReactionSet, ReactionList, list or KOs (KEGG pathway identifiers).
+#' @details Metabolic network can be represented by metabolite, reaction or gene graph.
+#' @usage
+#' - make_mgraph(object, ...)
+#' - make_rgraph(object, ...)
+#' - make_ggraph(object, ...)
+#' @param object keggPATH, ReactionSet ReactionList, character vector or list.
 #' @param org character, organism/species indentifier, parameter for "object" without organism info: ReactionList and list
 #' @param d.path character, refer to \code{\link{KEGG_get}} for detail. Used when "object" is a KO vecter (KOs).
 #' @author zhao

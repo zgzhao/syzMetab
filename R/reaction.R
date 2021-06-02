@@ -10,6 +10,7 @@
 #' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
 #' @title reaction names
 #' @param object mgraph or ReactionSet object
+#' @return character vector. For `ReactionSet`, it is names of the reactions; for `xgraph` object, it is the reaction names of the edges, extracted from "reaction" edge attribute.
 #' @author ZG Zhao
 #' @export
 setGeneric("rnames", function(object) standardGeneric("rnames"))
@@ -20,6 +21,13 @@ setMethod("rnames", "ReactionSet", function(object){
     names(Reactions(object))
 })
 
+#' get number of reactions
+#'
+#' Similar to vcount and ecount in igraph package.
+#' @title reaction names
+#' @param object mgraph or ReactionSet object
+#' @author ZG Zhao
+#' @return integer, the number of unique reactions listed in "ReactionList" of the object.
 #' @export
 setGeneric("rcount", function(object) standardGeneric("rcount"))
 setMethod("rcount", "xgraph", function(object){

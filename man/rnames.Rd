@@ -9,6 +9,9 @@ rnames(object)
 \arguments{
 \item{object}{mgraph or ReactionSet object}
 }
+\value{
+character vector. For \code{ReactionSet}, it is names of the reactions; for \code{xgraph} object, it is the reaction names of the edges, extracted from "reaction" edge attribute.
+}
 \description{
 get reaction names
 }
