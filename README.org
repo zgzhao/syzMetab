@@ -6,10 +6,8 @@
 
 gmetab: R package for metabolic network construction, visualization and analysis with igraph.
 
-
 * Warning
 - The package is still under active development. All components may be changed in future versions.
-
 - Install latest (dev) version of igraph, or you may encounter some problems:
 #+begin_src R :exports code :tangle yes :eval never :ravel eval=TRUE
   ## install.packages('devtools')
