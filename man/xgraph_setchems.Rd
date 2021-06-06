@@ -4,7 +4,7 @@
 \alias{xgraph_setchems}
 \title{set substrates and products for a graph}
 \usage{
-xgraph_setchems(object, s, p, mc.cores, n.max = 50)
+xgraph_setchems(object, s, p, clean = FALSE)
 }
 \arguments{
 \item{object}{xgraph object}
@@ -13,9 +13,7 @@ xgraph_setchems(object, s, p, mc.cores, n.max = 50)
 
 \item{p}{character vecter, names of end products}
 
-\item{mc.cores}{integer, for \code{\link{all_spaths_list}}, refer to \code{\link{mclapply}} for details.}
-
-\item{n.max}{numeric, for \code{\link{all_spaths_list}}.}
+\item{clean}{TRUE/FALSE(default). Remove futile nodes and edges if TRUE.}
 }
 \value{
 xgraph object
@@ -27,8 +25,7 @@ Set chemicals and subset a xgraph (mgraph, rgraph or ggraph) object.
 The function do these jobs:
 \itemize{
 \item for rgraph (reaction graph) and ggraph (gene graph), S and P are added to the graph as nodes.
-\item all metabolites (nodes) having no contribution in forming of P from S are deleted, and so do the reactions (edges).
-This is done by screening nodes which are in at least one simple pathway from S to P.
+\item all edges to S or from P are deleted, and then nodes not connecting to S or P are delete.
 \item add "substrates" and "products" attributes are the graph.
 }
 }

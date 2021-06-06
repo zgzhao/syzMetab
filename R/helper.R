@@ -49,7 +49,7 @@ setGeneric("Reactions", function(object, ...) standardGeneric("Reactions"))
 #' @export
 setGeneric("Organism", function(object) standardGeneric("Organism"))
 #' @export
-Species <- function(...) Species(...)
+Species <- function(...) Organism(...)
 #' @export
 setGeneric("Substrates", function(object) standardGeneric("Substrates"))
 #' @export

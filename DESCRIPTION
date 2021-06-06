@@ -1,10 +1,10 @@
 Package: gmetab
 Title: gmetab: R package for metabolic network analysis
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: 
     person(given = "Zhiguang", family = "Zhao", role = c("aut", "cre"),
            email = "zgzhao@lzu.edu.cn")
-Description: R package "gmetab" is designed for processing metabolic networks, especially for KEGG pathways/networks.
+Description: Rackage gmetab is designed for metabolic networks processing: construction, visualization and analysis.
 License: GPL-3
 Encoding: UTF-8
 Depends:
@@ -13,7 +13,7 @@ Depends:
     scales,
     RColorBrewer,
     parallel,
-    igraph
+    igraph (> 1.2.6)
 Suggests:
     diagram,
     testthat (>= 3.0.0)

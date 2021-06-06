@@ -2,26 +2,33 @@
 % Please edit documentation in R/reaction.R
 \name{rdata}
 \alias{rdata}
-\title{reaction data}
+\alias{edata}
+\alias{vdata}
+\title{get/set attribute data}
 \usage{
-rdata(g, a.name, x.names)
+vdata(g, a.name, v.name)
+edata(g, a.name, e.name)
+rdata(g, a.name, r.name)
+vdata(g, a.name) <- vals
+edata(g, a.name) <- vals
+rdata(g, a.name) <- vals
 }
 \arguments{
-\item{g}{mgraph or ReactionSet object}
+\item{g}{igraph/mgraph object}
 
-\item{a.name}{character, attribute name}
+\item{a.name}{attribute name}
 
-\item{x.names}{vector of character (reaction names) or integer (ids)}
+\item{v.names}{(optional) node names or indices}
+
+\item{e.names}{(optional) edge names or indices}
+
+\item{r.names}{(optional) reaction names (for subseting)}
 }
 \description{
-Get reaction data
+Helper functions attribute data
 }
 \details{
-Helper function for reaction data retrieving.
-NOTE: please don't try to set reaction data alone; it may mess all thing up!
-}
-\seealso{
-\code{\link{vdata}}
+Provide alternative ways to get or set graph attributes.
 }
 \author{
 ZG Zhao

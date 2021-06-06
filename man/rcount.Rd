@@ -2,21 +2,34 @@
 % Please edit documentation in R/reaction.R
 \name{rcount}
 \alias{rcount}
-\title{reaction names}
+\alias{vcount}
+\alias{ecount}
+\title{count of graph entities}
 \usage{
-rcount(object)
+ecount(g)
+vcount(g)
+rcount(xg)
+rcount(rset)
 }
 \arguments{
-\item{object}{mgraph or ReactionSet object}
+\item{g}{graph (igraph or xgraph) object}
+
+\item{xg}{xgraph object}
+
+\item{rset}{ReactionSet object}
 }
 \value{
-integer, the number of unique reactions listed in "ReactionList" of the object.
+character vector
 }
 \description{
-get number of reactions
+Get count/number of nodes, edges or reactions
 }
 \details{
-Similar to vcount and ecount in igraph package.
+\itemize{
+\item ecount: edges names (igraph)
+\item vcount: vertex/node names (igraph)
+\item rcount: number of unique reactions
+}
 }
 \author{
 ZG Zhao

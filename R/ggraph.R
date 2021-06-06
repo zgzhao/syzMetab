@@ -25,7 +25,7 @@ setMethod("make_ggraph", "ReactionSet", function(object){
         })
         gnp <- unlist(gnp)
         gnp <- setdiff(gnp, gns)
-        g <- xaddEdges(g, gns, gnp)
+        g <- add.edges(g, expand.grid(gns, gnp))
     }
     attr(g, "reactions") <- object
     class(g) <- c("ggraph", class(g))

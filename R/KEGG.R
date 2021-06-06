@@ -166,6 +166,7 @@ kogs_list <- function(org, d.path="KEGG", KOGs=NA) {
     genes <- dtx$gene
     if(! is.list(genes)) genes <- as.list(genes)
     names(genes) <- dtx$KOG
+    genes$auto <- "auto"
     genes
 }
 

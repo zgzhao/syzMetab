@@ -33,7 +33,7 @@ setMethod("make_mgraph", "ReactionSet", function(object){
         genes <- rx[["gene"]]
         ss <- rx[["substrate"]]
         pp <- rx[["product"]]
-        g <- xaddEdges(g, ss, pp, reaction=ndx)
+        g <- add.edges(g, expand.grid(ss, pp), reaction=ndx)
     }
     attr(g, "reactions") <- object
     class(g) <- c("mgraph", class(g))
@@ -72,7 +72,7 @@ setMethod("make_mgraph", "list", function(object, org){
 #' @export
 mgraph_x_org <- function(g, org, d.path = "KEGG"){
     if(! is.mgraph(g)) stop("Not a metabolic graph.")
-    if(Species(g) != "ko") stop("Not a generic metabolic graph!")
+    if(Organism(g) != "ko") stop("Not a generic metabolic graph!")
 
     rtns <- Reactions(g)
     org <- org[1]
@@ -87,10 +87,21 @@ mgraph_x_org <- function(g, org, d.path = "KEGG"){
         rr
     })
     ss <- sapply(rtns, FUN=function(x) ! is.empty(x$gene))
+    ## ensure returning result is a graph!
+    if(sum(ss) < 1) return(.emptyGraph(g))
+
     rtns <- rtns[ss]
     robj <- as_rset(rtns, org)
-    g <- make_mgraph(robj)
-    g
+    gx <- make_mgraph(robj)
+    if(is.chemset(g)) {
+        s <- intersect(Substrates(g), vnames(gx))
+        p <- intersect(Products(g), vnames(gx))
+        if(is.empty(s) || is.empty(g))
+            gx <- .emptyGraph(gx)
+        else
+            gx <- xgraph_setchems(gx, s, p, clean=FALSE)
+    }
+    gx
 }
 
 #' Append additional reactions to KEGG pathway.
@@ -110,6 +121,8 @@ mgraph_append <- function(g, df) {
         df <- df[, c("from", "to", "reversible", "genes")]
     else
         warning("Column names do not match. The first four columns are used for from, to, reversible and genes!")
+    vxx <- setdiff(c(df$from, df$to), vnames(g))
+    if(! is.empty(vxx)) g <- add.vertices(g, length(vxx), name=vxx)
 
     robj <- Reactions(g, list.only=FALSE)
     for(i in 1:nrow(df)) {
@@ -120,11 +133,11 @@ mgraph_append <- function(g, df) {
         robj <- rset_append(robj, ss, pp, genes)
         ne2 <- length(robj)
         ## add edge if only new reaction added
-        if(ne2 > ne1) g <- xaddEdges(g, ss, pp, reaction=paste0("RX", ne2))
+        if(ne2 > ne1) g <- add.edges(g, expand.grid(ss, pp), reaction=paste0("RX", ne2))
         if(df[i, 3]) {
             robj <- rset_append(robj, pp, ss, genes)
             ne3 <- length(robj)
-            if(ne3 > ne2) g <- xaddEdges(g, pp, ss, reaction=paste0("RX", ne3))
+            if(ne3 > ne2) g <- add.edges(g, expand.grid(pp, ss), reaction=paste0("RX", ne3))
         }
     }
     attr(g, "reactions") <- robj

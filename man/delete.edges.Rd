@@ -19,7 +19,7 @@ igraph/mgraph object
 delete edges from igraph or mgraph object
 }
 \details{
-Refer to \code{\link{igraph::delete.edges}}
+Same as functions in igraph package exception for retaining graph attributes. Refer to \code{?igraph::delete.edges}
 }
 \author{
 ZG Zhao

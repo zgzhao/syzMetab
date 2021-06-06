@@ -6,12 +6,6 @@
 # 2021-06-02 08:39:08
 
 
-#' get edge names
-#'
-#' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
-#' @title edge names
-#' @param object mgraph object
-#' @author ZG Zhao
 #' @export
 setGeneric("enames", function(object) standardGeneric("enames"))
 setMethod("enames", "igraph", function(object){
@@ -22,30 +16,6 @@ setMethod("enames", "xgraph", function(object){
 })
 
 
-#' Get or set edge attribute/data
-#'
-#' Friendly function for edge data/attributes retrieving or setting. See "Example".
-#' @title edge data
-#' @param g igraph/mgraph object
-#' @param a.name character, attribute name
-#' @param e.names vector of character (edge names) or integer (indices)
-#' @seealso \code{\link{vdata}}
-#' @author ZG Zhao
-#' @examples
-#' library(gmetab)
-#' d.path <- file.path(path.package("gmetab"), "KEGG")
-#' gg <- make_mgraph("ko00010", d.path)
-#' ## igraph style
-#' E(gg)$reaction
-#' E(gg)$reaction[1:3]
-#' E(gg)$MP <- 0
-#' ## gmetab style
-#' edata(gg, "reaction")
-#' edata(gg, "reaction", 1:3)
-#' (ee <- enames(gg))
-#' edata(gg, "reaction", ee[1:3])
-#' edata(gg, "MP") <- 1
-#' edata(gg, "MP")
 #' @export
 edata <- function(g, a.name, e.names) {
     if(! is.xgraph(g)) return(NULL)
@@ -79,7 +49,7 @@ edata <- function(g, a.name, e.names) {
 
 #' delete edges from igraph or mgraph object
 #'
-#' Refer to \code{\link{igraph::delete.edges}}
+#' Same as functions in igraph package exception for retaining graph attributes. Refer to `?igraph::delete.edges`
 #' @title delete edges
 #' @aliases delete_edges
 #' @param object igraph/mgraph object
@@ -92,7 +62,9 @@ setGeneric("delete.edges", function(object, es) standardGeneric("delete.edges"))
 delete_edges <- function(...) delete.edges(...)
 
 setMethod("delete.edges", "igraph", function(object, es) {
-    igraph::delete.edges(object, es)
+    g <- igraph::delete.edges(object, es)
+    attributes(g) <- attributes(object)
+    g
 })
 setMethod("delete.edges", "xgraph", function(object, es) {
     ss1 <- 1:ecount(object) %in% es
@@ -103,47 +75,58 @@ setMethod("delete.edges", "xgraph", function(object, es) {
     g
 })
 
-## #' add edges for igraph or mgraph object
-## #'
-## #' Refer to \code{\link{igraph::add.edges}}
-## #' @title add edges
-## #' @aliases add_edges add_reactions add.reactions
-## #' @param object igraph/mgraph object
-## #' @param es vector: edge ids (integer) or names (character)
-## #' @return igraph/mgraph object
-## #' @author ZG Zhao
-## #' @export
-## setGeneric("add.edges", function(object, es, ...) standardGeneric("add.edges"))
-## #' @export
-## add_edges <- function(...) add.edges(...)
-## add.reactions <- function(...) add.edges(...)
-## add_reactions <- function(...) add.edges(...)
+#' add edges for igraph or mgraph object
+#'
+#' Versatile add edges fucntion: accept sequences (like igraph::add.edges), vertex names or data.frame (first 2 columns are `from` and `to`). Refer to `igraph::add.edges` for other details.
+#' @title add edges
+#' @aliases add_edges
+#' @param object igraph/mgraph object
+#' @param edges various data type
+#' - sequence of integer or character: like igraph add.edges
+#' - edge names: each name is a pair of nodes seperated by "|" such as "A|B"
+#' - data.frame or matrix: first 2 columns are treated as sources and targets.
+#' @return graph object
+#' @author ZG Zhao
+#' @export
+setGeneric("add.edges", function(object, edges, ...) standardGeneric("add.edges"))
+#' @export
+add_edges <- function(...) add.edges(...)
 
-## setMethod("add.edges", "igraph", function(object, es, ...) {
-##     igraph::add.edges(object, es, ...)
-## })
-## ## TODO
-## setMethod("add.edges", "mgraph", function(object, es, genes, ...) {
-##     g <- igraph::add.edges(object, es, gene=genes, ...)
-##     attributes(g) <- attributes(object)
-##     g
-## })
-## setMethod("add.edges", "rgraph", function(object, es, genes, ...) {
-##     g <- igraph::add.edges(object, es, gene=genes, ...)
-##     attributes(g) <- attributes(object)
-##     g
-## })
-
-xaddEdges <- function(g, from, to, ...) {
-    if(is.empty(from) || is.empty(to))
-        return(g)
-    names(from) <- names(to) <- NULL
-    ess <- expand.grid(from, to)
-    enn <- apply(ess, 1, paste, collapse="|")
-    tt <- ! enn %in% enames(g)
-    if(sum(tt) > 0) {
-        ess <- t(ess[tt, ])
-        g <- g %>% add.edges(ess, ...)
+setMethod("add.edges", c("igraph", "vector"), function(object, edges, ...) {
+    if(all(grepl("|", edges, fixed=TRUE))) {
+        ess <- sapply(edges, FUN=function(x) strsplit(x, "|", fixed=T)[[1]])
+        edges <- as.matrix(ess)
     }
+    ss <- !(edges %in% 1:vcount(object) | edges %in% vnames(object))
+    if(sum(ss) > 0) object <- add.vertices(object, edges[ss])
+    igraph::add.edges(object, edges, ...)
+})
+setMethod("add.edges", c("igraph", "matrix"), function(object, edges, ...) {
+    vss <- setdiff(c(edges[, 1], edges[, 2]), vnames(object))
+    if(!is.empty(vss)) object <- add.vertices(object, vss)
+
+    ess <- apply(edges[, 1:2], 1, paste, collapse="|")
+    tt <- ! ess %in% enames(object)
+    if(sum(tt) < 1) return(object)
+    ess <- ess[tt]
+    ## call add.edges(object, vector, ...)
+    add.edges(object, ess, ...)
+})
+setMethod("add.edges", c("igraph", "data.frame"), function(object, edges, ...) {
+    vss <- setdiff(unlist(edges), vnames(object))
+    if(!is.empty(vss)) object <- add.vertices(object, vss)
+
+    ess <- apply(edges[, 1:2], 1, paste, collapse="|")
+    tt <- ! ess %in% enames(object)
+    if(sum(tt) < 1) return(object)
+    ess <- ess[tt]
+    ## call add.edges(object, vector, ...)
+    add.edges(object, ess, ...)
+})
+setMethod("add.edges", "xgraph", function(object, edges, ...) {
+    g <- as(object, "igraph")
+    g <- add.edges(g, edges, ...)
+    attributes(g) <- attributes(object)
     g
-}
+})
+

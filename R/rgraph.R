@@ -22,7 +22,7 @@ setMethod("make_rgraph", "ReactionSet", function(object){
             ss <- rlist[[x]][["substrate"]]
             any(ss %in% pp)
         })
-        g <- xaddEdges(g, aa, vv[bb])
+        g <- add.edges(g, expand.grid(aa, vv[bb]))
     }
     attr(g, "reactions") <- object
     class(g) <- c("rgraph", class(g))

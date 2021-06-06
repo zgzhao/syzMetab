@@ -9,10 +9,18 @@ gmetab: R package for metabolic network construction, visualization and analysis
 
 * Warning
 The package is still under active development. All components may be changed in future versions.
+
 * Installation
-#+begin_src R :exports code :tangle yes :eval never :ravel eval=FALSE
+This package depends on "igraph" version > 1.2.6.0. If you have installed 1.2.6 from CRAN repository, you may encounter some problems.
+Then you should install the dev version:
+#+begin_src R :exports code :tangle yes :eval never :ravel eval=TRUE
   ## install.packages('devtools')
   require('devtools')
+  install_github("igraph/rigraph@master")
+#+end_src
+
+Then install this package:
+#+begin_src R :exports code :tangle yes :eval never :ravel eval=FALSE
   install_github('zgzhao/gmetab')
 #+end_src
 

@@ -5,12 +5,18 @@
 \alias{plot.ggraph}
 \title{plot mgraph}
 \usage{
-\method{plot}{mgraph}(g, show.name = TRUE, ...)
+\method{plot}{mgraph}(g, s, p, show.name = TRUE, gene.n = FALSE, ...)
 }
 \arguments{
 \item{g}{mgraph or igraph object}
 
+\item{s}{substrates}
+
+\item{p}{products}
+
 \item{show.name}{logi. Show chemical names if TRUE (default).}
+
+\item{gene.n}{TRUE/FALSE (default). show gene number on edge if TRUE.}
 
 \item{...}{pars passed to plot.igraph}
 }

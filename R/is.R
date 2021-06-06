@@ -59,8 +59,7 @@ is.xgraph <- function(x){
 is.chemset <- function(x){
     ss <- Substrates(x)
     pp <- Products(x)
-    if(is.empty(c(ss, pp))) return(FALSE)
-    return(TRUE)
+    ! (is.empty(ss) || is.empty(pp))
 }
 
 #' @export
@@ -73,8 +72,10 @@ is.empty <- function(...){
     })
     all(unlist(ss))
 }
-
+is.stcuts <- function(x) {
+    inherits(x, "stcut.list")
+}
 ## return a graph without nodes and edges
 .emptyGraph <- function(g){
-    deleteNodes(g, nodes(g))
+    delete.vertices(g, vnames(g))
 }

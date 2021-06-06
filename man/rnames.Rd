@@ -2,21 +2,34 @@
 % Please edit documentation in R/reaction.R
 \name{rnames}
 \alias{rnames}
-\title{reaction names}
+\alias{vnames}
+\alias{enames}
+\title{names of graph entities}
 \usage{
-rnames(object)
+enames(g)
+vnames(g)
+rnames(xg)
+rnames(rset)
 }
 \arguments{
-\item{object}{mgraph or ReactionSet object}
+\item{g}{graph (igraph or xgraph) object}
+
+\item{xg}{xgraph object}
+
+\item{rset}{ReactionSet object}
 }
 \value{
-character vector. For \code{ReactionSet}, it is names of the reactions; for \code{xgraph} object, it is the reaction names of the edges, extracted from "reaction" edge attribute.
+character vector
 }
 \description{
-get reaction names
+Get names (instead of ids) of nodes, edges or reactions (xgraph only).
 }
 \details{
-Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
+\itemize{
+\item enames: edges names (igraph)
+\item vnames: vertex/node names (igraph)
+\item rnames: For graph object, it returns the reaction names (may be duplicated) along vnames. For "ReactionSet" object, they are the (unique) names of reactions.
+}
 }
 \author{
 ZG Zhao

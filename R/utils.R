@@ -30,10 +30,11 @@ NULL
 
 
 #' @export
-setGeneric("all_spaths_list", function(object, from, to, mc.cores, n.max) standardGeneric("all_spaths_list"))
-
+setGeneric("all_spaths_list",
+           function(object, from, to, mc.cores, n.max=50) standardGeneric("all_spaths_list"))
 setMethod("all_spaths_list", "xgraph",
-          function(object, from, to, mc.cores, n.max=50){
+          function(object, from, to, mc.cores, n.max){
+    object <- .preClean(object, from, to)
     if(vcount(object) > n.max)
         stop("Node number exceeds `n.max` setting.")
     stime <- Sys.time()
@@ -53,9 +54,9 @@ setMethod("all_spaths_list", "xgraph",
     ss <- sapply(spp, FUN=function(x) sum(x %in% xchems) == 2)
     spp <- spp[ss]
     class(spp) <- c("sp.list", class(spp))
-    cat("======Simpel paths search==========\n",
-        "Found", length(spp), "simple paths in",
-        as.numeric(Sys.time() - stime), "seconds.\n")
+    ## cat("======Simpel paths search==========\n",
+    ##     "Found", length(spp), "simple paths in",
+    ##     as.numeric(Sys.time() - stime), "seconds.\n")
     spp
 })
 
@@ -95,77 +96,89 @@ all_spaths_nodes <- function(object, from, to, mc.cores, n.max=50) {
     mclapply(lst, FUN=FUN, mc.cores=mc.cores, ...)
 }
 
-
-#' This function list all gene cut sets. Remove any set of genes will disconnet primary substrates and end products.
+#' Get st_cuts info: edges and genes
 #'
-#' Set substrates and products before using this function.
+#' This is a wrapper function of `st_cuts` define in igraph package.
 #' @title list all gene cut sets
 #' @param object xgraph object
+#' @param s source node
+#' @param t target node
 #' @return list
-#' - min.number
-#' - min.sets
-#' - all.sets
+#' - min.genes
+#' - min.edges
+#' - edge.cuts
+#' - gene.cuts
 #' @author ZG Zhao
 #' @export
-setGeneric("all_cut_genes", function(object) standardGeneric("all_cut_genes"))
-setMethod("all_cut_genes", "xgraph", function(object){
-    if(! is.chemset(object)) stop("Chemicals not set yet.")
-    cutlist <- sapply(min_st_separators(object), names)
-    ## all simple paths from S to P should have at leat one of the cut chems
-    allspp <- attr(object, "spaths")
-    sels <- sapply(cutlist, FUN=function(x){
-        ss <- sapply(allspp, FUN=function(y) any(x %in% y))
-        all(ss)
-    })
-    cutlist <- cutlist[sels]
+setGeneric("all_stcuts", function(object, s, t) standardGeneric("all_stcuts"))
+setMethod("all_stcuts", "mgraph", function(object, s, t){
+    s <- intersect(vnames(object), s)
+    p <- intersect(vnames(object), t)
+    if(is.empty(s) || is.empty(p)) return(NULL)
+    if(! vis_connected(object, s, p)) return(NULL)
 
+    ## TIPS: st_cuts allows one s and one p only.
+    ## Merge substrates and products, respectively.
+    nns <- length(s)
+    nnp <- length(p)
+    if(nns > 0) {
+        object <- add.edges(object, expand.grid("VCHEM1", s))
+        s <- "VCHEM1"
+    }
+    if(nnp > 0) {
+        object <- add.edges(object, expand.grid(p, "VCHEM2"))
+        p <- "VCHEM2"
+    }
+    ## finding st-cuts
+    xcuts <- st_cuts(object, s, p)
+    ecuts <- lapply(xcuts[[1]], as_ids)
+    vcuts <- lapply(xcuts[[2]], as_ids)
     ## map compounds to genes
-    names(cutlist) <- sapply(cutlist, paste, collapse=" ")
-    cutnames <- unique(unlist(cutlist))
+    r.names <- rnames(object)
+    e.names <- enames(object)
     rlist <- Reactions(object)
-    gmaps <- lapply(cutnames, FUN=function(cutchem){
-        gene.in <- lapply(rlist, FUN=function(rr){
-            if(any(cutchem %in% rr[["substrate"]])) return(rr[["gene"]])
-            else return(NULL)
-        })
-        gene.in <- unique(unlist(gene.in))
-        gene.out <- lapply(rlist, FUN=function(rr){
-            if(any(cutchem %in% rr[["product"]])) return(rr[["gene"]])
-            else return(NULL)
-        })
-        gene.out <- unique(unlist(gene.out))
-        list(a=gene.in, b=gene.out)
+    gcuts <- lapply(ecuts, FUN=function(enn){
+        if(grepl("VCHEM", paste(enn, collapse=" "))) return(NULL)
+        ss <- r.names[e.names %in% enn]
+        gns <- sapply(rlist[ss], FUN=function(rr) rr[["gene"]])
+        gns <- sort(unique(unlist(gns)))
+        names(gns) <- NULL
+        gns
     })
-    names(gmaps) <- cutnames
-    results <- lapply(cutlist, FUN=function(cutvector){
-        nn <- length(cutvector)
-        if(nn == 1) return(gmaps[[cutvector]])
-        dd <- list()
-        for(i in 1:nn) dd <- c(dd, list(c("a", "b")))
-        dd <- as.data.frame(t(expand.grid(dd)))
-        colnames(dd) <- NULL
-        genes <- lapply(dd, FUN=function(x){
-            genex <- NULL
-            for(i in 1:nn) {
-                rx <- gmaps[[cutvector[i]]]
-                gns <- rx[[x[i]]]
-                genex <- c(genex, gns)
-            }
-            sort(unique(genex))
-        })
-        names(genes) <- sapply(dd, paste, collapse="")
-        genes
-    })
-    ## cleaning
-    results <- unlist(results, recursive=FALSE)
-    xname <- sapply(names(results), FUN=function(x){
-        ss <- strsplit(x, "\\.")[[1]]
-        s1 <- strsplit(ss[1], " ")[[1]]
-        s2 <- strsplit(ss[2], "")[[1]]
-        paste0(s1, s2, collapse=" ")
-    })
-    names(results) <- xname
-    glen <- sapply(results, length)
-    minn <- min(glen)
-    list(min.number=minn, min.sets=results[glen == minn], all.sets=results)
+    ss <- sapply(gcuts, FUN=function(x) !is.empty(x))
+    if(sum(ss) < 1) return(NULL)
+    ecuts <- ecuts[ss]
+    gcuts <- gcuts[ss]
+    names(gcuts) <- NULL
+    glen <- sapply(gcuts, length)
+    results <- list(min.genes=min(glen), edge.cuts=ecuts, gene.cuts=gcuts)
+    class(results) <- "stcut.list"
+    results
 })
+
+## pre-cleaning network especially before simple path searching
+.preClean <- function(g, s, p) {
+    ## remove not connected nodes
+    vss <- vs_accessed_by(g, s, "out")
+    vss <- c(vss, vs_accessed_by(g, p, "in"))
+    vxx <- setdiff(vnames(g), vss)
+    if(! is.empty(vxx)) g <- delete.vertices(g, vxx)
+    ## remove edges to sources or from targets
+    s <- intersect(s, vnames(g))
+    p <- intersect(p, vnames(g))
+    vxx <- vs_adjacent(g, s, "in")
+    for(aa in s) {
+        vtt <- vxx[[aa]]
+        if(is.empty(vtt)) next
+        exx <- paste(vtt, aa, sep="|")
+        g <- delete.edges(g, exx)
+    }
+    vxx <- vs_adjacent(g, p, "out")
+    for(aa in p) {
+        vtt <- vxx[[aa]]
+        if(is.empty(vtt)) next
+        exx <- paste(aa, vtt, sep="|")
+        g <- delete.edges(g, exx)
+    }
+    g
+}

@@ -4,42 +4,63 @@
 #' @title plot mgraph
 #' @aliases plot.ggraph
 #' @param g mgraph or igraph object
+#' @param s substrates
+#' @param p products
 #' @param show.name logi. Show chemical names if TRUE (default).
+#' @param gene.n TRUE/FALSE (default). show gene number on edge if TRUE.
 #' @param ... pars passed to plot.igraph
 #' @return NULL
 #' @author zhao
 #' @export
-plot.mgraph <- function(g, show.name=TRUE,  ...) {
+plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
     options(warn=FALSE)
     opar <- par("mar")
     ipar <- igraph.options()
+    nv <- vcount(g)
+    ne <- ecount(g)
     par(mar=rep(0,4))
+    rtns <- Reactions(g)
+    rtns <- rtns[rnames(g)]
+    elty <- rep("solid", ne)
+    ss <- sapply(rtns, FUN=function(x) "auto" %in% x[["gene"]])
+    elty[ss] <- "dotted"
+
     if(show.name) {
-        vcolor <- NA
-        vlcol <- "black"
+        vcolor <- rep(NA, nv)
+        vlcol <- rep("black", nv)
     } else {
-        vcolor <- "#6495ED"
-        vlcol <- "transparent"
+        vcolor <- rep("#6495ED", nv)
+        vlcol <- rep("transparent", nv)
     }
+    if(! missing(s)) Substrates(g) <- s
+    if(! missing(p)) Products(g) <- p
     if(!is.empty(Substrates(g))) {
         ss <- vnames(g) %in% Substrates(g)
-        vlcol[ss] <- "red"
+        if(show.name) vlcol[ss] <- "red"
+        else vcolor[ss] <- "red"
     }
     if(!is.empty(Products(g))) {
         ss <- vnames(g) %in% Products(g)
-        vlcol[ss] <- "blue"
+        if(show.name) vlcol[ss] <- "blue"
+        else vcolor[ss] <- "darkgreen"
+    }
+    if(gene.n) {
+        r.names <- rnames(g)
+        ng <- sapply(Reactions(g), FUN=function(x) length(x[["gene"]]))
+        E(g)$label <- ng[r.names]
     }
     igraph.options(vertex.size=10,
                    vertex.color=vcolor,
                    vertex.frame.color=vcolor,
                    vertex.label.color=vlcol,
-                   vertex.label.cex=1,
+                   vertex.label.cex=1.5,
                    plot.layout=layout.kamada.kawai,
                    plot.margin=0,
                    edge.arrow.size = 0.5,
-                   edge.arrow.width = 0.6, edge.width = 1,
-                   edge.label.cex=0.8,
-                   edge.label.color="red",
+                   edge.arrow.width = 1, edge.width = 2,
+                   edge.label.cex=1,
+                   edge.label.color="black",
+                   edge.lty=elty,
                    edge.color="gray40")
     plot.igraph(g, ...)
     par(mar=opar)

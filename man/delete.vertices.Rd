@@ -3,14 +3,11 @@
 \name{delete.vertices}
 \alias{delete.vertices}
 \alias{delete_vertices}
+\alias{add.vertices}
+\alias{add_vertices}
 \title{delete vertices}
 \usage{
 delete.vertices(object, vs)
-}
-\arguments{
-\item{object}{igraph/mgraph object}
-
-\item{vs}{vector: vertex ids (integer) or names (character)}
 }
 \value{
 igraph/mgraph object
@@ -19,7 +16,7 @@ igraph/mgraph object
 delete vertices/nodes from igraph or mgraph object
 }
 \details{
-Refer to \code{\link{igraph::delete.vertices}}
+Same as functions in igraph package exception for retaining graph attributes. Refer to \code{?igraph::delete.vertices}, \code{?igraph::delete.vertices} for details.
 }
 \author{
 ZG Zhao

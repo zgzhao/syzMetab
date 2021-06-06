@@ -5,13 +5,6 @@
 # AUTHOR: ZG Zhao; zgzhao@foxmail.com
 # 2021-06-02 08:37:18
 
-
-#' get node names
-#'
-#' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
-#' @title node names
-#' @param object mgraph object
-#' @author ZG Zhao
 #' @export
 setGeneric("vnames", function(object) standardGeneric("vnames"))
 setMethod("vnames", "igraph", function(object){
@@ -21,30 +14,6 @@ setMethod("vnames", "xgraph", function(object){
     as_ids(V(object))
 })
 
-#' Get or set node data/attributes
-#'
-#' Friendly function for node data/attributes retrieving or setting. See "Example".
-#' @title node data
-#' @param g igraph/mgraph object
-#' @param a.name character, attribute name
-#' @param v.names vector of character (node names) or integer (indices)
-#' @seealso \code{\link{edata}}
-#' @author ZG Zhao
-#' @examples
-#' library(gmetab)
-#' d.path <- file.path(path.package("gmetab"), "KEGG")
-#' gg <- make_mgraph("ko00010", d.path)
-#' ## igraph style
-#' V(gg)$name
-#' V(gg)$EP <- sample(vcount(gg))
-#' V(gg)$EP[1:3]
-#' ## gmetab style
-#' vdata(gg, "name")
-#' vdata(gg, "name", 1:3)
-#' (vv <- vnames(gg))
-#' vdata(gg, "EP", "C00022")
-#' vdata(gg, "EP") <- 1
-#' vdata(gg, "EP")
 #' @export
 vdata <- function(g, a.name, v.names) {
     if(! is.xgraph(g)) return(NULL)
@@ -72,20 +41,19 @@ vdata <- function(g, a.name, v.names) {
 
 #' delete vertices/nodes from igraph or mgraph object
 #'
-#' Refer to \code{\link{igraph::delete.vertices}}
+#' Same as functions in igraph package exception for retaining graph attributes. Refer to `?igraph::delete.vertices`, `?igraph::delete.vertices` for details.
 #' @title delete vertices
-#' @aliases delete_vertices
-#' @param object igraph/mgraph object
-#' @param vs vector: vertex ids (integer) or names (character)
+#' @aliases delete_vertices add.vertices add_vertices
 #' @return igraph/mgraph object
 #' @author ZG Zhao
 #' @export
 setGeneric("delete.vertices", function(object, vs) standardGeneric("delete.vertices"))
 #' @export
 delete_vertices <- function(...) delete.vertices(...)
-
 setMethod("delete.vertices", "igraph", function(object, vs) {
-    igraph::delete.vertices(object, vs)
+    g <- igraph::delete.vertices(object, vs)
+    attributes(g) <- attributes(object)
+    g
 })
 
 setMethod("delete.vertices", "xgraph", function(object, vs) {
@@ -95,140 +63,63 @@ setMethod("delete.vertices", "xgraph", function(object, vs) {
 })
 
 #' @export
-nodes_linked <- function(g, from, to) {
-    nss <- nodes(g)
-    from <- intersect(nss, from)
-    to <- intersect(nss, to)
-    if(length(from) < 1 || length(to) < 1) return(FALSE)
+setGeneric("add.vertices", function(object, x, ...) standardGeneric("add.vertices"))
+#' @export
+add_vertices <- function(...) add.vertices(...)
+setMethod("add.vertices", c("igraph", "numeric"), function(object, x, ...) {
+    g <- igraph::add.vertices(object, x, ...)
+    attributes(g) <- attributes(object)
+    g
+})
+setMethod("add.vertices", c("igraph", "character"), function(object, x, ...) {
+    g <- igraph::add.vertices(object, length(x), name=x, ...)
+    attributes(g) <- attributes(object)
+    g
+})
+setMethod("add.vertices", "xgraph", function(object, x, ...) {
+    g <- add.vertices(as(object, "igraph"), x, ...)
+    attributes(g) <- attributes(object)
+    g
+})
 
-    g <- trans_graph(g, mode[1])
-    res <- sapply(from, FUN = function(ss){
-        tgs <- nodesAcc(g, ss)[[1]]
-        to %in% tgs
-    })
-    if(! is.matrix(res)) {
-        res <- matrix(res, ncol=length(from))
-    }
-    colnames(res) <- from
-    rownames(res) <- to
-    res <- t(res)
-    res
+
+#' Get all vertices assessed by given vertices.
+#'
+#' "Accessed" means that not all the distances from (mode="out") or to (mode="in") given vertices are infinite.
+#' @title vertices assessed by given vertices
+#' @param g graph object
+#' @param v.names character vector, names of vertices
+#' @param mode character, "out" (default), "in" or "all", direction from given vertices.
+#' @return vertices vector
+#' @author ZG Zhao
+#' @export
+vs_accessed_by <- function(g, v.names, mode=c("out", "in", "all")){
+    vns <- vnames(g)
+    v.names <- intersect(v.names, vns)
+    if(is.empty(v.names)) return(NULL)
+    dd <- distances(g, which(vns %in% v.names), mode=mode[1])
+    ss <- apply(dd, 2, FUN=function(x) ! all(is.infinite(x)))
+    names(ss)[ss]
 }
 
 #' @export
-nodes_accessible <- function(g, from, to) {
-    is.linked(g, from, to, mode)
+vs_adjacent <- function(g, v.names, mode = c("out", "out", "both")) {
+    v.names <- intersect(v.names, vnames(g))
+    lapply(adjacent_vertices(g, v.names, mode=mode[1]), names)
 }
 
+#' test whether nodes are connected (have any route)
+#'
+#' Note that non-connecting nodes are judged by infinite distance.
+#' @title test connected
+#' @param g graph object
+#' @param s source node(s)
+#' @param p target edge(s)
+#' @return logi, TRUE if any target is accessed by any source
+#' @author ZG Zhao
 #' @export
-nodes_adjacent <- function(g, from, to) {
-    nss <- nodes(g)
-    from <- intersect(nss, from)
-    to <- intersect(nss, to)
-    if(length(from) < 1 || length(to) < 1) return(FALSE)
-
-    elist <- graph::adj(trans_graph(g, mode[1]), from)
-    res <- lapply(elist, FUN = function(ff) { to %in% ff })
-    res <- t(as.matrix(as.data.frame(res)))
-    rownames(res) <- from
-    colnames(res) <- to
-    res
+vis_connected <- function(g, s, p) {
+    if(vcount(g) < 1) return(FALSE)
+    if(is.empty(s) || is.empty(p)) return(FALSE)
+    any(p %in% vs_accessed_by(g, s, "out"))
 }
-
-#' @export
-nodesAcc <- function(g, ns){
-    ns <- intersect(ns, nodes(g))
-    if(length(ns) < 1) return(NULL)
-
-    rex <- graph::acc(g, ns)
-    rex <- lapply(rex, names)
-    rex
-}
-
-#' @export
-nodes_interLinked <- function(g, from, to){
-    nss <- nodes(g)
-    from <- intersect(nss, from)
-    to <- intersect(nss, to)
-    if(length(from) < 1 || length(to) < 1) return(NULL)
-
-    ## nodes reached by sources
-    nds1 <- nodesAcc(g, from)
-    ss <- sapply(nds1, function(x) any(x %in% to))
-    nds1 <- nds1[ss]
-    from <- names(nds1)
-    to <- intersect(to, unlist(nds1))
-    if(length(from) < 1 || length(to) < 1) return(NULL)
-
-    ## nodes reach to targets
-    nds2 <- nodesAcc(reverseEdgeDirections(g), to)
-    nds <- intersect(unlist(nds1), unlist(nds2))
-    unique(c(from, nds, to))
-}
-
-#' @export
-nodesAdjacent <- function(g, vs, mode = c("out", "out", "both")) {
-    elist <- graph::adj(trans_graph(g, mode[1]), vs)
-    vadj <- unique(unlist(elist))
-    setdiff(unique(sort(vadj)), vs)
-}
-
-#' @export
-nodesChem <- function(g){
-    rr <- nodeData(g, nodes(g), "ischem")
-    rr <- unlist(rr)
-    names(rr)[rr]
-}
-
-#' @export
-nodesReaction <- function(g){
-    rr <- nodeData(g, nodes(g), "ischem")
-    rr <- unlist(rr)
-    names(rr)[! rr]
-}
-
-.nodeGenes <- function(g, n){
-    if(length(n) != 1) stop("One node name only!")
-    nodeData(g, n, "genes")[[1]]
-}
-#' @export
-nodesHub <- function(g, from, to, mode = c("out", "in", "both")) {
-    vss <- nodes(g)
-    from <- intersect(from, vss)
-    to <- intersect(to, vss)
-    if(length(from) < 1 || length(to) < 1) return(NULL)
-    g <- as(g, "igraph")
-    ee <- NULL
-    for(ss in from) {
-        spp <- igraph::all_shortest_paths(g, ss, to, mode = mode[1])$res
-        if(length(spp) < 1) next
-        ex <- lapply(spp, names)
-        ee <- c(ee, ex)
-    }
-    if(length(ee) < 2) return(unlist(ee))
-    res <- ee[[1]]
-    for(i in 2:length(ee)) res <- intersect(res, ee[[i]])
-    res <- setdiff(res, c(from, to))
-    res
-}
-
-#' @export
-nodesHubNearest <- function(g, v, hubs){
-    if(v %in% hubs) stop("The node is already a hubs!")
-    if(is.null(hubs)) stop("No hubs.")
-
-    nn <- numNodes(g)
-    res <- NULL
-    vs <- v
-    while(length(res) < 2) {
-        vx <- nodesAdjacent(g, v, "both")
-        ## no new nodes
-        if(length(vs) == length(union(vs, vx))) break
-        vs <- union(vs, vx)
-        ## prevent search in same direction of hub got
-        res <- intersect(vs, hubs)
-        v <- setdiff(vs, hubs)
-    }
-    hubs[hubs %in% res]
-}
-

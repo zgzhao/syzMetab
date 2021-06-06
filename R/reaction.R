@@ -5,13 +5,67 @@
 # AUTHOR: ZG Zhao; zgzhao@foxmail.com
 # 2021-06-02 08:31:27
 
-#' get reaction names
-#'
-#' Similar functions: \code{\link{vnames}}, \code{\link{enames}}, \code{\link{rnames}}, \code{\link{vcount}}, \code{\link{ecount}}
-#' @title reaction names
-#' @param object mgraph or ReactionSet object
-#' @return character vector. For `ReactionSet`, it is names of the reactions; for `xgraph` object, it is the reaction names of the edges, extracted from "reaction" edge attribute.
+#' @name rnames
+#' @title names of graph entities
+#' @description Get names (instead of ids) of nodes, edges or reactions (xgraph only).
+#' @details
+#' - enames: edges names (igraph)
+#' - vnames: vertex/node names (igraph)
+#' - rnames: For graph object, it returns the reaction names (may be duplicated) along vnames. For "ReactionSet" object, they are the (unique) names of reactions.
+#' @aliases vnames enames
+#' @param g graph (igraph or xgraph) object
+#' @param xg xgraph object
+#' @param rset ReactionSet object
+#' @usage
+#' enames(g)
+#' vnames(g)
+#' rnames(xg)
+#' rnames(rset)
+#' @return character vector
 #' @author ZG Zhao
+NULL
+
+#' @name rcount
+#' @title count of graph entities
+#' @description Get count/number of nodes, edges or reactions
+#' @details
+#' - ecount: edges names (igraph)
+#' - vcount: vertex/node names (igraph)
+#' - rcount: number of unique reactions
+#' @aliases vcount ecount
+#' @param g graph (igraph or xgraph) object
+#' @param xg xgraph object
+#' @param rset ReactionSet object
+#' @usage
+#' ecount(g)
+#' vcount(g)
+#' rcount(xg)
+#' rcount(rset)
+#' @return character vector
+#' @author ZG Zhao
+NULL
+
+#' @name rdata
+#' @title get/set attribute data
+#' @aliases edata vdata
+#' @description Helper functions attribute data
+#' @details Provide alternative ways to get or set graph attributes.
+#' @param g igraph/mgraph object
+#' @param a.name attribute name
+#' @param v.names (optional) node names or indices
+#' @param e.names (optional) edge names or indices
+#' @param r.names (optional) reaction names (for subseting)
+#' @usage
+#' vdata(g, a.name, v.name)
+#' edata(g, a.name, e.name)
+#' rdata(g, a.name, r.name)
+#' vdata(g, a.name) <- vals
+#' edata(g, a.name) <- vals
+#' rdata(g, a.name) <- vals
+#' @author ZG Zhao
+NULL
+
+
 #' @export
 setGeneric("rnames", function(object) standardGeneric("rnames"))
 setMethod("rnames", "xgraph", function(object){
@@ -21,13 +75,6 @@ setMethod("rnames", "ReactionSet", function(object){
     names(Reactions(object))
 })
 
-#' get number of reactions
-#'
-#' Similar to vcount and ecount in igraph package.
-#' @title reaction names
-#' @param object mgraph or ReactionSet object
-#' @author ZG Zhao
-#' @return integer, the number of unique reactions listed in "ReactionList" of the object.
 #' @export
 setGeneric("rcount", function(object) standardGeneric("rcount"))
 setMethod("rcount", "xgraph", function(object){
@@ -37,16 +84,6 @@ setMethod("rcount", "ReactionSet", function(object){
     length(Reactions(object))
 })
 
-#' Get reaction data
-#'
-#' Helper function for reaction data retrieving.
-#' NOTE: please don't try to set reaction data alone; it may mess all thing up!
-#' @title reaction data
-#' @param g mgraph or ReactionSet object
-#' @param a.name character, attribute name
-#' @param x.names vector of character (reaction names) or integer (ids)
-#' @seealso \code{\link{vdata}}
-#' @author ZG Zhao
 #' @export
 rdata <- function(g, a.name, x.names) {
     if(! is.mgraph(g)) return(NULL)
