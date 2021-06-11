@@ -2,13 +2,15 @@
 % Please edit documentation in R/plot.R
 \name{plot.mgraph}
 \alias{plot.mgraph}
+\alias{plot.rgraph}
 \alias{plot.ggraph}
-\title{plot mgraph}
+\alias{plot.bgraph}
+\title{plot graph}
 \usage{
 \method{plot}{mgraph}(g, s, p, show.name = TRUE, gene.n = FALSE, ...)
 }
 \arguments{
-\item{g}{mgraph or igraph object}
+\item{g}{xgraph object}
 
 \item{s}{substrates}
 
@@ -21,7 +23,7 @@
 \item{...}{pars passed to plot.igraph}
 }
 \description{
-plot mgraph
+plot graph
 }
 \details{
 Specified igraph plot function for mgraph

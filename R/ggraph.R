@@ -36,11 +36,11 @@ setMethod("make_ggraph", "character", function(object, d.path="KEGG"){
     make_ggraph(rsobj)
 })
 setMethod("make_ggraph", "keggPATH", function(object){
-    rsobj <- as_rset(object)
+    rsobj <- make_rset(object)
     make_ggraph(rsobj)
 })
 
 setMethod("make_ggraph", "ReactionList", function(object, org){
-    rsobj <- as_rset(object, org)
+    rsobj <- make_rset(object, org)
     make_ggraph(rsobj)
 })

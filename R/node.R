@@ -16,13 +16,12 @@ setMethod("vnames", "xgraph", function(object){
 
 #' @export
 vdata <- function(g, a.name, v.names) {
-    if(! is.xgraph(g)) return(NULL)
     a.name <- a.name[1]
     ee <- substitute(V(g)$`x`, list(x=a.name))
     rx <- eval(ee)
     if(is.null(rx) || missing(v.names)) return(rx)
     ss <- (1:vcount(g) %in% v.names) | (vnames(g) %in% v.names)
-    rx[v.names]
+    rx[ss]
 }
 
 #' @export
@@ -102,8 +101,17 @@ vs_accessed_by <- function(g, v.names, mode=c("out", "in", "all")){
     names(ss)[ss]
 }
 
+#' Get adjacent vertices
+#'
+#' Refer to igraph::adjacent_vertices
+#' @title adjacent vertices
+#' @param g graph object
+#' @param v.names character vector, names of vertices
+#' @param mode character, "out" (default), "in" or "all", direction from given vertices.
+#' @return named list of vertices
+#' @author ZG Zhao
 #' @export
-vs_adjacent <- function(g, v.names, mode = c("out", "out", "both")) {
+vs_adjacent <- function(g, v.names, mode = c("out", "in", "all")) {
     v.names <- intersect(v.names, vnames(g))
     lapply(adjacent_vertices(g, v.names, mode=mode[1]), names)
 }

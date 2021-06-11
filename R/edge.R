@@ -18,11 +18,7 @@ setMethod("enames", "xgraph", function(object){
 
 #' @export
 edata <- function(g, a.name, e.names) {
-    if(! is.xgraph(g)) return(NULL)
     a.name <- unlist(a.name)[1]
-    if(a.name %in% c("substrate", "product", "gene"))
-        stop("Please use `rdata` for reaction-related data.")
-    ## data presented as graph attribute
     ee <- substitute(E(g)$`x`, list(x=a.name))
     rx <- eval(ee)
     if(is.null(rx) || missing(e.names)) return(rx)
@@ -33,8 +29,6 @@ edata <- function(g, a.name, e.names) {
 #' @export
 `edata<-` <- function(g, a.name, e.names, value) {
     a.name <- a.name[1]
-    if(a.name %in% c("substrate", "product", "gene"))
-        stop("Please use `rdata` for reaction-related data.")
     if(missing(e.names)) {
         ee <- substitute(E(g)$`attx` <- value, list(attx=a.name, value=value))
     } else {
@@ -62,6 +56,10 @@ setGeneric("delete.edges", function(object, es) standardGeneric("delete.edges"))
 delete_edges <- function(...) delete.edges(...)
 
 setMethod("delete.edges", "igraph", function(object, es) {
+    if(all(grepl("|", es, fixed=TRUE))) {
+        ess <- sapply(es, FUN=function(x) strsplit(x, "|", fixed=T)[[1]])
+        es <- as.matrix(ess)
+    }
     g <- igraph::delete.edges(object, es)
     attributes(g) <- attributes(object)
     g
@@ -104,23 +102,13 @@ setMethod("add.edges", c("igraph", "vector"), function(object, edges, ...) {
 setMethod("add.edges", c("igraph", "matrix"), function(object, edges, ...) {
     vss <- setdiff(c(edges[, 1], edges[, 2]), vnames(object))
     if(!is.empty(vss)) object <- add.vertices(object, vss)
-
     ess <- apply(edges[, 1:2], 1, paste, collapse="|")
-    tt <- ! ess %in% enames(object)
-    if(sum(tt) < 1) return(object)
-    ess <- ess[tt]
-    ## call add.edges(object, vector, ...)
     add.edges(object, ess, ...)
 })
 setMethod("add.edges", c("igraph", "data.frame"), function(object, edges, ...) {
     vss <- setdiff(unlist(edges), vnames(object))
     if(!is.empty(vss)) object <- add.vertices(object, vss)
-
     ess <- apply(edges[, 1:2], 1, paste, collapse="|")
-    tt <- ! ess %in% enames(object)
-    if(sum(tt) < 1) return(object)
-    ess <- ess[tt]
-    ## call add.edges(object, vector, ...)
     add.edges(object, ess, ...)
 })
 setMethod("add.edges", "xgraph", function(object, edges, ...) {

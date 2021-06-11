@@ -6,7 +6,6 @@ setAs("xgraph", "igraph", function(from) {
     class(from) <- "igraph"
     return(from)
 })
-
 #' @title object test
 #' @description functions for object test
 #' @aliases is.klist is.rset is.mgraph is.rgraph is.ggraph is.xgraph is.chemset
@@ -38,6 +37,10 @@ is.rset <- function(x) {
     inherits(x, "ReactionSet")
 }
 
+#' @export
+is.bgraph <- function(x) {
+    inherits(x, "bgraph")
+}
 #' @export
 is.mgraph <- function(x) {
     inherits(x, "mgraph")
@@ -73,9 +76,5 @@ is.empty <- function(...){
     all(unlist(ss))
 }
 is.stcuts <- function(x) {
-    inherits(x, "stcut.list")
-}
-## return a graph without nodes and edges
-.emptyGraph <- function(g){
-    delete.vertices(g, vnames(g))
+    inherits(x, "stcuts")
 }

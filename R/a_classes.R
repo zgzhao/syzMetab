@@ -41,10 +41,11 @@ setClassUnion("RelationList", "list")
 setClassUnion("GraphicList", "list")
 setClassUnion("KLists", c("EntryList", "ReactionList", "RelationList", "GraphicList"))
 setClassUnion("igraph", "list")
+setClassUnion("bgraph", "list")
 setClassUnion("mgraph", "list")
 setClassUnion("ggraph", "list")
 setClassUnion("rgraph", "list")
-setClassUnion("xgraph", c("mgraph", "ggraph", "rgraph"))
+setClassUnion("xgraph", c("bgraph", "mgraph", "ggraph", "rgraph"))
 
 setClass("ReactionSet",
          slots=c(reaction="ReactionList",
@@ -82,3 +83,4 @@ setMethod("initialize", "keggPATH", function(.Object, ko, d.path) {
     return(.Object)
 })
 
+setClass("stcuts", slots=c(edges="list", genes="list"))

@@ -11,35 +11,37 @@
 #' Refer to \code{\link{keggPATH}} for class information.
 #' TODO: make pathway from local KGML file regardless of d.path
 #' @title make metabolic pathway
-#' @param ko character, KEGG pathway ortholog (ko) index string such as ko00010, 00010 or ath00010
+#' @param object character, KEGG pathway ortholog (ko) index string such as ko00010, 00010 or ath00010
 #' @param d.path file path for \code{\link{KEGG_get}}.
 #' @return keggPATH object
 #' @author ZG Zhao
 #' @export
-make_mpath <- function(ko, d.path="KEGG"){
-    ko <- tolower(ko[1])
-    new("keggPATH", ko, d.path)
-}
+setGeneric("make_mpath", function(object, d.path="KEGG") standardGeneric("make_mpath"))
+setMethod("make_mpath", "character", function(object, d.path){
+    ko <- tolower(object[1])
+    new("keggPATH", object, d.path)
+})
 
 
 #' Convert KOG names of a keggPATH object to real gene names
 #'
 #' In keggPATH objects, genes involved in reactions are generally represented by KEGG entry names (k genes or KOG).
 #' @title General to organism-specific keggPATH conversion
-#' @param kobj a keggPATH object
+#' @param object a keggPATH object
 #' @param org abbreviation of an organism such as "ath"
 #' @param d.path file path for \code{\link{KEGG_get}}
 #' @return keggPATH object
 #' @author ZG Zhao
 #' @export
-mpath_x_org <- function(kobj, org=NA, d.path="KEGG"){
-    if(Organism(kobj) != "ko") stop("No a general KEGG pathway (eg. ko00010)!")
-    if( is.empty(org) ) return(kobj)
+setGeneric("mpath_orgset", function(object, org, d.path="KEGG") standardGeneric("mpath_orgset"))
+setMethod("mpath_orgset", c("keggPATH", "character"), function(object, org, d.path){
+    if(Organism(object) != "ko") stop("No a general KEGG pathway (eg. ko00010)!")
+    if( is.empty(org) ) return(object)
     org <- tolower(org)
     gmap <- kogs_list(org, d.path)
     kogs <- names(gmap)
     ## filter reactions
-    rns <- Reactions(kobj)
+    rns <- Reactions(object)
     rns <- lapply(rns, FUN=function(rr){
         gg <- intersect(rr$gene, kogs)
         gg <- if(length(gg) < 1) NA else unlist(gmap[gg])
@@ -50,11 +52,9 @@ mpath_x_org <- function(kobj, org=NA, d.path="KEGG"){
     ss <- sapply(rns, FUN=function(x) ! is.empty(x$gene))
     rns <- rns[ss]
     class(rns) <- "ReactionList"
-    kobj@reactions <- rns
-    ## if(reaction.only) return(kobj)
-
+    object@reactions <- rns
     ## filter entries
-    ents <- kobj@entries
+    ents <- object@entries
     ents <- lapply(ents, FUN=function(rr){
         if(! rr$type %in% "ortholog") return(rr)
         oo <- intersect(rr$name, kogs)
@@ -68,10 +68,10 @@ mpath_x_org <- function(kobj, org=NA, d.path="KEGG"){
     ss <- sapply(ents, FUN=function(x) ! is.empty(x$name))
     ents <- ents[ss]
     class(ents) <- "EntryList"
-    kobj@entries <- ents
-    kobj@pathInfo <- lapply(kobj@pathInfo, FUN=function(x) {
+    object@entries <- ents
+    object@pathInfo <- lapply(object@pathInfo, FUN=function(x) {
         gsub("ko([0-9]+)", paste0(org, "\\1"), x)
     })
-    kobj@pathInfo$org <- org
-    kobj
-}
+    object@pathInfo$org <- org
+    object
+})

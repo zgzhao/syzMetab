@@ -1,9 +1,9 @@
-#' plot mgraph
+#' plot graph
 #'
 #' Specified igraph plot function for mgraph
-#' @title plot mgraph
-#' @aliases plot.ggraph
-#' @param g mgraph or igraph object
+#' @title plot graph
+#' @aliases plot.rgraph plot.ggraph plot.bgraph
+#' @param g xgraph object
 #' @param s substrates
 #' @param p products
 #' @param show.name logi. Show chemical names if TRUE (default).
@@ -19,18 +19,27 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
     nv <- vcount(g)
     ne <- ecount(g)
     par(mar=rep(0,4))
-    rtns <- Reactions(g)
-    rtns <- rtns[rnames(g)]
-    elty <- rep("solid", ne)
-    ss <- sapply(rtns, FUN=function(x) "auto" %in% x[["gene"]])
-    elty[ss] <- "dotted"
 
+    elty <- rep("solid", ne)
+    vsize <- rep(10, nv)
     if(show.name) {
         vcolor <- rep(NA, nv)
         vlcol <- rep("black", nv)
     } else {
         vcolor <- rep("#6495ED", nv)
         vlcol <- rep("transparent", nv)
+    }
+    if(is.bgraph(g)) {
+        xfac <- V(g)$isfac
+        vsize[!xfac] <- 5
+        vcolor[xfac] <- "pink"
+        xlayout <- layout_with_kk
+    } else if(is.mgraph(g)){
+        rtns <- Reactions(g)
+        rtns <- rtns[rnames(g)]
+        ss <- sapply(rtns, FUN=function(x) "auto" %in% x[["gene"]])
+        elty[ss] <- "dotted"
+        xlayout <- layout.kamada.kawai
     }
     if(! missing(s)) Substrates(g) <- s
     if(! missing(p)) Products(g) <- p
@@ -49,12 +58,12 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
         ng <- sapply(Reactions(g), FUN=function(x) length(x[["gene"]]))
         E(g)$label <- ng[r.names]
     }
-    igraph.options(vertex.size=10,
+    igraph.options(vertex.size=vsize,
                    vertex.color=vcolor,
                    vertex.frame.color=vcolor,
                    vertex.label.color=vlcol,
-                   vertex.label.cex=1.5,
-                   plot.layout=layout.kamada.kawai,
+                   vertex.label.cex=1,
+                   plot.layout=xlayout,
                    plot.margin=0,
                    edge.arrow.size = 0.5,
                    edge.arrow.width = 1, edge.width = 2,
@@ -70,6 +79,9 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
 plot.rgraph <- function(...) plot.mgraph(...)
 #' @export
 plot.ggraph <- function(...) plot.mgraph(...)
+#' @export
+plot.bgraph <- function(...) plot.mgraph(...)
+
 
 #' This function is not relevant to KEGG pathway. It is designed for illustration only.
 #'

@@ -2,6 +2,7 @@
 % Please edit documentation in R/mgraph.R
 \name{make_mgraph}
 \alias{make_mgraph}
+\alias{make_bgraph}
 \alias{make_rgraph}
 \alias{make_ggraph}
 \title{make graph from various data}

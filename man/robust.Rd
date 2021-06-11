@@ -4,14 +4,10 @@
 \alias{robust}
 \title{calculate mutational robustness}
 \usage{
-robust(object, s, p, GMR = 0.01, prob = FALSE)
+robust(object, GMR = 0.01, prob = FALSE)
 }
 \arguments{
 \item{object}{mgraph with substrates and products set}
-
-\item{s}{node names: primary substractes}
-
-\item{p}{node names: end products}
 
 \item{GMR}{numeric (default 0.01), gene mutation rate/probability between 0 and 1.}
 

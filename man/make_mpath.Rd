@@ -4,10 +4,10 @@
 \alias{make_mpath}
 \title{make metabolic pathway}
 \usage{
-make_mpath(ko, d.path = "KEGG")
+make_mpath(object, d.path = "KEGG")
 }
 \arguments{
-\item{ko}{character, KEGG pathway ortholog (ko) index string such as ko00010, 00010 or ath00010}
+\item{object}{character, KEGG pathway ortholog (ko) index string such as ko00010, 00010 or ath00010}
 
 \item{d.path}{file path for \code{\link{KEGG_get}}.}
 }

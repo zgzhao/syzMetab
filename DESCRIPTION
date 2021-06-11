@@ -1,6 +1,6 @@
 Package: gmetab
 Title: gmetab: R package for metabolic network analysis
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: 
     person(given = "Zhiguang", family = "Zhao", role = c("aut", "cre"),
            email = "zgzhao@lzu.edu.cn")
@@ -10,8 +10,6 @@ Encoding: UTF-8
 Depends:
     R (> 4.0),
     xml2,
-    scales,
-    RColorBrewer,
     parallel,
     igraph (> 1.2.6)
 Suggests:

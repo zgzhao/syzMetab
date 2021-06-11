@@ -124,7 +124,7 @@ rdata <- function(g, a.name, x.names) {
 #' @return ReactionSet object
 #' @author ZG Zhao
 #' @export
-as_rset <- function(kinfo, org="ko") {
+make_rset <- function(kinfo, org="ko") {
     if(is.mpath(kinfo)) {
         org <- pathInfo(kinfo)$org
         kinfo <- Reactions(kinfo)
@@ -202,5 +202,5 @@ rset_from_kos <- function(kos, d.path="KEGG") {
         xinfo <- make_mpath(kx, d.path)
         rtns <- c(rtns, Reactions(xinfo))
     }
-    as_rset(rtns, org)
+    make_rset(rtns, org)
 }

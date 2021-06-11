@@ -89,13 +89,6 @@ all_spaths_nodes <- function(object, from, to, mc.cores, n.max=50) {
     vss
 }
 
-.xlapply <- function(lst, FUN, mc.cores, ...) {
-    if(length(lst) < 2) return(lapply(lst, FUN=FUN, ...))
-    if(missing(mc.cores)) mc.cores <- detectCores() - 1
-    mc.cores <- min(length(lst), mc.cores)
-    mclapply(lst, FUN=FUN, mc.cores=mc.cores, ...)
-}
-
 #' Get st_cuts info: edges and genes
 #'
 #' This is a wrapper function of `st_cuts` define in igraph package.
@@ -140,8 +133,8 @@ setMethod("all_stcuts", "mgraph", function(object, s, t){
     gcuts <- lapply(ecuts, FUN=function(enn){
         if(grepl("VCHEM", paste(enn, collapse=" "))) return(NULL)
         ss <- r.names[e.names %in% enn]
-        gns <- sapply(rlist[ss], FUN=function(rr) rr[["gene"]])
-        gns <- sort(unique(unlist(gns)))
+        gns <- lapply(rlist[ss], FUN=function(rr) rr[["gene"]])
+        gns <- unique(unlist(gns))
         names(gns) <- NULL
         gns
     })
@@ -150,10 +143,7 @@ setMethod("all_stcuts", "mgraph", function(object, s, t){
     ecuts <- ecuts[ss]
     gcuts <- gcuts[ss]
     names(gcuts) <- NULL
-    glen <- sapply(gcuts, length)
-    results <- list(min.genes=min(glen), edge.cuts=ecuts, gene.cuts=gcuts)
-    class(results) <- "stcut.list"
-    results
+    new("stcuts", edges=ecuts, genes=gcuts)
 })
 
 ## pre-cleaning network especially before simple path searching
@@ -182,3 +172,4 @@ setMethod("all_stcuts", "mgraph", function(object, s, t){
     }
     g
 }
+
