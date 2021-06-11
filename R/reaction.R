@@ -119,50 +119,95 @@ rdata <- function(g, a.name, x.names) {
 #'
 #' "ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{keggPATH}}.
 #' @title generate ReactionSet object
-#' @param kinfo keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
-#' @param org character, a KEGG organism string. Use if only kinfo is a plain list.
+#' @param object keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
+#' @param org character, "ko" or organism identifier.
+#' @param d.path file path for \code{\link{KEGG_get}}.
+#' @param ... other params
 #' @return ReactionSet object
 #' @author ZG Zhao
 #' @export
-make_rset <- function(kinfo, org="ko") {
-    if(is.mpath(kinfo)) {
-        org <- pathInfo(kinfo)$org
-        kinfo <- Reactions(kinfo)
-    }
+setGeneric("make_rset", function(object, org="ko", d.path="KEGG", ...) standardGeneric("make_rset"))
+setMethod("make_rset", "ReactionList", function(object, org){
     rtns <- list()
-    for(rx in kinfo) {
-        ss <- sort(rx[["substrate"]])
-        pp <- sort(rx[["product"]])
+    hasRev <- "reversible" %in% names(object[[1]])
+    for(rx in object) {
+        ss <- rx[["substrate"]]
+        pp <- rx[["product"]]
         genes <- rx[["gene"]]
         ids <- rx[["name"]]
-        rtns <- rlist_append(rtns, ss, pp, genes, ids)
-        if(rx[["reversible"]])
-            rtns <- rlist_append(rtns, pp, ss, genes, ids)
+        revx <- if(hasRev) rx[["reversible"]] else FALSE
+        sspp <- expand.grid(ss, pp)
+        sspp[[1]] <- as.character(sspp[[1]])
+        sspp[[2]] <- as.character(sspp[[2]])
+        for(i in 1:nrow(sspp)) {
+            ss <- sspp[[1]][i]
+            pp <- sspp[[2]][i]
+            rtns <- rx_append(rtns, ss, pp, genes, ids)
+            if(revx) rtns <- rx_append(rtns, pp, ss, genes, ids)
+        }
     }
     names(rtns) <- paste0("RX", 1:length(rtns))
-    class(rtns) <- "ReactionList"
     new("ReactionSet", rtns, org)
-}
+})
+setMethod("make_rset", "list", function(object, org){
+    class(object) <- "ReactionList"
+    make_rset(object)
+})
 
-#' Append reaction to ReactionSet object
+setMethod("make_rset", "keggPATH", function(object){
+    org <- pathInfo(object)$org
+    rlist <- Reactions(object)
+    make_rset(rlist, org)
+})
+## from kos
+setMethod("make_rset", "character", function(object, d.path){
+    org <- unique(gsub("[0-9]+", "", object))
+    org <- setdiff(org, c("", "ko"))
+    if(length(org) > 1) stop("Only one organism is allowed.")
+    if(length(org) < 1) org <- "ko"
+    kndx <- unique(gsub("[a-z]+", org, object))
+    rtns <- list()
+    for(kx in kndx) {
+        xinfo <- make_mpath(kx, d.path)
+        rtns <- c(rtns, Reactions(xinfo))
+    }
+    make_rset(rtns, org)
+})
+
+#' Append reaction to reaction lists
 #'
 #' Useful for adding to network spontaneous reactions without associated genes.
 #' @title append reaction
-#' @param robj ReactionSet object
-#' @param s character, name of substrate
-#' @param p character, name of product
-#' @param genes character vector, names of genes involved in the reaction
-#' @param ids additional identifers for reaction
-#' @return  ReactionSet object
+#' @param object ReactionList or equivalent list
+#' @param x character (substrate name) or data.frame with at least these columns: from, to, genes, reversible
+#' @param p character, product name (ignore if x is a data.frame)
+#' @param genes character vector, names of genes involved in the reaction  (ignore if x is a data.frame)
+#' @param ids additional identifers for reaction  (ignore if x is a data.frame)
+#' @param reversible TRUE/FALSE (default). If TRUE, add reactions in both directions. Ignore if x is a data.frame.
+#' @return  ReactionList object
 #' @author ZG Zhao
 #' @export
-rset_append <- function(robj, s, p, genes, ids=NULL) {
-    rlist <- rlist_append(robj@reaction, s, p, genes, ids)
-    robj@reaction <- rlist
-    robj
-}
+setGeneric("rlist_append", function(object, x, p, genes, ids=NULL, reversible=FALSE) standardGeneric("rlist_append"))
+setMethod("rlist_append", c("ReactionList", "character"), function(object, x, p, genes, ids, reversible){
+    rlist <- rx_append(object, x, p, genes, ids)
+    if(reversible) rlist <- rx_append(rlist, p, x, genes, ids)
+    rlist
+})
+setMethod("rlist_append", c("list", "character"), function(object, x, p, genes, ids, reversible){
+    class(object) <- "ReactionList"
+    rlist_append(object, x, p, genes, ids, reversible)
+})
+setMethod("rlist_append", c("ReactionList", "data.frame"), function(object, x){
+    for(i in 1:nrow(x))
+        object <- rlist_append(object, x$from[i], x$to[i], x$genes[i], reversible = x$reversible[i])
+    object
+})
+setMethod("rlist_append", c("list", "data.frame"), function(object, x){
+    class(object) <- "ReactionList"
+    rlist_append(object, x)
+})
 
-rlist_append <- function(rlist, s, p, genes, ids=NULL) {
+rx_append <- function(rlist, s, p, genes, ids=NULL) {
     s <- sort(s)
     p <- sort(p)
     rx <- list(substrate=s, product=p, gene=genes, ids=ids)
@@ -188,19 +233,6 @@ rlist_append <- function(rlist, s, p, genes, ids=NULL) {
             rlist[[xndx]] <- rx
         }
     }
+    class(rlist) <- "ReactionList"
     rlist
-}
-
-rset_from_kos <- function(kos, d.path="KEGG") {
-    org <- unique(gsub("[0-9]+", "", kos))
-    org <- setdiff(org, c("", "ko"))
-    if(length(org) > 1) stop("Only one organism is allowed.")
-    if(length(org) < 1) org <- "ko"
-    kndx <- unique(gsub("[a-z]+", org, kos))
-    rtns <- list()
-    for(kx in kndx) {
-        xinfo <- make_mpath(kx, d.path)
-        rtns <- c(rtns, Reactions(xinfo))
-    }
-    make_rset(rtns, org)
 }

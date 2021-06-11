@@ -4,12 +4,16 @@
 \alias{make_rset}
 \title{generate ReactionSet object}
 \usage{
-make_rset(kinfo, org = "ko")
+make_rset(object, org = "ko", d.path = "KEGG", ...)
 }
 \arguments{
-\item{kinfo}{keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.}
+\item{object}{keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.}
 
-\item{org}{character, a KEGG organism string. Use if only kinfo is a plain list.}
+\item{org}{character, "ko" or organism identifier.}
+
+\item{d.path}{file path for \code{\link{KEGG_get}}.}
+
+\item{...}{other params}
 }
 \value{
 ReactionSet object

@@ -30,7 +30,7 @@ setMethod("make_rgraph", "ReactionSet", function(object){
 })
 
 setMethod("make_rgraph", "character", function(object, d.path="KEGG"){
-    rsobj <- rset_from_kos(object, d.path)
+    rsobj <- make_rset(object, d.path)
     make_rgraph(rsobj)
 })
 setMethod("make_rgraph", "keggPATH", function(object){

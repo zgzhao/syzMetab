@@ -44,7 +44,7 @@ setMethod("make_mgraph", "keggPATH", function(object){
     make_mgraph(rsobj)
 })
 setMethod("make_mgraph", "character", function(object, d.path="KEGG"){
-    rsobj <- rset_from_kos(object, d.path)
+    rsobj <- make_rset(object, d.path)
     make_mgraph(rsobj)
 })
 setMethod("make_mgraph", "ReactionList", function(object, org){
