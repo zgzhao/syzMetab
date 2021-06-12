@@ -10,9 +10,10 @@
 #' - KLists:: EntryList, ReactionList, RelationList or GraphicList
 #' - igraph: igraph
 #' - mgraph: metabolite graph
+#' - bgraph: bipartite graph of s-t cuts of genes
 #' - rgraph: reaction graph
 #' - ggraph: gene graph
-#' - xgraph: virtual class of mgraph, rgraph and ggraph
+#' - xgraph: virtual class of mgraph, rgraph, ggraph and bgraph
 #'
 #' S4 Classes:
 #' - keggPATH: complete set of pathway data parsed from a KEGG xml file
@@ -45,7 +46,7 @@ setClassUnion("bgraph", "list")
 setClassUnion("mgraph", "list")
 setClassUnion("ggraph", "list")
 setClassUnion("rgraph", "list")
-setClassUnion("xgraph", c("bgraph", "mgraph", "ggraph", "rgraph"))
+setClassUnion("xgraph", c("mgraph", "ggraph", "rgraph", "bgraph"))
 
 setClass("ReactionSet",
          slots=c(reaction="ReactionList",

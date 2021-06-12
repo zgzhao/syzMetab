@@ -16,9 +16,10 @@ Virtual classes:
 \item KLists:: EntryList, ReactionList, RelationList or GraphicList
 \item igraph: igraph
 \item mgraph: metabolite graph
+\item bgraph: bipartite graph of s-t cuts of genes
 \item rgraph: reaction graph
 \item ggraph: gene graph
-\item xgraph: virtual class of mgraph, rgraph and ggraph
+\item xgraph: virtual class of mgraph, rgraph, ggraph and bgraph
 }
 
 S4 Classes:

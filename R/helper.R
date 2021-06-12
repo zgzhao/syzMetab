@@ -22,16 +22,15 @@
 #' Compounds(pp)
 #' Chemicals(pp)
 #' Genes(pp)
-#' # Reactions(pp)
+#' Reactions(pp)
 #' ##
 #' ## metabolic graph
-#' gg <- make_mpath(pp)
-#' pathInfo(gg)
+#' gg <- make_mgraph(pp)
 #' Organism(gg)
 #' Compounds(gg)
 #' Chemicals(gg)
 #' Genes(gg)
-#' # Reactions(gg)
+#' Reactions(gg)
 #' Reactions(gg, list.only=FALSE)
 #' @author ZG Zhao
 NULL
@@ -84,6 +83,7 @@ setMethod("Reactions", "ReactionSet", function(object){
     object@reaction
 })
 setMethod("Reactions", "xgraph", function(object, list.only=TRUE){
+    if(is.bgraph(object)) return(NULL)
     x <- attr(object, "reactions")
     if(list.only) return(x@reaction)
     else return(x)
@@ -109,6 +109,7 @@ setMethod("Compounds", "ReactionSet", function(object){
     return(rx)
 })
 setMethod("Compounds", "xgraph", function(object){
+    if(is.bgraph(object)) return(NULL)
     rx <- sapply(Reactions(object), FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
@@ -135,6 +136,7 @@ setMethod("Genes", "ReactionSet", function(object){
     return(rx)
 })
 setMethod("Genes", "xgraph", function(object){
+    if(is.bgraph(object)) return(NULL)
     rtns <- Reactions(object)
     rx <- sapply(rtns, FUN=function(rr) rr[["gene"]])
     rx <- unlist(rx)

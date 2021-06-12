@@ -35,16 +35,15 @@ Organism(pp)
 Compounds(pp)
 Chemicals(pp)
 Genes(pp)
-# Reactions(pp)
+Reactions(pp)
 ##
 ## metabolic graph
-gg <- make_mpath(pp)
-pathInfo(gg)
+gg <- make_mgraph(pp)
 Organism(gg)
 Compounds(gg)
 Chemicals(gg)
 Genes(gg)
-# Reactions(gg)
+Reactions(gg)
 Reactions(gg, list.only=FALSE)
 }
 \author{

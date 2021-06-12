@@ -20,6 +20,7 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
     ne <- ecount(g)
     par(mar=rep(0,4))
 
+    xlayout <- layout.kamada.kawai
     elty <- rep("solid", ne)
     vsize <- rep(10, nv)
     if(show.name) {
@@ -44,7 +45,6 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
         })
         if(gene.n) E(g)$label <- ngene
         elty[ngene < 1] <- "dotted"
-        xlayout <- layout.kamada.kawai
     }
     if(! missing(s)) Substrates(g) <- s
     if(! missing(p)) Products(g) <- p

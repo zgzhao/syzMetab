@@ -198,9 +198,14 @@ setMethod("rlist_append", c("list", "character"), function(object, x, p, genes, 
     rlist_append(object, x, p, genes, ids, reversible)
 })
 setMethod("rlist_append", c("ReactionList", "data.frame"), function(object, x){
+    if(! ("reversible" %in% colnames(x))) x$reversible <- FALSE
+    if(! ("genes" %in% colnames(x))) x$genes <- "auto"
     for(i in 1:nrow(x)) {
-        genes <- strsplit(x$genes[i], ";| |,")[[1]]
-        object <- rlist_append(object, x$from[i], x$to[i], genes, reversible = x$reversible[i])
+        ss <- x$from[i]
+        tt <- x$to[i]
+        revx <- x$reversible[i]
+        genes <- strsplit(x$genes[i], "[ ;,\\|\\+\\*&#@]+")[[1]]
+        object <- rlist_append(object, ss, tt, genes, reversible = revx)
     }
     object
 })

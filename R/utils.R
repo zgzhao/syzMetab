@@ -91,7 +91,7 @@ all_spaths_nodes <- function(object, from, to, mc.cores, n.max=50) {
 
 #' Get st_cuts info: edges and genes
 #'
-#' This is a wrapper function of `st_cuts` define in igraph package.
+#' Get st-cuts of edges (reactions). The edge cut-sets are translated into gene cut-sets also. Results can apply to \code{\link{make_bgraph}}.
 #' @title list all gene cut sets
 #' @param object xgraph object
 #' @param s source node
@@ -103,6 +103,19 @@ all_spaths_nodes <- function(object, from, to, mc.cores, n.max=50) {
 #' - gene.cuts
 #' @author ZG Zhao
 #' @export
+#' @examples
+#' ## NOT RUN
+#' library(gmetab)
+#' gm <- make_mgraph(c("ko00010", "ko00020"))
+#' plot(gm)
+#' chem1 <- c("C00031", "C00221", "C00267", "C01172", "C01451", "C06186")
+#' chem2 <- "C00022"
+#' gb <- make_bgraph(gm, s=chem1, t=chem2)
+#' plot(gb)
+#' xcuts <- all_stcuts(gm, s=chem1, t=chem2)
+#' str(xcuts)
+#' gx <- make_bgraph(xcuts)
+#' plot(gx)
 setGeneric("all_stcuts", function(object, s, t) standardGeneric("all_stcuts"))
 setMethod("all_stcuts", "mgraph", function(object, s, t){
     s <- intersect(vnames(object), s)
