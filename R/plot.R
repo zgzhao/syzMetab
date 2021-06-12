@@ -37,8 +37,13 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
     } else if(is.mgraph(g)){
         rtns <- Reactions(g)
         rtns <- rtns[rnames(g)]
-        ss <- sapply(rtns, FUN=function(x) "auto" %in% x[["gene"]])
-        elty[ss] <- "dotted"
+        ngene <- sapply(rtns, FUN=function(x) {
+            genes <- setdiff(x[["gene"]], c("auto", "HLINK"))
+            if (is.empty(genes)) return(0)
+            else length(genes)
+        })
+        if(gene.n) E(g)$label <- ngene
+        elty[ngene < 1] <- "dotted"
         xlayout <- layout.kamada.kawai
     }
     if(! missing(s)) Substrates(g) <- s
@@ -53,11 +58,7 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
         if(show.name) vlcol[ss] <- "blue"
         else vcolor[ss] <- "darkgreen"
     }
-    if(gene.n) {
-        r.names <- rnames(g)
-        ng <- sapply(Reactions(g), FUN=function(x) length(x[["gene"]]))
-        E(g)$label <- ng[r.names]
-    }
+
     igraph.options(vertex.size=vsize,
                    vertex.color=vcolor,
                    vertex.frame.color=vcolor,

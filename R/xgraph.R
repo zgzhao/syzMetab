@@ -93,7 +93,7 @@ setMethod("xgraph_orgset", c("mgraph", "character"), function(object, org, d.pat
     kogs <- names(gmap)
     rtns <- lapply(rtns, FUN=function(rr){
         genes <- intersect(rr$gene, kogs)
-        genes <- if(length(genes) < 1) NA else unlist(gmap[genes])
+        genes <- if(length(genes) < 1) "auto" else unlist(gmap[genes])
         names(genes) <- NULL
         rr$gene <- genes
         rr$reversible <- FALSE

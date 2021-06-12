@@ -126,7 +126,8 @@ setMethod("all_stcuts", "mgraph", function(object, s, t){
     xcuts <- st_cuts(object, s, p)
     ecuts <- lapply(xcuts[[1]], as_ids)
     vcuts <- lapply(xcuts[[2]], as_ids)
-    ## map compounds to genes
+
+    ## map edge cuts to gene cuts
     r.names <- rnames(object)
     e.names <- enames(object)
     rlist <- Reactions(object)
@@ -135,6 +136,8 @@ setMethod("all_stcuts", "mgraph", function(object, s, t){
         ss <- r.names[e.names %in% enn]
         gns <- lapply(rlist[ss], FUN=function(rr) rr[["gene"]])
         gns <- unique(unlist(gns))
+        ## cut set with autonomous reaction CANNOT be interrupted!
+        if(any(c("auto", "HLINK") %in% gns)) return(NULL)
         names(gns) <- NULL
         gns
     })

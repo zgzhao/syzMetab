@@ -44,7 +44,7 @@ setMethod("mpath_orgset", c("keggPATH", "character"), function(object, org, d.pa
     rns <- Reactions(object)
     rns <- lapply(rns, FUN=function(rr){
         gg <- intersect(rr$gene, kogs)
-        gg <- if(length(gg) < 1) NA else unlist(gmap[gg])
+        gg <- if(length(gg) < 1) "auto" else unlist(gmap[gg])
         names(gg) <- NULL
         rr$gene <- sort(gg)
         rr

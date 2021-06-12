@@ -4,7 +4,9 @@
 \alias{robust}
 \title{calculate mutational robustness}
 \usage{
-robust(object, GMR = 0.01, prob = FALSE)
+robust(object, GMR = 0.01, prob = FALSE, FUN = function(x) {
+    -log(x)
+})
 }
 \arguments{
 \item{object}{mgraph with substrates and products set}
@@ -12,6 +14,8 @@ robust(object, GMR = 0.01, prob = FALSE)
 \item{GMR}{numeric (default 0.01), gene mutation rate/probability between 0 and 1.}
 
 \item{prob}{TRUE/FALSE (default). Return functional probability of the network if TRUE.}
+
+\item{FUN}{function translates failure probability to robustness value. Default: FUN=function(x) {-log(x)}}
 }
 \value{
 a number for robustness
