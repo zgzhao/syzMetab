@@ -65,16 +65,6 @@ is.chemset <- function(x){
     ! (is.empty(ss) || is.empty(pp))
 }
 
-#' @export
-is.empty <- function(...){
-    ss <- lapply(list(...), FUN=function(x){
-        if(is.igraph(x)) return(vcount(x) < 1)
-        if(isS4(x)) return(FALSE)
-        x <- unlist(x, recursive=TRUE)
-        length(x) < 1 || all(is.na(x)) || is.null(x) || all(grepl("^\\s*$", x))
-    })
-    all(unlist(ss))
-}
 is.stcuts <- function(x) {
     inherits(x, "stcuts")
 }

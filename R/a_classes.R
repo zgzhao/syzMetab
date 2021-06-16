@@ -47,9 +47,10 @@ setClassUnion("mgraph", "list")
 setClassUnion("ggraph", "list")
 setClassUnion("rgraph", "list")
 setClassUnion("xgraph", c("mgraph", "ggraph", "rgraph", "bgraph"))
+setClassUnion("sp.list", "list")
 
 setClass("ReactionSet",
-         slots=c(reaction="ReactionList",
+         slots=c(reaction="list",
                  organism="character"
                  ))
 setMethod("initialize", "ReactionSet", function(.Object, reactions, organism=""){

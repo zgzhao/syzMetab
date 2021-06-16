@@ -5,6 +5,4 @@ test_that("test getXXX helpers", {
     expect_equal(Organism(gg), "ath")
     expect_equal(Chemicals(pp), Chemicals(gg))
     expect_equal(Genes(pp), Genes(gg))
-    ## NOTE: reactions in KEGGmeta and mgraph are different!
-    ## expect_equal(Reactions(pp), Reactions(gg))
 })

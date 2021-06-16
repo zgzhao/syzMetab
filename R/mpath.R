@@ -33,8 +33,8 @@ setMethod("make_mpath", "character", function(object, d.path){
 #' @return keggPATH object
 #' @author ZG Zhao
 #' @export
-setGeneric("mpath_orgset", function(object, org, d.path="KEGG") standardGeneric("mpath_orgset"))
-setMethod("mpath_orgset", c("keggPATH", "character"), function(object, org, d.path){
+setGeneric("setorg_path", function(object, org, d.path="KEGG") standardGeneric("setorg_path"))
+setMethod("setorg_path", c("keggPATH", "character"), function(object, org, d.path){
     if(Organism(object) != "ko") stop("No a general KEGG pathway (eg. ko00010)!")
     if( is.empty(org) ) return(object)
     org <- tolower(org)
@@ -44,13 +44,13 @@ setMethod("mpath_orgset", c("keggPATH", "character"), function(object, org, d.pa
     rns <- Reactions(object)
     rns <- lapply(rns, FUN=function(rr){
         gg <- intersect(rr$gene, kogs)
-        gg <- if(length(gg) < 1) "auto" else unlist(gmap[gg])
+        gg <- if(length(gg) < 1) "absent" else unlist(gmap[gg])
         names(gg) <- NULL
-        rr$gene <- sort(gg)
+        rr$gene <- .setGeneNames(gg)
         rr
     })
-    ss <- sapply(rns, FUN=function(x) ! is.empty(x$gene))
-    rns <- rns[ss]
+    ## ss <- sapply(rns, FUN=function(x) ! is.empty(x$gene))
+    ## rns <- rns[ss]
     class(rns) <- "ReactionList"
     object@reactions <- rns
     ## filter entries
@@ -58,15 +58,15 @@ setMethod("mpath_orgset", c("keggPATH", "character"), function(object, org, d.pa
     ents <- lapply(ents, FUN=function(rr){
         if(! rr$type %in% "ortholog") return(rr)
         oo <- intersect(rr$name, kogs)
-        oo <- if(length(oo) < 1) NA else unlist(gmap[oo])
+        oo <- if(length(oo) < 1) "absent" else unlist(gmap[oo])
         names(oo) <- NULL
         ox <- grepl("^K[0-9]{5}$", oo)
         rr$name <- sort(oo[!ox])
         rr$type <- "gene"
         rr
     })
-    ss <- sapply(ents, FUN=function(x) ! is.empty(x$name))
-    ents <- ents[ss]
+    ## ss <- sapply(ents, FUN=function(x) ! is.empty(x$name))
+    ## ents <- ents[ss]
     class(ents) <- "EntryList"
     object@entries <- ents
     object@pathInfo <- lapply(object@pathInfo, FUN=function(x) {

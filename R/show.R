@@ -14,3 +14,11 @@ setMethod("show", "keggPATH", function(object) {
     cat("\tCompounds: ", length(Compounds(object)), "\n")
     cat("\tGenes/Orthologs: ", length(Genes(object)), "\n")
 })
+
+setMethod("show", "stcuts", function(object) {
+    cat("S4 object: s-t cuts of metabolic graph\n")
+    cat("Edge cuts (@edges):", length(object@edges), "\n")
+    cat(str(object@edges), "\n")
+    cat("Gene cuts (@genes):", length(object@genes), "\n")
+    cat("\t", str(object@genes), "\n")
+})

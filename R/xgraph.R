@@ -1,37 +1,46 @@
 #' Subset graph with given sources (primary substrates) and targets (products)
 #'
-#' The function do these jobs:
-#' - for rgraph (reaction graph) and ggraph (gene graph), S and P are added to the graph as nodes.
-#' - all edges to S or from P are deleted, and then nodes not connecting to S or P are delete.
-#' - add "substrates" and "products" attributes are the graph.
+#' - In "setorg_graph", reactions without mapping genes are labeled with "absent". This function removes the "absent" links in the graph.
+#' - After setting sources and targets, nodes to sources or from targets should be removed.
+#' - Nodes not accessed by sources or targets should be removed also.
+#' - If clean=TRUE, nodes and edges not in paths from sources to targets are further removed by calling \code{\link{all_spaths_list}}.
 #' @title subset xgraph
-#' @param object xgraph object
-#' @param s character vecter, source ndoes
-#' @param t character vecter, target nodes
-#' @return xgraph object
+#' @param object graph object
+#' @param s source nodes
+#' @param t target nodes
+#' @return graph object
 #' @author ZG Zhao
 #' @export
-setGeneric("xgraph_subset", function(object, s, t) standardGeneric("xgraph_subset"))
-setMethod("xgraph_subset", "mgraph", function(object, s, t){
-    if(is.chemset(object)) stop("Chemicals set already!")
+#' @examples
+#' ## NOT RUN
+#' library(gmetab)
+#' gm <- make_mgraph("ko00010")
+#' chem1 <- c("C00031", "C00221", "C00267", "C01172", "C01451", "C06186")
+#' chem2 <- "C00022"
+#' gx <- subset_graph(gm, s=chem1, t=chem2)
+#' par(mfrow=c(2,1))
+#' plot(gm)
+#' plot(gx)
+setGeneric("subset_graph", function(object, s, t, clean=FALSE) standardGeneric("subset_graph"))
+setMethod("subset_graph", "NULL", function(object, s, t, clean) return(NULL))
+setMethod("subset_graph", "mgraph", function(object, s, t, clean){
     vns <- vnames(object)
     s <- intersect(s, vns)
     t <- intersect(t, vns)
-    if(is.empty(s) || is.empty(t)) stop("Invalid chemical names!")
-    if(! vis_connected(object, s, t))
-        stop("Sources and targets are not connected in the network!")
-    g <- .setChems(object, s, t)
+    if(is.empty(s) || is.empty(t)) return(emptyGraph(object))
+    if(! vis_connected(object, s, t)) return(emptyGraph(object))
+    g <- cleanPrimary(object, s, t)
+    if(clean) g <- cleanThorough(object, s, t)
     g
 })
-setMethod("xgraph_subset", "rgraph", function(object, s, t){
-    if(is.chemset(object)) stop("Chemicals set already!")
+## TODO: if s and t are not chemicals
+setMethod("subset_graph", "rgraph", function(object, s, t, clean){
     ## add nodes to reaction graph
     vns <- Compounds(object)
     s <- intersect(s, vns)
     t <- intersect(t, vns)
-    if(is.empty(s) || is.empty(t)) stop("Invalid chemical names!")
-    if(! vis_connected(object, s, t))
-        stop("Sources and targets are not connected in the network!")
+    if(is.empty(s) || is.empty(t)) return(emptyGraph(object))
+    if(! vis_connected(object, s, t)) return(emptyGraph(object))
     vss <- c(s, t)
     nn <- length(vss)
     g <- add.vertices(object, nn, name=vss)
@@ -45,18 +54,18 @@ setMethod("xgraph_subset", "rgraph", function(object, s, t){
         if(sum(ss) > 0) g <- add.edges(g, rbind(vv, t[ss]))
     }
     attributes(g) <- attributes(object)
-    g <- .setChems(g, s, t)
+    g <- cleanPrimary(g, s, t)
+    if(clean) g <- cleanThorough(object, s, t)
     g
 })
-setMethod("xgraph_subset", "ggraph", function(object, s, t){
-    if(is.chemset(object)) stop("Chemicals set already!")
+## TODO
+setMethod("subset_graph", "ggraph", function(object, s, t, clean){
     ## add nodes to reaction graph
     vns <- Compounds(object)
     s <- intersect(s, vns)
     t <- intersect(t, vns)
-    if(is.empty(s) || is.empty(t)) stop("Invalid chemical names!")
-    if(! vis_connected(object, s, t))
-        stop("Sources and targets are not connected in the network!")
+    if(is.empty(s) || is.empty(t)) return(emptyGraph(object))
+    if(! vis_connected(object, s, t)) return(emptyGraph(object))
     vss <- unique(c(s, t))
     g <- add.vertices(object, length(vss), name=vss)
     ## add edges according to reaction info
@@ -68,9 +77,72 @@ setMethod("xgraph_subset", "ggraph", function(object, s, t){
         g <- add.edges(g, expand.grid(rx[["gene"]], t[xx]))
     }
     attributes(g) <- attributes(object)
-    g <- .setChems(g, s, t)
+    g <- cleanPrimary(g, s, t)
+    if(clean) g <- cleanThorough(object, s, t)
     g
 })
+
+cleanThorough <- function(object, s, t) {
+    if(! vis_connected(object, s, t)) return(emptyGraph(object))
+    mc.cores <- detectCores() - 1
+    spp <- all_spaths_list(object, s, t)
+    vss <- all_spaths_nodes(spp)
+    ess <- all_spaths_edges(spp)
+    ## delete nodes
+    vxx <- setdiff(vnames(object), vss)
+    object <- delete.vertices(object, vxx)
+    ## delete edges
+    exx <- setdiff(enames(object), ess)
+    object <- delete.edges(object, exx)
+    ## save time-consuming results
+    attr(object, "spaths") <- spp
+    object
+}
+
+cleanPrimary <- function(object, s, t){
+    if(! vis_connected(object, s, t)) return(emptyGraph(object))
+    ## remove absent reactions
+    rtns <- Reactions(object)
+    if(! is.empty(rtns)) {
+        ss <- sapply(rtns, FUN=function(x) {
+            all(x[["gene"]] %in% "absent")
+        })
+        rtns <- rtns[! ss]
+        rnx <- names(rtns)
+        rset <- Reactions(object, list.only=FALSE)
+        rset@reaction <- rtns
+        attr(object, "reactions") <- rset
+        e.names <- enames(object)
+        r.names <- rnames(object)
+        exx <- e.names[! r.names %in% rnx]
+        object <- delete.edges(object, exx)
+    }
+    ## remove not connected nodes
+    vss <- vs_accessed_by(object, s, "out")
+    vss <- c(vss, vs_accessed_by(object, t, "in"))
+    vxx <- setdiff(vnames(object), vss)
+    if(! is.empty(vxx)) object <- delete.vertices(object, vxx)
+    ## remove edges to sources or from targets
+    s <- intersect(s, vnames(object))
+    t <- intersect(t, vnames(object))
+    vxx <- vs_adjacent(object, s, "in")
+    for(aa in s) {
+        vtt <- vxx[[aa]]
+        if(is.empty(vtt)) next
+        exx <- paste(vtt, aa, sep="|")
+        object <- delete.edges(object, exx)
+    }
+    vxx <- vs_adjacent(object, t, "out")
+    for(aa in t) {
+        vtt <- vxx[[aa]]
+        if(is.empty(vtt)) next
+        exx <- paste(aa, vtt, sep="|")
+        object <- delete.edges(object, exx)
+    }
+    Substrates(object) <- s
+    Products(object) <- t
+    object
+}
 
 #' Normalize KEGG generic pathway to species specific pathway.
 #'
@@ -82,56 +154,49 @@ setMethod("xgraph_subset", "ggraph", function(object, s, t){
 #' @return graph with organism set
 #' @author ZG Zhao
 #' @export
-setGeneric("xgraph_orgset", function(object, org, d.path="KEGG") standardGeneric("xgraph_orgset"))
+#' @examples
+#' ## NOT RUN
+#' library(gmetab)
+#' gm <- make_mgraph("ko00010")
+#' gx <- subset_graph(gm, org="ath")
+#' par(mfrow=c(2,1))
+#' plot(gm)
+#' ## edges (reactions) with zero gene are show in dotted lines.
+#' plot(gx)
+setGeneric("setorg_graph", function(object, org, d.path="KEGG") standardGeneric("setorg_graph"))
 #' @export
-mgraph_x_org <- function(...) xgraph_subset(...)
-setMethod("xgraph_orgset", c("mgraph", "character"), function(object, org, d.path){
+setMethod("setorg_graph", c("mgraph", "character"), function(object, org, d.path){
     if(Organism(object) != "ko") stop("Not a generic metabolic graph!")
     rtns <- Reactions(object)
     org <- org[1]
     gmap <- kogs_list(org, d.path)
     kogs <- names(gmap)
     rtns <- lapply(rtns, FUN=function(rr){
-        genes <- intersect(rr$gene, kogs)
-        genes <- if(length(genes) < 1) "auto" else unlist(gmap[genes])
+        genes <- rr$gene
+        genex <- grep("^auto.+", genes, value=TRUE)
+        genes <- intersect(genes, kogs)
+        if(!is.empty(genes)) genes <- unlist(gmap[genes])
+        genes <- c(genes, genex)
+        if(is.empty(genes)) genes <- "absent"
         names(genes) <- NULL
-        rr$gene <- genes
+        rr$gene <- .setGeneNames(genes)
         rr$reversible <- FALSE
         rr
     })
-    ss <- sapply(rtns, FUN=function(x) ! is.empty(x$gene))
     ## ensure returning result is a graph!
-    if(sum(ss) < 1) return(.emptyGraph(object))
+    ## ss <- sapply(rtns, FUN=function(x) ! is.empty(x$gene))
+    ## if(sum(ss) < 1) return(emptyGraph(object))
+    ## rtns <- rtns[ss]
 
-    rtns <- rtns[ss]
     robj <- make_rset(rtns, org)
     gx <- make_mgraph(robj)
     if(is.chemset(object)) {
         s <- intersect(Substrates(object), vnames(gx))
         p <- intersect(Products(object), vnames(gx))
         if(is.empty(s) || is.empty(object))
-            gx <- .emptyGraph(gx)
+            gx <- emptyGraph(gx)
         else
-            gx <- xgraph_subset(gx, s, p)
+            gx <- subset_graph(gx, s, p)
     }
     gx
 })
-
-.setChems <- function(g, s, t, clean) {
-    Substrates(g) <- s
-    Products(g) <- t
-    mc.cores <- detectCores() - 1
-    spp <- all_spaths_list(g, s, t, mc.cores)
-    vss <- all_spaths_nodes(spp)
-    ess <- all_spaths_edges(spp)
-    ## delete nodes
-    vxx <- setdiff(vnames(g), vss)
-    g <- delete.vertices(g, vxx)
-    ## delete edges
-    exx <- setdiff(enames(g), ess)
-    g <- delete.edges(g, exx)
-    ## save time-consuming results
-    attr(g, "spaths") <- spp
-    g
-}
-

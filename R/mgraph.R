@@ -18,7 +18,7 @@
 #' - make_mgraph(object, ...): from keggPATH, ResctionSet, ReactionList, list or character vector (kos)
 #' - make_rgraph(object, ...): from keggPATH, ResctionSet, ReactionList or character vector (kos)
 #' - make_ggraph(object, ...): from keggPATH, ResctionSet, ReactionList or character vector (kos)
-#' - make_bgraph(object, ...): from mgraph or stcuts (refer to \code{\link{all_stcuts}})
+#' - make_bgraph(object, ...): from mgraph or stcuts (refer to \code{\link{make_stcuts}})
 #' @param object keggPATH, ReactionSet ReactionList, character vector or list.
 #' @param ... additional parameters depends on "object"
 #' - org: organism/species indentifier, parameter for "object" without organism info such as ReactionList and list
@@ -79,7 +79,7 @@ setMethod("make_mgraph", "list", function(object, org="ko"){
         all(c("substrate", "product", "gene", "reversible") %in% names(x))
     })
     if(! all(rvalid)) stop("Invalid reaction list.")
-    rsobj <- make_rset(rtns, org)
+    rsobj <- make_rset(object, org)
     make_mgraph(rsobj)
 })
 

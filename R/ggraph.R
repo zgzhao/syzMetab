@@ -13,19 +13,21 @@ setMethod("make_ggraph", "ReactionSet", function(object){
     vv <- Genes(object)
     g <- make_empty_graph(n=length(vv))
     V(g)$name <- vv
+
     rlist <- Reactions(object)
-    for(ndx in names(rlist)) {
-        rx <- rlist[[ndx]]
-        gns <- rx[["gene"]]
+    for(rx in rlist) {
         pp <- rx[["product"]]
-        gnp <- lapply(rlist, FUN=function(rr){
+        gene1 <- rx[["gene"]]
+        gene2 <- lapply(rlist, FUN=function(rr){
             ss <- rr[["substrate"]]
             if(any(ss %in% pp)) return(rr[["gene"]])
             else return(NULL)
         })
-        gnp <- unlist(gnp)
-        gnp <- setdiff(gnp, gns)
-        g <- add.edges(g, expand.grid(gns, gnp))
+        gene2 <- unlist(gene2)
+        gene2 <- setdiff(gene2, gene1)
+        if(is.empty(gene2)) next
+        dd <- expand.grid(gene1, gene2)
+        g <- add.edges(g, dd)
     }
     attr(g, "reactions") <- object
     class(g) <- c("ggraph", class(g))

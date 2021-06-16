@@ -39,9 +39,8 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
         rtns <- Reactions(g)
         rtns <- rtns[rnames(g)]
         ngene <- sapply(rtns, FUN=function(x) {
-            genes <- setdiff(x[["gene"]], c("auto", "HLINK"))
-            if (is.empty(genes)) return(0)
-            else length(genes)
+            ss <- grepl("^auto", x[["gene"]])
+            sum(! ss)
         })
         if(gene.n) E(g)$label <- ngene
         elty[ngene < 1] <- "dotted"

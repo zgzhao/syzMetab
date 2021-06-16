@@ -10,6 +10,7 @@
 #' @author ZG Zhao
 #' @export
 setGeneric("robust", function(object, GMR=0.01, prob=FALSE, FUN=function(x){-log(x)}) standardGeneric("robust"))
+setMethod("robust", "NULL", function(object, GMR, prob, FUN) return(-100))
 setMethod("robust", "bgraph", function(object, GMR, prob, FUN){
     gsets <- attr(object, "stcuts")@genes
     vfac <- names(gsets)
@@ -33,6 +34,7 @@ setMethod("robust", "bgraph", function(object, GMR, prob, FUN){
 })
 
 setMethod("robust", "stcuts", function(object, GMR, prob, FUN){
+    if(is.empty(object)) return(-100)
     g <- make_bgraph(object)
     robust(g, GMR=GMR, prob=prob, FUN=FUN)
 })

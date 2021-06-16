@@ -122,12 +122,12 @@ vs_adjacent <- function(g, v.names, mode = c("out", "in", "all")) {
 #' @title test connected
 #' @param g graph object
 #' @param s source node(s)
-#' @param p target edge(s)
+#' @param t target edge(s)
 #' @return logi, TRUE if any target is accessed by any source
 #' @author ZG Zhao
 #' @export
-vis_connected <- function(g, s, p) {
+vis_connected <- function(g, s, t) {
     if(vcount(g) < 1) return(FALSE)
-    if(is.empty(s) || is.empty(p)) return(FALSE)
-    any(p %in% vs_accessed_by(g, s, "out"))
+    if(is.empty(s) || is.empty(t)) return(FALSE)
+    any(t %in% vs_accessed_by(g, s, "out"))
 }

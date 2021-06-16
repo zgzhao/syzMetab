@@ -77,8 +77,10 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
         rtype <- xml_attr(x, "type") == "reversible"
         chem1 <- xml_attr(xml_find_all(x, ".//substrate"), "id")
         chem2 <- xml_attr(xml_find_all(x, ".//product"), "id")
-        chem1 <- sapply(chem1, FUN=function(aa) entries[[aa]][["name"]])
-        chem2 <- sapply(chem2, FUN=function(aa) entries[[aa]][["name"]])
+        chem1 <- lapply(chem1, FUN=function(aa) entries[[aa]][["name"]])
+        chem2 <- lapply(chem2, FUN=function(aa) entries[[aa]][["name"]])
+        chem1 <- unlist(chem1)
+        chem2 <- unlist(chem2)
         names(chem1) <- NULL
         names(chem2) <- NULL
         r.names <- entries[[xid]][["reaction"]]
@@ -87,6 +89,7 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
     })
     names(rlist) <- rids
     class(rlist) <- "ReactionList"
+    attr(rlist, "raw") <- TRUE
     rlist
 }
 
@@ -166,6 +169,8 @@ kogs_list <- function(org, d.path="KEGG", KOGs=NA) {
     genes <- dtx$gene
     if(! is.list(genes)) genes <- as.list(genes)
     names(genes) <- dtx$KOG
+    genes$auto <- "auto"
+    genes$HLINK <- "HLINK"
     genes
 }
 

@@ -127,31 +127,22 @@ rdata <- function(g, a.name, x.names) {
 #' @author ZG Zhao
 #' @export
 setGeneric("make_rset", function(object, org="ko", d.path="KEGG", ...) standardGeneric("make_rset"))
-setMethod("make_rset", "ReactionList", function(object, org){
+setMethod("make_rset", "list", function(object, org){
     rtns <- list()
-    hasRev <- "reversible" %in% names(object[[1]])
     for(rx in object) {
-        ss <- rx[["substrate"]]
-        pp <- rx[["product"]]
-        genes <- rx[["gene"]]
-        ids <- rx[["name"]]
-        revx <- if(hasRev) rx[["reversible"]] else FALSE
-        sspp <- expand.grid(ss, pp)
-        sspp[[1]] <- as.character(sspp[[1]])
-        sspp[[2]] <- as.character(sspp[[2]])
-        for(i in 1:nrow(sspp)) {
-            ss <- sspp[[1]][i]
-            pp <- sspp[[2]][i]
-            rtns <- rx_append(rtns, ss, pp, genes, ids)
-            if(revx) rtns <- rx_append(rtns, pp, ss, genes, ids)
-        }
+        aa <- rx[["substrate"]]
+        bb <- rx[["product"]]
+        cc <- rx[["gene"]]
+        dd <- if("name" %in% names(rx)) rx[["name"]] else NULL
+        ee <- rx[["reversible"]]
+        rtns <- add.reactions(rtns, ds=aa, t=bb, genes=cc, name=dd, reversible=ee)
     }
     names(rtns) <- paste0("RX", 1:length(rtns))
     new("ReactionSet", rtns, org)
 })
-setMethod("make_rset", "list", function(object, org){
-    class(object) <- "ReactionList"
-    make_rset(object)
+setMethod("make_rset", "ReactionList", function(object, org){
+    class(object) <- "list"
+    make_rset(object, org)
 })
 
 setMethod("make_rset", "keggPATH", function(object){
@@ -179,67 +170,104 @@ setMethod("make_rset", "character", function(object, d.path){
 #' Useful for adding to network spontaneous reactions without associated genes.
 #' @title append reaction
 #' @param object ReactionList or equivalent list
-#' @param x character (substrate name) or data.frame with at least these columns: from, to, genes, reversible
-#' @param p character, product name (ignore if x is a data.frame)
-#' @param genes character vector, names of genes involved in the reaction  (ignore if x is a data.frame)
-#' @param ids additional identifers for reaction  (ignore if x is a data.frame)
-#' @param reversible TRUE/FALSE (default). If TRUE, add reactions in both directions. Ignore if x is a data.frame.
+#' @param ds character (substrate name) or data.frame with at least these columns: from, to, genes, reversible
+#' @param t character, product name (ignore if ds is a data.frame)
+#' @param genes character vector, names of genes involved in the reaction  (ignore if ds is a data.frame)
+#' @param name additional identifer(s) for reaction  (ignore if ds is a data.frame)
+#' @param reversible TRUE/FALSE (default). If TRUE, add reactions in both directions. Ignore if ds is a data.frame.
 #' @return  ReactionList object
 #' @author ZG Zhao
 #' @export
-setGeneric("rlist_append", function(object, x, p, genes, ids=NULL, reversible=FALSE) standardGeneric("rlist_append"))
-setMethod("rlist_append", c("ReactionList", "character"), function(object, x, p, genes, ids, reversible){
-    rlist <- rx_append(object, x, p, genes, ids)
-    if(reversible) rlist <- rx_append(rlist, p, x, genes, ids)
-    rlist
-})
-setMethod("rlist_append", c("list", "character"), function(object, x, p, genes, ids, reversible){
-    class(object) <- "ReactionList"
-    rlist_append(object, x, p, genes, ids, reversible)
-})
-setMethod("rlist_append", c("ReactionList", "data.frame"), function(object, x){
-    if(! ("reversible" %in% colnames(x))) x$reversible <- FALSE
-    if(! ("genes" %in% colnames(x))) x$genes <- "auto"
-    for(i in 1:nrow(x)) {
-        ss <- x$from[i]
-        tt <- x$to[i]
-        revx <- x$reversible[i]
-        genes <- strsplit(x$genes[i], "[ ;,\\|\\+\\*&#@]+")[[1]]
-        object <- rlist_append(object, ss, tt, genes, reversible = revx)
+setGeneric("add.reactions", function(object, ds, t, genes, name, reversible) standardGeneric("add.reactions"))
+setMethod("add.reactions", c("list", "character", "character", "character"),
+          function(object, ds, t, genes, name, reversible){
+    ## All gene names in ReactionSet are normalized.
+    genes <- .setGeneNames(unique(genes))
+    ## reaction names by s-t names
+    r.names <- sapply(object, FUN=function(rx){
+        aa <- sort(rx[["substrate"]])
+        bb <- sort(rx[["product"]])
+        paste(aa, bb, sep=" ")
+    })
+    names(r.names) <- NULL
+    ## take reversibility into account
+    sts <- expand.grid(ds, t)
+    if(reversible) sts <- rbind(sts, expand.grid(t, ds))
+    sts[[1]] <- as.character(sts[[1]])
+    sts[[2]] <- as.character(sts[[2]])
+
+    for(ic in 1:nrow(sts)) {
+        ss <- sts[ic, 1]
+        tt <- sts[ic, 2]
+        x.name <- paste(ss, tt, sep=" ")
+
+        if(x.name %in% r.names) {
+            ndx <- which(r.names == x.name)
+            ndx <- ndx[1]  ## one reaction only each time
+            genes <- c(genes, object[[ndx]][["gene"]])
+            genes <- setdiff(genes, c(NA, ""))
+            name <- c(name, object[[ndx]][["name"]])
+            object[[ndx]][["gene"]] <- unique(genes)
+            object[[ndx]][["name"]] <- unique(name)
+        } else {
+            rx <- list(substrate=ss, product=tt, gene=genes, name=name)
+            xndx <- paste0("RX", length(object) + 1)
+            object[[xndx]] <- rx
+            r.names <- c(r.names, x.name)
+        }
     }
     object
 })
-setMethod("rlist_append", c("list", "data.frame"), function(object, x){
-    class(object) <- "ReactionList"
-    rlist_append(object, x)
+setMethod("add.reactions", c("list", "data.frame"), function(object, ds){
+    c.names <- colnames(ds)
+    if(! all(c("from", "to", "genes", "reversible") %in% c.names))
+        stop("Data should contain at least 4 columns: from, to, genes and reversible.")
+    for(ic in 1:nrow(ds)) {
+        s <- strsplit(ds$from[ic], "[ ;,\\|]+")[[1]]
+        t <- strsplit(ds$to[ic], "[ ;,\\|]+")[[1]]
+        genes <- strsplit(ds$genes[ic], "[ ;,\\|]+")[[1]]
+        xrev <- ds$reversible[ic]
+        xid <- if("name" %in% c.names) NULL else ds$name[ic]
+        object <- add.reactions(object, ds=s, t=t, genes=genes, name=xid, reversible=xrev)
+    }
+    object
+})
+setMethod("add.reactions", c("ReactionSet", "character", "character", "character"),
+          function(object, ds, t, genes, name, reversible){
+    rlist <- Reactions(object)
+    rlist <- add.reactions(rlist, ds, t, genes, name, reversible)
+    object@reaction <- rlist
+    object
+})
+setMethod("add.reactions", c("ReactionSet", "data.frame"), function(object, ds){
+    rlist <- Reactions(object)
+    rlist <- add.reactions(rlist, ds)
+    object@reaction <- rlist
+    object
 })
 
-rx_append <- function(rlist, s, p, genes, ids=NULL) {
-    s <- sort(s)
-    p <- sort(p)
-    rx <- list(substrate=s, product=p, gene=genes, ids=ids)
+setMethod("add.reactions", c("mgraph", "character", "character", "character"),
+          function(object, ds, t, genes, name, reversible){
+    if(Organism(object) != "ko") genes <- .setGeneNames(genes)
+    rlist <- Reactions(object, list.only=TRUE)
+    rlist <- add.reactions(rlist, ds, t, genes, name, reversible)
+    rset <- Reactions(object, list.only=FALSE)
+    rset@reaction <- rlist
+    ## NOTE lazy method: make mgraph from ReactionSet
+    ## TODO: 1. add vertices; 2. add edges with reaction name and gene mappings
+    g <- make_mgraph(rset)
+    g
+})
 
-    if(length(rlist) < 1) {
-        rlist[["RX1"]] <- rx
-    } else {
-        r.names <- sapply(rlist, FUN=function(rx){
-            ss <- sort(rx[["substrate"]])
-            pp <- sort(rx[["product"]])
-            paste(c(ss, pp), collapse=" ")
-        })
-        names(r.names) <- NULL
-        xname <- paste(c(s, p), collapse=" ")
-        if(xname %in% r.names) {
-            ndx <- which(r.names == xname)
-            genes <- c(genes, rlist[[ndx]][["gene"]])
-            rlist[[ndx]][["gene"]] <- unique(genes)
-            ids <- c(ids, rlist[[ndx]][["ids"]])
-            rlist[[ndx]][["ids"]] <- unique(ids)
-        } else {
-            xndx <- paste0("RX", length(rlist) + 1)
-            rlist[[xndx]] <- rx
-        }
-    }
-    class(rlist) <- "ReactionList"
-    rlist
-}
+setMethod("add.reactions", c("mgraph", "data.frame"), function(object, ds){
+    c.names <- colnames(ds)
+    if(! all(c("from", "to", "genes", "reversible") %in% c.names))
+        stop("Data should contain at least 4 columns: from, to, genes and reversible.")
+    if(Organism(object) != "ko") ds$genes <- .setGeneNames(ds$genes)
+    rlist <- Reactions(object, list.only=TRUE)
+    rlist <- add.reactions(rlist, ds)
+    rset <- Reactions(object, list.only=FALSE)
+    rset@reaction <- rlist
+    g <- make_mgraph(rset)
+    g
+})

@@ -15,7 +15,20 @@
     mclapply(lst, FUN=FUN, mc.cores=mc.cores, ...)
 }
 
-## return a graph without nodes and edges
-.emptyGraph <- function(g){
-    delete.vertices(g, vnames(g))
+.setGeneNames <- function(genes) {
+    genes <- unique(unlist(genes))
+    ss <- genes %in% c("auto", "HLINK")
+    nn <- sum(ss)
+    if(nn < 1) return(genes)
+    genex <- NULL
+    for(i in 1:nn) {
+        x <- sample(c(LETTERS, letters, 0:9), 8)
+        x <- paste0(x, collapse="")
+        genex <- c(genex, x)
+    }
+    genex <- paste0("auto", genex)
+    genes[ss] <- genex
+    sort(genes)
 }
+## CONSTANTS
+.nullSTcuts <- new("stcuts", edges=list(), genes=list())

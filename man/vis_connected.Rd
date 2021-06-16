@@ -4,14 +4,14 @@
 \alias{vis_connected}
 \title{test connected}
 \usage{
-vis_connected(g, s, p)
+vis_connected(g, s, t)
 }
 \arguments{
 \item{g}{graph object}
 
 \item{s}{source node(s)}
 
-\item{p}{target edge(s)}
+\item{t}{target edge(s)}
 }
 \value{
 logi, TRUE if any target is accessed by any source

@@ -14,6 +14,6 @@ test_that("test KGML parsing", {
     expect_identical(sort(entx[["gene"]]), c("K00161", "K00162", "K00163"))
     ## fit organism: more reactions from KO-path
     pp2 <- make_mpath("hsa00010")
-    pp3 <- mpath_orgset(pp1, "hsa")
+    pp3 <- setorg_path(pp1, "hsa")
     expect_identical(length(pp2@reactions) <= length(pp3@reactions), TRUE)
 })
