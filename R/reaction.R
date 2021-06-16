@@ -178,7 +178,7 @@ setMethod("make_rset", "character", function(object, d.path){
 #' @return  ReactionList object
 #' @author ZG Zhao
 #' @export
-setGeneric("add.reactions", function(object, ds, t, genes, name, reversible) standardGeneric("add.reactions"))
+setGeneric("add.reactions", function(object, ds, t, genes, name=NULL, reversible=FALSE) standardGeneric("add.reactions"))
 setMethod("add.reactions", c("list", "character", "character", "character"),
           function(object, ds, t, genes, name, reversible){
     ## All gene names in ReactionSet are normalized.

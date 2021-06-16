@@ -1,6 +1,6 @@
 Package: gmetab
 Title: gmetab: R package for metabolic network analysis
-Version: 0.2.3
+Version: 0.3.0
 Authors@R: 
     person(given = "Zhiguang", family = "Zhao", role = c("aut", "cre"),
            email = "zgzhao@lzu.edu.cn")

@@ -41,7 +41,7 @@ setMethod("all_spaths_list", "xgraph",
 
     if(vcount(object) > n.max)
         stop("Node number exceeds `n.max` setting.")
-    stime <- Sys.time()
+    ## stime <- Sys.time()
     vss <- vnames(object)
     from <- intersect(from, vss)
     to <- intersect(to, vss)
@@ -54,8 +54,11 @@ setMethod("all_spaths_list", "xgraph",
         lapply(xpp, names)
     }, mc.cores=mc.cores)
     spp <- unlist(spp, recursive = FALSE)
+    print(spp)
+    spp <- lapply(spp, unique)
     xchems <- c(from, to)
     ss <- sapply(spp, FUN=function(x) sum(x %in% xchems) == 2)
+    print(ss)
     spp <- spp[ss]
     class(spp) <- c("sp.list", class(spp))
     ## cat("======Simpel paths search==========\n",

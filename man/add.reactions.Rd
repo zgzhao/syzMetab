@@ -4,7 +4,7 @@
 \alias{add.reactions}
 \title{append reaction}
 \usage{
-add.reactions(object, ds, t, genes, name, reversible)
+add.reactions(object, ds, t, genes, name = NULL, reversible = FALSE)
 }
 \arguments{
 \item{object}{ReactionList or equivalent list}

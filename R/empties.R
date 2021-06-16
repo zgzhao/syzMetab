@@ -11,6 +11,7 @@ setGeneric("is.empty", function(object, ...) standardGeneric("is.empty"))
 setMethod("is.empty", "NULL", function(object) TRUE)
 setMethod("is.empty", "vector", function(object, ...) {
     xx <- unlist(c(object, ...))
+    if(all(is.na(xx))) return(TRUE)
     if (length(xx) < 1) return(TRUE)
     all(grepl("^\\s*$", xx))
 })

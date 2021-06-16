@@ -117,11 +117,6 @@ cleanPrimary <- function(object, s, t){
         exx <- e.names[! r.names %in% rnx]
         object <- delete.edges(object, exx)
     }
-    ## remove not connected nodes
-    vss <- vs_accessed_by(object, s, "out")
-    vss <- c(vss, vs_accessed_by(object, t, "in"))
-    vxx <- setdiff(vnames(object), vss)
-    if(! is.empty(vxx)) object <- delete.vertices(object, vxx)
     ## remove edges to sources or from targets
     s <- intersect(s, vnames(object))
     t <- intersect(t, vnames(object))
@@ -139,6 +134,13 @@ cleanPrimary <- function(object, s, t){
         exx <- paste(aa, vtt, sep="|")
         object <- delete.edges(object, exx)
     }
+    ## remove not connected nodes
+    vss <- vs_accessed_by(object, s, "out")
+    vss <- c(vss, vs_accessed_by(object, t, "in"))
+    vxx <- setdiff(vnames(object), vss)
+    if(! is.empty(vxx)) object <- delete.vertices(object, vxx)
+
+    ##
     Substrates(object) <- s
     Products(object) <- t
     object
