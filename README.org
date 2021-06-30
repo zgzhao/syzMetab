@@ -1,32 +1,28 @@
-#+TITLE: gmetab
+#+TITLE: syzMetab
 #+AUTHOR: ZGUANG@LZU
 #+DATE:
 #+OPTIONS: H:4 toc:nil ^:{} num:t html-style:nil html-scripts:nil
 #+STARTUP: content
 
-gmetab: R package for metabolic network construction, visualization and analysis with igraph.
+syzMetab: R package for metabolic network construction, visualization and analysis with igraph.
 
 * Warning
 - The package is still under active development. All components may be changed in future versions.
-- Install latest (dev) version of igraph, or you may encounter some problems:
-#+begin_src R :exports code :tangle yes :eval never :ravel eval=TRUE
-  ## install.packages('devtools')
-  require('devtools')
-  install_github("igraph/rigraph@master")
-#+end_src
 
 * Installation
+- NOTE: install latest (dev) version of igraph, or you may encounter some problems:
 #+begin_src R :exports code :tangle yes :eval never :ravel eval=FALSE
   require('devtools')
-  install_github('zgzhao/gmetab')
+  install_github("igraph/rigraph@master")
+  install_github('zgzhao/syzMetab')
 #+end_src
 
 * Terms
-Followings are terms used in "gmetab" package.
+Followings are terms used in "syzMetab" package.
 ** metabolic pathway
-A metabolic pathway refer to meta data parsed from a KEGG xml (KGML) file and is represented by keggPATH S4 class.
+A metabolic pathway refer to meta data parsed from a KEGG xml (KGML) file and is represented by KDataSet S4 class.
 
-Data slots in "keggPATH" object:
+Data slots in "KDataSet" object:
 - pathInfo: list
 - entries: EntryList
 - reactions: ReactionList
@@ -40,7 +36,7 @@ Most network algorithms for igraph can apply to mgraph directly; however, since 
 
 ** reaction
 Reactions play key roles in metabolic network construction and downstream analysis.
-Two classes are designed in gmetab package for reactions handling: "ReactionList" and "ReactionSet".
+Two classes are designed in syzMetab package for reactions handling: "ReactionList" and "ReactionSet".
 The former is virtual class of "list" and the latter is a S4 class.
 
 Generally, a reaction should contain minimun data of:

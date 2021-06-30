@@ -29,7 +29,7 @@ Subset graph with given sources (primary substrates) and targets (products)
 }
 \examples{
 ## NOT RUN
-library(gmetab)
+library(syzMetab)
 gm <- make_mgraph("ko00010")
 chem1 <- c("C00031", "C00221", "C00267", "C01172", "C01451", "C06186")
 chem2 <- "C00022"

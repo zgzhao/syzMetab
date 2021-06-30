@@ -1,7 +1,7 @@
 test_that("class checking works", {
-    ## keggPATH
-    pp1 <- make_mpath("ko00010")
-    pp2 <- make_mpath("ko00020")
+    ## KDataSet
+    pp1 <- make_kdset("ko00010")
+    pp2 <- make_kdset("ko00020")
     ## ReactionList/list
     rr1 <- Reactions(pp1)
     ## ReactionSet

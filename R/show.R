@@ -5,8 +5,8 @@ setMethod("show", "ReactionSet", function(object) {
     cat("\tCompounds: ", length(Compounds(object)), "\n")
 })
 
-setMethod("show", "keggPATH", function(object) {
-    cat("keggPATH object: S4 class holding KEGG pathway meta data\n")
+setMethod("show", "KDataSet", function(object) {
+    cat("KDataSet object: S4 class holding KEGG pathway meta data\n")
     cat("\tName: ", object@pathInfo$name, "\n")
     cat("\tTitle: ", object@pathInfo$title, "\n")
     cat("\tOrganism: ", object@pathInfo$org,"\n")

@@ -13,7 +13,7 @@
 #' @export
 #' @examples
 #' ## NOT RUN
-#' library(gmetab)
+#' library(syzMetab)
 #' gm <- make_mgraph("ko00010")
 #' chem1 <- c("C00031", "C00221", "C00267", "C01172", "C01451", "C06186")
 #' chem2 <- "C00022"
@@ -78,13 +78,14 @@ setMethod("subset_graph", "ggraph", function(object, s, t, clean){
     }
     attributes(g) <- attributes(object)
     g <- cleanPrimary(g, s, t)
+    s <- intersect(vnames(object), s)
+    t <- intersect(vnames(object), t)
     if(clean) g <- cleanThorough(object, s, t)
     g
 })
 
 cleanThorough <- function(object, s, t) {
     if(! vis_connected(object, s, t)) return(emptyGraph(object))
-    mc.cores <- detectCores() - 1
     spp <- all_spaths_list(object, s, t)
     vss <- all_spaths_nodes(spp)
     ess <- all_spaths_edges(spp)
@@ -118,8 +119,8 @@ cleanPrimary <- function(object, s, t){
         object <- delete.edges(object, exx)
     }
     ## remove edges to sources or from targets
-    s <- intersect(s, vnames(object))
-    t <- intersect(t, vnames(object))
+    s <- intersect(vnames(object), s)
+    t <- intersect(vnames(object), t)
     vxx <- vs_adjacent(object, s, "in")
     for(aa in s) {
         vtt <- vxx[[aa]]
@@ -134,13 +135,21 @@ cleanPrimary <- function(object, s, t){
         exx <- paste(aa, vtt, sep="|")
         object <- delete.edges(object, exx)
     }
-    ## remove not connected nodes
-    vss <- vs_accessed_by(object, s, "out")
-    vss <- c(vss, vs_accessed_by(object, t, "in"))
+    ## remove nodes without contribution to targets
+    t <- intersect(vnames(object), t)
+    vss <- vs_accessed_by(object, t, "in")
     vxx <- setdiff(vnames(object), vss)
     if(! is.empty(vxx)) object <- delete.vertices(object, vxx)
 
-    ##
+    ## remove nodes not drived from sources
+    s <- intersect(vnames(object), s)
+    vss <- vs_accessed_by(object, s, "out")
+    vxx <- setdiff(vnames(object), vss)
+    if(! is.empty(vxx)) object <- delete.vertices(object, vxx)
+
+    ## update s and t
+    s <- intersect(vnames(object), s)
+    t <- intersect(vnames(object), t)
     Substrates(object) <- s
     Products(object) <- t
     object
@@ -158,7 +167,7 @@ cleanPrimary <- function(object, s, t){
 #' @export
 #' @examples
 #' ## NOT RUN
-#' library(gmetab)
+#' library(syzMetab)
 #' gm <- make_mgraph("ko00010")
 #' gx <- subset_graph(gm, org="ath")
 #' par(mfrow=c(2,1))

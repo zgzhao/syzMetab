@@ -1,4 +1,4 @@
 library(testthat)
-library(gmetab)
+library(syzMetab)
 
-test_check("gmetab")
+test_check("syzMetab")

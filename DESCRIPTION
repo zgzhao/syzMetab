@@ -1,10 +1,10 @@
-Package: gmetab
-Title: gmetab: R package for metabolic network analysis
+Package: syzMetab
+Title: syzMetab: R package for metabolic network analysis
 Version: 0.3.0
 Authors@R: 
     person(given = "Zhiguang", family = "Zhao", role = c("aut", "cre"),
            email = "zgzhao@lzu.edu.cn")
-Description: Rackage gmetab is designed for metabolic networks processing: construction, visualization and analysis.
+Description: Rackage syzMetab is designed for metabolic networks processing: construction, visualization and analysis.
 License: GPL-3
 Encoding: UTF-8
 Depends:

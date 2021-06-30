@@ -7,7 +7,7 @@
 
 
 #' @export
-setGeneric("make_bgraph", function(object, s, t, prefix.fac="X", ...) standardGeneric("make_bgraph"))
+setGeneric("make_bgraph", function(object, s, t, prefix.fac="MCS", minimal=TRUE) standardGeneric("make_bgraph"))
 setMethod("make_bgraph", "NULL", function(object, s, t, prefix.fac) return(NULL))
 setMethod("make_bgraph", "stcuts", function(object, prefix.fac){
     gsets <- object@genes
@@ -28,7 +28,8 @@ setMethod("make_bgraph", "stcuts", function(object, prefix.fac){
     class(g) <- c("bgraph", class(g))
     g
 })
-setMethod("make_bgraph", "mgraph", function(object, s, t, prefix.fac){
-    xcuts <- make_stcuts(object, s, t)
+setMethod("make_bgraph", "mgraph", function(object, s, t, prefix.fac, minimal){
+    xcuts <- make_stcuts(object, s, t, minimal)
     make_bgraph(xcuts, prefix.fac=prefix.fac)
 })
+

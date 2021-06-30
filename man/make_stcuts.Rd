@@ -4,7 +4,7 @@
 \alias{make_stcuts}
 \title{list all gene cut sets}
 \usage{
-make_stcuts(object, s, t)
+make_stcuts(object, s, t, minimal = TRUE)
 }
 \arguments{
 \item{object}{xgraph object}
@@ -12,14 +12,14 @@ make_stcuts(object, s, t)
 \item{s}{source node}
 
 \item{t}{target node}
+
+\item{minimal}{TRUE/FALSE. If TRUE (default), get st_min_cuts instead of all st_cuts.}
 }
 \value{
 list
 \itemize{
-\item min.genes
-\item min.edges
-\item edge.cuts
-\item gene.cuts
+\item edges: edge cut sets
+\item genes: gent cut sets
 }
 }
 \description{
@@ -30,7 +30,7 @@ Get st-cuts of edges (reactions). The edge cut-sets are translated into gene cut
 }
 \examples{
 ## NOT RUN
-library(gmetab)
+library(syzMetab)
 gm <- make_mgraph(c("ko00010", "ko00020"))
 plot(gm)
 chem1 <- c("C00031", "C00221", "C00267", "C01172", "C01451", "C06186")

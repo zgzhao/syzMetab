@@ -1,6 +1,6 @@
 
 #' @title general helper function
-#' @description general helpers for retrieving data from keggPATH, reactions list or mgraph object
+#' @description general helpers for retrieving data from KDataSet, reactions list or mgraph object
 #' @name helpers_general
 #' @aliases Organism Species Compounds Chemicals Reactions Genes
 #' @details All functions below are generic functions. Function names are self-explanatory:
@@ -12,9 +12,9 @@
 #' - Chemicals(object): alias of Compounds
 #' - Reactions(object, list.only=TRUE): reactions list or ReactionSet object (list.only=FALSE for mgraph object)
 #' @examples
-#' library(gmetab)
-#' d.path <- file.path(path.package("gmetab"), "KEGG")
-#' pp <- make_mpath("ko00010", d.path)
+#' library(syzMetab)
+#' d.path <- file.path(path.package("syzMetab"), "KEGG")
+#' pp <- make_kdset("ko00010", d.path)
 #' ##
 #' ## KEGG pathway data
 #' pathInfo(pp)
@@ -59,12 +59,12 @@ setGeneric("Products", function(object) standardGeneric("Products"))
 setGeneric("Products<-", function(object, value) standardGeneric("Products<-"))
 
 ## pathInfo =========================================
-setMethod("pathInfo", "keggPATH", function(object){
+setMethod("pathInfo", "KDataSet", function(object){
     object@pathInfo
 })
 
 ## Organism/Species ==================================
-setMethod("Organism", "keggPATH", function(object){
+setMethod("Organism", "KDataSet", function(object){
     object@pathInfo$org
 })
 setMethod("Organism", "ReactionSet", function(object){
@@ -76,7 +76,7 @@ setMethod("Organism", "xgraph", function(object){
 })
 
 ## Reactions ==================================
-setMethod("Reactions", "keggPATH", function(object){
+setMethod("Reactions", "KDataSet", function(object){
     object@reactions
 })
 setMethod("Reactions", "ReactionSet", function(object){
@@ -90,7 +90,7 @@ setMethod("Reactions", "xgraph", function(object, list.only=TRUE){
 })
 
 ## Compounds/Chemicals ==================================
-setMethod("Compounds", "keggPATH", function(object){
+setMethod("Compounds", "KDataSet", function(object){
     rx <- sapply(Reactions(object), FUN=function(x) x[c("substrate", "product")])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL
@@ -117,7 +117,7 @@ setMethod("Compounds", "xgraph", function(object){
 })
 
 ## Genes ==================================
-setMethod("Genes", "keggPATH", function(object){
+setMethod("Genes", "KDataSet", function(object){
     rx <- sapply(object@reactions, FUN=function(x) x[["gene"]])
     rx <- sort(unique(unlist(rx)))
     names(rx) <- NULL

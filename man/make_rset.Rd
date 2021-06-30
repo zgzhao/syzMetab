@@ -7,7 +7,7 @@
 make_rset(object, org = "ko", d.path = "KEGG", ...)
 }
 \arguments{
-\item{object}{keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.}
+\item{object}{KDataSet or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.}
 
 \item{org}{character, "ko" or organism identifier.}
 
@@ -22,7 +22,7 @@ ReactionSet object
 Mostly for internal use.
 }
 \details{
-"ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{keggPATH}}.
+"ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KDataSet}}.
 }
 \author{
 ZG Zhao

@@ -10,8 +10,8 @@ setAs("xgraph", "igraph", function(from) {
 #' @description functions for object test
 #' @aliases is.klist is.rset is.mgraph is.rgraph is.ggraph is.xgraph is.chemset
 #' @details Most function names are self-explanatory:
-#' - is.mpath: keggPATH test
-#' - is.klist: KEGGtest test
+#' - is.kdset: KDataSet test
+#' - is.klist: KList test
 #' - is.rset: ReactionSet test
 #' - is.mgraph(x)
 #' - is.rgraph(x)
@@ -23,8 +23,8 @@ setAs("xgraph", "igraph", function(from) {
 #' @return TRUE/FALSE
 #' @author ZG Zhao
 #' @export
-is.mpath <- function(x) {
-    inherits(x, "keggPATH")
+is.kdset <- function(x) {
+    inherits(x, "KDataSet")
 }
 
 #' @export

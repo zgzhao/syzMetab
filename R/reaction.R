@@ -117,9 +117,9 @@ rdata <- function(g, a.name, x.names) {
 
 #' Mostly for internal use.
 #'
-#' "ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{keggPATH}}.
+#' "ReactionSet" is S4 class designed for mgraph. Reactions are presented in different forms from those of \code{\link{KDataSet}}.
 #' @title generate ReactionSet object
-#' @param object keggPATH or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
+#' @param object KDataSet or list object. If feeding a list object, make sure each list elements are also lists containing substrate, product, gene and reversible elements.
 #' @param org character, "ko" or organism identifier.
 #' @param d.path file path for \code{\link{KEGG_get}}.
 #' @param ... other params
@@ -134,7 +134,7 @@ setMethod("make_rset", "list", function(object, org){
         bb <- rx[["product"]]
         cc <- rx[["gene"]]
         dd <- if("name" %in% names(rx)) rx[["name"]] else NULL
-        ee <- rx[["reversible"]]
+        ee <- if("reversible" %in% names(rx)) rx[["reversible"]] else FALSE
         rtns <- add.reactions(rtns, ds=aa, t=bb, genes=cc, name=dd, reversible=ee)
     }
     names(rtns) <- paste0("RX", 1:length(rtns))
@@ -145,7 +145,7 @@ setMethod("make_rset", "ReactionList", function(object, org){
     make_rset(object, org)
 })
 
-setMethod("make_rset", "keggPATH", function(object){
+setMethod("make_rset", "KDataSet", function(object){
     org <- pathInfo(object)$org
     rlist <- Reactions(object)
     make_rset(rlist, org)
@@ -159,7 +159,7 @@ setMethod("make_rset", "character", function(object, d.path){
     kndx <- unique(gsub("[a-z]+", org, object))
     rtns <- list()
     for(kx in kndx) {
-        xinfo <- make_mpath(kx, d.path)
+        xinfo <- make_kdset(kx, d.path)
         rtns <- c(rtns, Reactions(xinfo))
     }
     make_rset(rtns, org)
@@ -199,6 +199,7 @@ setMethod("add.reactions", c("list", "character", "character", "character"),
     for(ic in 1:nrow(sts)) {
         ss <- sts[ic, 1]
         tt <- sts[ic, 2]
+        if(ss == tt) next
         x.name <- paste(ss, tt, sep=" ")
 
         if(x.name %in% r.names) {
@@ -270,4 +271,22 @@ setMethod("add.reactions", c("mgraph", "data.frame"), function(object, ds){
     rset@reaction <- rlist
     g <- make_mgraph(rset)
     g
+})
+
+#' @export
+setGeneric("merge_chems", function(object, chems, nickname) standardGeneric("merge_chems"))
+setMethod("merge_chems", "mgraph", function(object, chems, nickname){
+    nickname <- nickname[1]
+    rlist <- Reactions(object)
+    rlist <- lapply(rlist, FUN=function(rx){
+        ss <- rx[["substrate"]]
+        tt <- rx[["product"]]
+        ss[ss %in% chems] <- nickname
+        tt[tt %in% chems] <- nickname
+        rx[["substrate"]] <- ss
+        rx[["product"]] <- tt
+        rx
+    })
+    rtns <- make_rset(rlist, Organism(object))
+    make_mgraph(rtns)
 })

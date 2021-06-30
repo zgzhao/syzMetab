@@ -33,8 +33,8 @@ simple paths info: list, nodes and edges
 Wrapers for \code{\link{igraph::all_simple_paths}}. Parallel computing may be evoked if source or target number is more than one. In these series of functions, \code{all_spaths_list} is the basic function; \code{all_spaths_nodes} and \code{all_spaths_edges} extract infos from the results of \code{all_spaths_list} implicitly or explicitly.
 }
 \examples{
-library(gmetab)
-d.path <- file.path(path.package("gmetab"), "KEGG")
+library(syzMetab)
+d.path <- file.path(path.package("syzMetab"), "KEGG")
 gg <- make_mgraph("ko00010", d.path)
 vv <- vnames(gg)
 (splist <- all_spaths_list(gg, vv[1], vv[6]))

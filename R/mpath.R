@@ -1,40 +1,40 @@
 #!/usr/bin/env Rscript
 # -*- coding:utf-8 -*-
-# File: mpath.R
-# Description: handlng KEGG metabolic pathway (mpath) objects
+# File: kdset.R
+# Description: handlng KEGG metabolic pathway (kdset) objects
 # AUTHOR: ZG Zhao; zgzhao@foxmail.com
 # 2021-05-31 12:12:17
 
-#' Make metabolic pathway (keggPATH object)
+#' Make metabolic pathway (KDataSet object)
 #'
 #' This function reads from local folder (d.path) a KEGG xml file, which will be downloaded if not exists. Make sure internet is accessible.
-#' Refer to \code{\link{keggPATH}} for class information.
+#' Refer to \code{\link{KDataSet}} for class information.
 #' TODO: make pathway from local KGML file regardless of d.path
 #' @title make metabolic pathway
 #' @param object character, KEGG pathway ortholog (ko) index string such as ko00010, 00010 or ath00010
 #' @param d.path file path for \code{\link{KEGG_get}}.
-#' @return keggPATH object
+#' @return KDataSet object
 #' @author ZG Zhao
 #' @export
-setGeneric("make_mpath", function(object, d.path="KEGG") standardGeneric("make_mpath"))
-setMethod("make_mpath", "character", function(object, d.path){
+setGeneric("make_kdset", function(object, d.path="KEGG") standardGeneric("make_kdset"))
+setMethod("make_kdset", "character", function(object, d.path){
     ko <- tolower(object[1])
-    new("keggPATH", object, d.path)
+    new("KDataSet", object, d.path)
 })
 
 
-#' Convert KOG names of a keggPATH object to real gene names
+#' Convert KOG names of a KDataSet object to real gene names
 #'
-#' In keggPATH objects, genes involved in reactions are generally represented by KEGG entry names (k genes or KOG).
-#' @title General to organism-specific keggPATH conversion
-#' @param object a keggPATH object
+#' In KDataSet objects, genes involved in reactions are generally represented by KEGG entry names (k genes or KOG).
+#' @title General to organism-specific KDataSet conversion
+#' @param object a KDataSet object
 #' @param org abbreviation of an organism such as "ath"
 #' @param d.path file path for \code{\link{KEGG_get}}
-#' @return keggPATH object
+#' @return KDataSet object
 #' @author ZG Zhao
 #' @export
 setGeneric("setorg_path", function(object, org, d.path="KEGG") standardGeneric("setorg_path"))
-setMethod("setorg_path", c("keggPATH", "character"), function(object, org, d.path){
+setMethod("setorg_path", c("KDataSet", "character"), function(object, org, d.path){
     if(Organism(object) != "ko") stop("No a general KEGG pathway (eg. ko00010)!")
     if( is.empty(org) ) return(object)
     org <- tolower(org)

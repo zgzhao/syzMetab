@@ -6,13 +6,14 @@
 #' @param g xgraph object
 #' @param s substrates
 #' @param p products
+#' @param t targets, same as "p"
 #' @param show.name logi. Show chemical names if TRUE (default).
 #' @param gene.n TRUE/FALSE (default). show gene number on edge if TRUE.
 #' @param ... pars passed to plot.igraph
 #' @return NULL
 #' @author zhao
 #' @export
-plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
+plot.mgraph <- function(g, s, t, p=t, show.name=TRUE, gene.n=FALSE, ...) {
     options(warn=FALSE)
     opar <- par("mar")
     ipar <- igraph.options()
@@ -32,7 +33,7 @@ plot.mgraph <- function(g, s, p, show.name=TRUE, gene.n=FALSE, ...) {
     }
     if(is.bgraph(g)) {
         xfac <- V(g)$isfac
-        vsize[!xfac] <- 5
+        vsize[xfac] <- 16
         vcolor[xfac] <- "pink"
         xlayout <- layout_with_kk
     } else if(is.mgraph(g)){

@@ -10,7 +10,7 @@
 \alias{Genes}
 \title{general helper function}
 \description{
-general helpers for retrieving data from keggPATH, reactions list or mgraph object
+general helpers for retrieving data from KDataSet, reactions list or mgraph object
 }
 \details{
 All functions below are generic functions. Function names are self-explanatory:
@@ -25,9 +25,9 @@ All functions below are generic functions. Function names are self-explanatory:
 }
 }
 \examples{
-library(gmetab)
-d.path <- file.path(path.package("gmetab"), "KEGG")
-pp <- make_mpath("ko00010", d.path)
+library(syzMetab)
+d.path <- file.path(path.package("syzMetab"), "KEGG")
+pp <- make_kdset("ko00010", d.path)
 ##
 ## KEGG pathway data
 pathInfo(pp)

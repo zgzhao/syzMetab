@@ -24,13 +24,13 @@ Virtual classes:
 
 S4 Classes:
 \itemize{
-\item keggPATH: complete set of pathway data parsed from a KEGG xml file
+\item KDataSet: complete set of pathway data parsed from a KEGG xml file
 \item ReactionSet: reactions container used in xgraph object
 }
 
 Short names or aliases:
 \itemize{
-\item mpath: for \code{keggPATH}, metabolic pathway
+\item kdset: for \code{KDataSet}
 \item klist: for \code{KLists}
 \item rset: for \code{ReactionSet}
 \item rdata/rnames/rcount: reaction data/names/count
@@ -39,8 +39,8 @@ Short names or aliases:
 }
 }
 \examples{
-library(gmetab)
-showClass("keggPATH")
+library(syzMetab)
+showClass("KDataSet")
 showClass("ReactionSet")
 showClass("mgraph")
 showClass("xgraph")

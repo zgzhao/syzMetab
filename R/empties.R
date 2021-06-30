@@ -31,7 +31,7 @@ setMethod("is.empty", "KLists", function(object) {
     class(object) <- "list"
     is.empty(object)
 })
-setMethod("is.empty", "keggPATH", function(object) is.empty(object@reactions))
+setMethod("is.empty", "KDataSet", function(object) is.empty(object@reactions))
 setMethod("is.empty", "xgraph", function(object) {
     vcount(object) < 1 || ecount(object) < 1
 })
@@ -42,3 +42,5 @@ setMethod("is.empty", "igraph", function(object) vcount(object) < 1)
 emptyGraph <- function(g){
     delete.vertices(g, vnames(g))
 }
+
+emptyStCuts <- new("stcuts", edges=list(), genes=list())

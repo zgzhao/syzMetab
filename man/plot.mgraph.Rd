@@ -7,12 +7,14 @@
 \alias{plot.bgraph}
 \title{plot graph}
 \usage{
-\method{plot}{mgraph}(g, s, p, show.name = TRUE, gene.n = FALSE, ...)
+\method{plot}{mgraph}(g, s, t, p = t, show.name = TRUE, gene.n = FALSE, ...)
 }
 \arguments{
 \item{g}{xgraph object}
 
 \item{s}{substrates}
+
+\item{t}{targets, same as "p"}
 
 \item{p}{products}
 

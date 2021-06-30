@@ -1,6 +1,6 @@
-test_that("keggPATH and ReactionList work", {
-    pp <- make_mpath("ath00010")
-    expect_s4_class(pp, "keggPATH")
+test_that("KDataSet and ReactionList work", {
+    pp <- make_kdset("ath00010")
+    expect_s4_class(pp, "KDataSet")
     expect_s3_class(pp@reactions, "ReactionList")
 
     check1 <- sapply(pp@reactions, FUN=function(aa){

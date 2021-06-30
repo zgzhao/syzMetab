@@ -1,7 +1,7 @@
 ## NOTE: some useful functions
 
-.ordnames <- function(x, prefix.fac, n=3) {
-    nx <- ceiling(log10(max(x)))
+.ordnames <- function(x, prefix.fac, n=2) {
+    nx <- floor(log10(max(x)))
     nx <- max(c(nx + 1, n))
     rx <- x + 10 ^ nx
     rx <- sub("^1", "", rx)

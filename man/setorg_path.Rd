@@ -2,25 +2,25 @@
 % Please edit documentation in R/mpath.R
 \name{setorg_path}
 \alias{setorg_path}
-\title{General to organism-specific keggPATH conversion}
+\title{General to organism-specific KDataSet conversion}
 \usage{
 setorg_path(object, org, d.path = "KEGG")
 }
 \arguments{
-\item{object}{a keggPATH object}
+\item{object}{a KDataSet object}
 
 \item{org}{abbreviation of an organism such as "ath"}
 
 \item{d.path}{file path for \code{\link{KEGG_get}}}
 }
 \value{
-keggPATH object
+KDataSet object
 }
 \description{
-Convert KOG names of a keggPATH object to real gene names
+Convert KOG names of a KDataSet object to real gene names
 }
 \details{
-In keggPATH objects, genes involved in reactions are generally represented by KEGG entry names (k genes or KOG).
+In KDataSet objects, genes involved in reactions are generally represented by KEGG entry names (k genes or KOG).
 }
 \author{
 ZG Zhao

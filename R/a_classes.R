@@ -16,11 +16,11 @@
 #' - xgraph: virtual class of mgraph, rgraph, ggraph and bgraph
 #'
 #' S4 Classes:
-#' - keggPATH: complete set of pathway data parsed from a KEGG xml file
+#' - KDataSet: complete set of pathway data parsed from a KEGG xml file
 #' - ReactionSet: reactions container used in xgraph object
 #'
 #' Short names or aliases:
-#' - mpath: for `keggPATH`, metabolic pathway
+#' - kdset: for `KDataSet`
 #' - klist: for `KLists`
 #' - rset: for `ReactionSet`
 #' - rdata/rnames/rcount: reaction data/names/count
@@ -28,8 +28,8 @@
 #' - vdata/vnames/vcount: vertex data/names/count
 #' @author zhao
 #' @examples
-#' library(gmetab)
-#' showClass("keggPATH")
+#' library(syzMetab)
+#' showClass("KDataSet")
 #' showClass("ReactionSet")
 #' showClass("mgraph")
 #' showClass("xgraph")
@@ -59,14 +59,14 @@ setMethod("initialize", "ReactionSet", function(.Object, reactions, organism="")
     return(.Object)
 })
 
-setClass("keggPATH",
+setClass("KDataSet",
          slots=c(pathInfo="list",
                  entries="EntryList",
                  reactions="ReactionList",
                  relations="RelationList",
                  graphics="GraphicList"))
 
-setMethod("initialize", "keggPATH", function(.Object, ko, d.path) {
+setMethod("initialize", "KDataSet", function(.Object, ko, d.path) {
     if(missing(ko) || is.empty(ko)) {
         return(.Object)
     }

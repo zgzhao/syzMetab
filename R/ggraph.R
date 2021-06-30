@@ -37,7 +37,7 @@ setMethod("make_ggraph", "character", function(object, d.path="KEGG"){
     rsobj <- make_rset(object, d.path)
     make_ggraph(rsobj)
 })
-setMethod("make_ggraph", "keggPATH", function(object){
+setMethod("make_ggraph", "KDataSet", function(object){
     rsobj <- make_rset(object)
     make_ggraph(rsobj)
 })

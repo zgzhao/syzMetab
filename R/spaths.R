@@ -17,8 +17,8 @@
 #' @return character list or vector
 #' @author ZG Zhao
 #' @examples
-#' library(gmetab)
-#' d.path <- file.path(path.package("gmetab"), "KEGG")
+#' library(syzMetab)
+#' d.path <- file.path(path.package("syzMetab"), "KEGG")
 #' gg <- make_mgraph("ko00010", d.path)
 #' vv <- vnames(gg)
 #' (splist <- all_spaths_list(gg, vv[1], vv[6]))
@@ -54,11 +54,9 @@ setMethod("all_spaths_list", "xgraph",
         lapply(xpp, names)
     }, mc.cores=mc.cores)
     spp <- unlist(spp, recursive = FALSE)
-    print(spp)
     spp <- lapply(spp, unique)
     xchems <- c(from, to)
     ss <- sapply(spp, FUN=function(x) sum(x %in% xchems) == 2)
-    print(ss)
     spp <- spp[ss]
     class(spp) <- c("sp.list", class(spp))
     ## cat("======Simpel paths search==========\n",

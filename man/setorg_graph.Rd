@@ -24,7 +24,7 @@ Adjust and filter reactions, and rebuild graph object from reactions list.
 }
 \examples{
 ## NOT RUN
-library(gmetab)
+library(syzMetab)
 gm <- make_mgraph("ko00010")
 gx <- subset_graph(gm, org="ath")
 par(mfrow=c(2,1))

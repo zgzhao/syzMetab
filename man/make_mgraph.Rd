@@ -7,13 +7,13 @@
 \alias{make_ggraph}
 \title{make graph from various data}
 \usage{
-- make_mgraph(object, ...): from keggPATH, ResctionSet, ReactionList, list or character vector (kos)
-- make_rgraph(object, ...): from keggPATH, ResctionSet, ReactionList or character vector (kos)
-- make_ggraph(object, ...): from keggPATH, ResctionSet, ReactionList or character vector (kos)
+- make_mgraph(object, ...): from KDataSet, ResctionSet, ReactionList, list or character vector (kos)
+- make_rgraph(object, ...): from KDataSet, ResctionSet, ReactionList or character vector (kos)
+- make_ggraph(object, ...): from KDataSet, ResctionSet, ReactionList or character vector (kos)
 - make_bgraph(object, ...): from mgraph or stcuts (refer to \code{\link{make_stcuts}})
 }
 \arguments{
-\item{object}{keggPATH, ReactionSet ReactionList, character vector or list.}
+\item{object}{KDataSet, ReactionSet ReactionList, character vector or list.}
 
 \item{...}{additional parameters depends on "object"
 \itemize{
@@ -22,7 +22,7 @@
 }}
 }
 \description{
-Make metabolic graph from various type of data: keggPATH, ReactionSet, ReactionList, list, KOs or other xgraph object.
+Make metabolic graph from various type of data: KDataSet, ReactionSet, ReactionList, list, KOs or other xgraph object.
 }
 \details{
 Metabolic network can be represented by metabolite, reaction, gene graph or st-cuts of gene sets.
@@ -35,8 +35,8 @@ Metabolic network can be represented by metabolite, reaction, gene graph or st-c
 }
 \examples{
 ## NOT RUN
-library(gmetab)
-pp <- make_mpath("ko00010", d.path="KEGG")
+library(syzMetab)
+pp <- make_kdset("ko00010", d.path="KEGG")
 make_mgraph(pp)
 make_mgraph(Reactions(pp), org="ko")
 make_mgraph("ko00010")
