@@ -13,7 +13,7 @@ test_that("test KGML parsing", {
     expect_identical(entx[["product"]], "C05125")
     expect_identical(sort(entx[["gene"]]), c("K00161", "K00162", "K00163"))
     ## fit organism: more reactions from KO-path
-    pp2 <- make_kdset("hsa00010")
-    pp3 <- setorg_path(pp1, "hsa")
+    pp2 <- make_kdset("ath00010")
+    pp3 <- setorg_path(pp1, "ath")
     expect_identical(length(pp2@reactions) <= length(pp3@reactions), TRUE)
 })

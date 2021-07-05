@@ -39,7 +39,7 @@
 #' plot(gg)
 #' chem1 <- c("C00031", "C00221", "C00267", "C01172", "C01451", "C06186")
 #' chem2 <- "C00022"
-#' gb <- make_bgraph(gm, s=chem1, t=chem2)
+#' gb <- make_bgraph(gm, s=chem1, t=chem2, minimal=FALSE)
 #' plot(gb)
 NULL
 
@@ -64,7 +64,9 @@ setMethod("make_mgraph", "ReactionSet", function(object){
 })
 setMethod("make_mgraph", "KDataSet", function(object){
     rsobj <- make_rset(object)
-    make_mgraph(rsobj)
+    g <- make_mgraph(rsobj)
+    ## attr(g, "chemicals") <- object@chemicals
+    g
 })
 setMethod("make_mgraph", "character", function(object, d.path="KEGG"){
     rsobj <- make_rset(object, d.path)

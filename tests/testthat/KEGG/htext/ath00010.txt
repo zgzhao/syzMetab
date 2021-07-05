@@ -1,0 +1,181 @@
+ENTRY       ath00010                    Pathway
+NAME        Glycolysis / Gluconeogenesis - Arabidopsis thaliana (thale cress)
+DESCRIPTION Glycolysis is the process of converting glucose into pyruvate and generating small amounts of ATP (energy) and NADH (reducing power). It is a central pathway that produces important precursor metabolites: six-carbon compounds of glucose-6P and fructose-6P and three-carbon compounds of glycerone-P, glyceraldehyde-3P, glycerate-3P, phosphoenolpyruvate, and pyruvate [MD:M00001]. Acetyl-CoA, another important precursor metabolite, is produced by oxidative decarboxylation of pyruvate [MD:M00307]. When the enzyme genes of this pathway are examined in completely sequenced genomes, the reaction steps of three-carbon compounds from glycerone-P to pyruvate form a conserved core module [MD:M00002], which is found in almost all organisms and which sometimes contains operon structures in bacterial genomes. Gluconeogenesis is a synthesis pathway of glucose from noncarbohydrate precursors. It is essentially a reversal of glycolysis with minor variations of alternative paths [MD:M00003].
+CLASS       Metabolism; Carbohydrate metabolism
+PATHWAY_MAP ath00010  Glycolysis / Gluconeogenesis
+MODULE      ath_M00001  Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate [PATH:ath00010]
+            ath_M00002  Glycolysis, core module involving three-carbon compounds [PATH:ath00010]
+            ath_M00003  Gluconeogenesis, oxaloacetate => fructose-6P [PATH:ath00010]
+            ath_M00307  Pyruvate oxidation, pyruvate => acetyl-CoA [PATH:ath00010]
+DBLINKS     GO: 0006096 0006094
+ORGANISM    Arabidopsis thaliana (thale cress) [GN:ath]
+GENE        AT4G37840  HKL3; hexokinase-like 3 [KO:K00844] [EC:2.7.1.1]
+            AT1G47840  HXK3; hexokinase 3 [KO:K00844] [EC:2.7.1.1]
+            AT2G19860  HXK2; hexokinase 2 [KO:K00844] [EC:2.7.1.1]
+            AT4G29130  HXK1; hexokinase 1 [KO:K00844] [EC:2.7.1.1]
+            AT1G50460  HKL1; hexokinase-like 1 [KO:K00844] [EC:2.7.1.1]
+            AT3G20040  ATHXK4; Hexokinase [KO:K00844] [EC:2.7.1.1]
+            AT4G24620  PGI1; phosphoglucose isomerase 1 [KO:K01810] [EC:5.3.1.9]
+            AT5G42740  Sugar isomerase (SIS) family protein [KO:K01810] [EC:5.3.1.9]
+            AT4G32840  PFK6; phosphofructokinase 6 [KO:K00850] [EC:2.7.1.11]
+            AT5G56630  PFK7; phosphofructokinase 7 [KO:K00850] [EC:2.7.1.11]
+            AT5G61580  PFK4; phosphofructokinase 4 [KO:K00850] [EC:2.7.1.11]
+            AT4G29220  PFK1; phosphofructokinase 1 [KO:K00850] [EC:2.7.1.11]
+            AT2G22480  PFK5; phosphofructokinase 5 [KO:K00850] [EC:2.7.1.11]
+            AT4G26270  PFK3; phosphofructokinase 3 [KO:K00850] [EC:2.7.1.11]
+            AT5G47810  PFK2; phosphofructokinase 2 [KO:K00850] [EC:2.7.1.11]
+            AT1G76550  Phosphofructokinase family protein [KO:K00895] [EC:2.7.1.90]
+            AT4G04040  MEE51; Phosphofructokinase family protein [KO:K00895] [EC:2.7.1.90]
+            AT1G12000  Phosphofructokinase family protein [KO:K00895] [EC:2.7.1.90]
+            AT1G20950  Phosphofructokinase family protein [KO:K00895] [EC:2.7.1.90]
+            AT1G43670  FBP; Inositol monophosphatase family protein [KO:K03841] [EC:3.1.3.11]
+            AT3G54050  HCEF1; high cyclic electron flow 1 [KO:K03841] [EC:3.1.3.11]
+            AT5G64380  Inositol monophosphatase family protein [KO:K03841] [EC:3.1.3.11]
+            AT4G26520  FBA7; Aldolase superfamily protein [KO:K01623] [EC:4.1.2.13]
+            AT2G36460  FBA6; Aldolase superfamily protein [KO:K01623] [EC:4.1.2.13]
+            AT3G52930  FBA8; Aldolase superfamily protein [KO:K01623] [EC:4.1.2.13]
+            AT2G01140  PDE345; Aldolase superfamily protein [KO:K01623] [EC:4.1.2.13]
+            AT4G38970  FBA2; fructose-bisphosphate aldolase 2 [KO:K01623] [EC:4.1.2.13]
+            AT4G26530  FBA5; Aldolase superfamily protein [KO:K01623] [EC:4.1.2.13]
+            AT5G03690  FBA4; Aldolase superfamily protein [KO:K01623] [EC:4.1.2.13]
+            AT2G21330  FBA1; fructose-bisphosphate aldolase 1 [KO:K01623] [EC:4.1.2.13]
+            AT3G55440  TPI; triosephosphate isomerase [KO:K01803] [EC:5.3.1.1]
+            AT2G21170  TIM; triosephosphate isomerase [KO:K01803] [EC:5.3.1.1]
+            AT1G13440  GAPC2; glyceraldehyde-3-phosphate dehydrogenase C2 [KO:K00134] [EC:1.2.1.12]
+            AT1G16300  GAPCP-2; glyceraldehyde-3-phosphate dehydrogenase of plastid 2 [KO:K00134] [EC:1.2.1.12]
+            AT1G79530  GAPCP-1; glyceraldehyde-3-phosphate dehydrogenase of plastid 1 [KO:K00134] [EC:1.2.1.12]
+            AT3G04120  GAPC1; glyceraldehyde-3-phosphate dehydrogenase C subunit 1 [KO:K00134] [EC:1.2.1.12]
+            AT3G12780  PGK1; phosphoglycerate kinase 1 [KO:K00927] [EC:2.7.2.3]
+            AT1G56190  Phosphoglycerate kinase family protein [KO:K00927] [EC:2.7.2.3]
+            AT1G79550  PGK; phosphoglycerate kinase [KO:K00927] [EC:2.7.2.3]
+            AT1G22170  Phosphoglycerate mutase family protein [KO:K01834] [EC:5.4.2.11]
+            AT1G78050  PGM; phosphoglycerate/bisphosphoglycerate mutase [KO:K01834] [EC:5.4.2.11]
+            AT3G50520  Phosphoglycerate mutase family protein [KO:K15634] [EC:5.4.2.11]
+            AT1G09780  iPGAM1; Phosphoglycerate mutase, 2,3-bisphosphoglycerate-independent [KO:K15633] [EC:5.4.2.12]
+            AT3G08590  iPGAM2; Phosphoglycerate mutase, 2,3-bisphosphoglycerate-independent [KO:K15633] [EC:5.4.2.12]
+            AT1G74030  ENO1; enolase 1 [KO:K01689] [EC:4.2.1.11]
+            AT2G36530  LOS2; Enolase [KO:K01689] [EC:4.2.1.11]
+            AT2G29560  ENOC; cytosolic enolase [KO:K01689] [EC:4.2.1.11]
+            AT3G04050  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT5G52920  PKP-BETA1; plastidic pyruvate kinase beta subunit 1 [KO:K00873] [EC:2.7.1.40]
+            AT5G56350  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT3G25960  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT3G52990  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT3G55650  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT3G55810  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT5G08570  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT5G63680  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT4G26390  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT1G32440  PKp3; plastidial pyruvate kinase 3 [KO:K00873] [EC:2.7.1.40]
+            AT3G49160  pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT3G22960  PKP-ALPHA; Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT2G36580  Pyruvate kinase family protein [KO:K00873] [EC:2.7.1.40]
+            AT4G15530  PPDK; pyruvate orthophosphate dikinase [KO:K01006] [EC:2.7.9.1]
+            AT1G59900  E1_ALPHA; pyruvate dehydrogenase complex E1 alpha subunit [KO:K00161] [EC:1.2.4.1]
+            AT1G01090  PDH-E1_ALPHA; pyruvate dehydrogenase E1 alpha [KO:K00161] [EC:1.2.4.1]
+            AT1G24180  IAR4; Thiamin diphosphate-binding fold (THDP-binding) superfamily protein [KO:K00161] [EC:1.2.4.1]
+            AT5G50850  MAB1; Transketolase family protein [KO:K00162] [EC:1.2.4.1]
+            AT2G34590  Transketolase family protein [KO:K00162] [EC:1.2.4.1]
+            AT1G30120  PDH-E1_BETA; pyruvate dehydrogenase E1 beta [KO:K00162] [EC:1.2.4.1]
+            AT1G34430  EMB3003; 2-oxoacid dehydrogenases acyltransferase family protein [KO:K00627] [EC:2.3.1.12]
+            AT3G52200  LTA3; Dihydrolipoamide acetyltransferase, long form protein [KO:K00627] [EC:2.3.1.12]
+            AT1G54220  Dihydrolipoamide acetyltransferase, long form protein [KO:K00627] [EC:2.3.1.12]
+            AT3G13930  Dihydrolipoamide acetyltransferase, long form protein [KO:K00627] [EC:2.3.1.12]
+            AT3G25860  LTA2; 2-oxoacid dehydrogenases acyltransferase family protein [KO:K00627] [EC:2.3.1.12]
+            AT3G17240  mtLPD2; lipoamide dehydrogenase 2 [KO:K00382] [EC:1.8.1.4]
+            AT3G16950  LPD1; lipoamide dehydrogenase 1 [KO:K00382] [EC:1.8.1.4]
+            AT1G48030  mtLPD1; mitochondrial lipoamide dehydrogenase 1 [KO:K00382] [EC:1.8.1.4]
+            AT4G16155  dihydrolipoamide dehydrogenase [KO:K00382] [EC:1.8.1.4]
+            AT4G17260  Lactate/malate dehydrogenase family protein [KO:K00016] [EC:1.1.1.27]
+            AT4G33070  Thiamine pyrophosphate dependent pyruvate decarboxylase family protein [KO:K01568] [EC:4.1.1.1]
+            AT5G01320  Thiamine pyrophosphate dependent pyruvate decarboxylase family protein [KO:K01568] [EC:4.1.1.1]
+            AT5G01330  PDC3; pyruvate decarboxylase-3 [KO:K01568] [EC:4.1.1.1]
+            AT5G54960  PDC2; pyruvate decarboxylase-2 [KO:K01568] [EC:4.1.1.1]
+            AT1G22440  Zinc-binding alcohol dehydrogenase family protein [KO:K00121] [EC:1.1.1.284 1.1.1.1]
+            AT5G42250  Zinc-binding alcohol dehydrogenase family protein [KO:K00121] [EC:1.1.1.284 1.1.1.1]
+            AT5G43940  HOT5; GroES-like zinc-binding dehydrogenase family protein [KO:K00121] [EC:1.1.1.284 1.1.1.1]
+            AT4G22110  GroES-like zinc-binding dehydrogenase family protein [KO:K00121] [EC:1.1.1.284 1.1.1.1]
+            AT1G22430  GroES-like zinc-binding dehydrogenase family protein [KO:K00121] [EC:1.1.1.284 1.1.1.1]
+            AT1G77120  ADH1; alcohol dehydrogenase 1 [KO:K18857] [EC:1.1.1.1]
+            AT1G32780  GroES-like zinc-binding dehydrogenase family protein [KO:K00001] [EC:1.1.1.1]
+            AT5G24760  GroES-like zinc-binding dehydrogenase family protein [KO:K00001] [EC:1.1.1.1]
+            AT1G64710  GroES-like zinc-binding alcohol dehydrogenase family protein [KO:K00001] [EC:1.1.1.1]
+            AT2G37790  AKR4C10; NAD(P)-linked oxidoreductase superfamily protein [KO:K00002] [EC:1.1.1.2]
+            AT5G01670  NAD(P)-linked oxidoreductase superfamily protein [KO:K00002] [EC:1.1.1.2]
+            AT1G23800  ALDH2B7; aldehyde dehydrogenase 2B7 [KO:K00128] [EC:1.2.1.3]
+            AT3G48000  ALDH2B4; aldehyde dehydrogenase 2B4 [KO:K00128] [EC:1.2.1.3]
+            AT4G34240  ALDH3I1; aldehyde dehydrogenase 3I1 [KO:K00128] [EC:1.2.1.3]
+            AT1G44170  ALDH3H1; aldehyde dehydrogenase 3H1 [KO:K00128] [EC:1.2.1.3]
+            AT4G36250  ALDH3F1; aldehyde dehydrogenase 3F1 [KO:K00128] [EC:1.2.1.3]
+            AT1G54100  ALDH7B4; aldehyde dehydrogenase 7B4 [KO:K14085] [EC:1.2.1.31 1.2.1.8 1.2.1.3]
+            AT5G36880  ACS; acetyl-CoA synthetase [KO:K01895] [EC:6.2.1.1]
+            AT3G16910  AAE7; acyl-activating enzyme 7 [KO:K01913] [EC:6.2.1.1 6.2.1.2]
+            AT3G17940  Galactose mutarotase-like superfamily protein [KO:K01785] [EC:5.1.3.3]
+            AT3G47800  Galactose mutarotase-like superfamily protein [KO:K01785] [EC:5.1.3.3]
+            AT5G15140  Galactose mutarotase-like superfamily protein [KO:K01785] [EC:5.1.3.3]
+            AT3G01260  Galactose mutarotase-like superfamily protein [KO:K01785] [EC:5.1.3.3]
+            AT5G51820  PGM; phosphoglucomutase [KO:K01835] [EC:5.4.2.2]
+            AT1G23190  PGM3; Phosphoglucomutase/phosphomannomutase family protein [KO:K01835] [EC:5.4.2.2]
+            AT1G70730  PGM2; Phosphoglucomutase/phosphomannomutase family protein [KO:K01835] [EC:5.4.2.2]
+            AT4G23730  Galactose mutarotase-like superfamily protein [KO:K01792] [EC:5.1.3.15]
+            AT3G61610  Galactose mutarotase-like superfamily protein [KO:K01792] [EC:5.1.3.15]
+            AT3G01590  Galactose mutarotase-like superfamily protein [KO:K01792] [EC:5.1.3.15]
+            AT5G57330  Galactose mutarotase-like superfamily protein [KO:K01792] [EC:5.1.3.15]
+            AT5G14500  aldose 1-epimerase family protein [KO:K01792] [EC:5.1.3.15]
+            AT4G25900  Galactose mutarotase-like superfamily protein [KO:K01792] [EC:5.1.3.15]
+            AT5G66530  Galactose mutarotase-like superfamily protein [KO:K01792] [EC:5.1.3.15]
+            AT1G09870  histidine acid phosphatase family protein [KO:K03103] [EC:3.1.3.62 3.1.3.80]
+            AT2G24270  ALDH11A3; aldehyde dehydrogenase 11A3 [KO:K00131] [EC:1.2.1.9]
+            AT5G65690  PCK2; phosphoenolpyruvate carboxykinase 2 [KO:K01610] [EC:4.1.1.49]
+            AT4G37870  PCK1; phosphoenolpyruvate carboxykinase 1 [KO:K01610] [EC:4.1.1.49]
+COMPOUND    C00022  Pyruvate
+            C00024  Acetyl-CoA
+            C00031  D-Glucose
+            C00033  Acetate
+            C00036  Oxaloacetate
+            C00068  Thiamin diphosphate
+            C00074  Phosphoenolpyruvate
+            C00084  Acetaldehyde
+            C00103  D-Glucose 1-phosphate
+            C00111  Glycerone phosphate
+            C00118  D-Glyceraldehyde 3-phosphate
+            C00186  (S)-Lactate
+            C00197  3-Phospho-D-glycerate
+            C00221  beta-D-Glucose
+            C00236  3-Phospho-D-glyceroyl phosphate
+            C00267  alpha-D-Glucose
+            C00469  Ethanol
+            C00631  2-Phospho-D-glycerate
+            C00668  alpha-D-Glucose 6-phosphate
+            C01159  2,3-Bisphospho-D-glycerate
+            C01172  beta-D-Glucose 6-phosphate
+            C01451  Salicin
+            C05125  2-(alpha-Hydroxyethyl)thiamine diphosphate
+            C05345  beta-D-Fructose 6-phosphate
+            C05378  beta-D-Fructose 1,6-bisphosphate
+            C06186  Arbutin
+            C06187  Arbutin 6-phosphate
+            C06188  Salicin 6-phosphate
+            C15972  Enzyme N6-(lipoyl)lysine
+            C15973  Enzyme N6-(dihydrolipoyl)lysine
+            C16255  [Dihydrolipoyllysine-residue acetyltransferase] S-acetyldihydrolipoyllysine
+REFERENCE   (map 1)
+  AUTHORS   Nishizuka Y (ed).
+  TITLE     [Metabolic Maps] (In Japanese)
+  JOURNAL   Tokyo Kagaku Dojin (1980)
+REFERENCE   (map 1)
+  AUTHORS   Nishizuka Y, Seyama Y, Ikai A, Ishimura Y, Kawaguchi A (eds).
+  TITLE     [Cellular Functions and Metabolic Maps] (In Japanese)
+  JOURNAL   Tokyo Kagaku Dojin (1997)
+REFERENCE   
+  AUTHORS   Michal G.
+  TITLE     Biochemical Pathways
+  JOURNAL   Wiley (1999)
+REL_PATHWAY ath00020  Citrate cycle (TCA cycle)
+            ath00030  Pentose phosphate pathway
+            ath00500  Starch and sucrose metabolism
+            ath00620  Pyruvate metabolism
+            ath00640  Propanoate metabolism
+            ath00710  Carbon fixation in photosynthetic organisms
+KO_PATHWAY  ko00010
+///

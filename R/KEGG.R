@@ -130,15 +130,22 @@ KEGG_get <- function(qid, d.path = "KEGG", f.type = c("kgml", "image", "htext"),
     for (kpx in KOPs) {
         f.path <- KEGG_get(kpx, d.path=d.path, f.type="htext")
         dt <- readLines(f.path)
-        ndx <- grep("^(COMPOUND|REFERENCE)", dt)
-        ggs <- dt[ndx[1]:(ndx[2] - 1)]
-        ggs <- gsub("^COMPOUND", "", ggs)
-        ccs <- gsub("^ *([^ ]+).*$", "\\1", ggs)
-        des <- gsub("^ *[^ ]+ +(.*)$", "\\1", ggs)
-        dt <- data.frame(CPD = ccs, name = des)
-        results <- rbind(results, dt)
+        dt <- dt[! grepl("^[\\s/]*$", dt)]
+        ndx <- grep("^COMPOUND\\s+", dt)
+        if(is.empty(ndx)) next
+        dt <- dt[ndx:length(dt)]
+        ndx <- grep("^[A-Z]+\\s", dt)
+        nn <- length(ndx)
+        if(nn > 1) dt <- dt[1:(ndx[2] - 1)]
+
+        dt <- gsub("^COMPOUND", "", dt)
+        ccs <- gsub("^ *([^ ]+).*$", "\\1", dt)
+        des <- gsub("^ *[^ ]+ +(.*)$", "\\1", dt)
+        rex <- data.frame(CPD = ccs, name = des)
+        results <- rbind(results, rex)
     }
-    results
+    if(is.empty(results)) return(data.frame())
+    results[!duplicated(results$CPD), ]
 }
 
 .setKEGGLocalPath <- function(d.path, type){
@@ -216,4 +223,80 @@ kogs_table <- function(org, d.path="KEGG", KOGs=NA){
     if(length(KOGs) > 0) results <- results[results$KOG %in% KOGs, ]
     class(results) <- c(class(results), "KGDF")
     results
+}
+
+
+#' @name KEGG_ontology
+#' @description Functions
+#' - konto_table(d.path, force.download)
+#' - konto_list(d.path, force.download)
+#' @details Download (if file not exists) and parse ko00001.keg
+#' @title KEGG ontology as data.frame or list
+#' @param d.path see \code{\link{KEGG_get}}
+#' @param force.download see \code{\link{KEGG_get}}
+#' @author ZG Zhao
+NULL
+
+#' @export
+konto_table <- function(d.path="KEGG", force.download=FALSE) {
+    kegfile <- KEGG_get("ko", d.path, force.download=force.download)
+    klines <- grep("^[A-D]", readLines(kegfile), value = TRUE)
+    klines <- sub("^([A-D])", "\\1 ", klines)
+    klines <- grep("^[A-D] +\\w+ +\\w+", klines, value=TRUE)
+    results <- t(sapply(klines, FUN = function(x){
+        klevel <- sub("^([A-D]).+$", "\\1", x)
+        kindex <- sub("^[A-D] +(\\w+) .*$", "\\1", x)
+        kdesc <- sub("^[A-D] +\\w+ +(.*)$", "\\1", x)
+        c(klevel, kindex, kdesc)
+    }))
+    results <- as.data.frame(results)
+    colnames(results) <- c("level", "ko", "description")
+    rownames(results) <- NULL
+    results$description <- sub(" \\[.+$", "", results$description)
+    results$ko <- toupper(results$ko)
+
+    ## ABC hierarchical
+    lvs <- results$level
+    nn <- nrow(results)
+    for(ll in LETTERS[1:3]){
+        results[[ll]] <- NA
+        ndx <- which(lvs == ll)
+        for(i in 1:length(ndx)){
+            ff <- ndx[i] + 1
+            results[[ll]][ff:nn] <- results$ko[ndx[i]]
+        }
+    }
+    for(i in 1:3) {
+        ss <- lvs == LETTERS[i]
+        for(j in i:3) results[ss, LETTERS[j]] <- NA
+    }
+    results
+}
+
+#' @export
+konto_list <- function(d.path="KEGG", force.download=FALSE){
+    ktable <- konto_table(d.path, force.download)
+    kcc <- ktable$ko[ktable$level == "C"]
+    kcx <- lapply(kcc, FUN=function(x){
+        ss <- ktable$C %in% x
+        ktable$ko[ss]
+    })
+    names(kcx) <- kcc
+    kbb <- ktable$ko[ktable$level == "B"]
+    kbx <- lapply(kbb, FUN=function(x){
+        ss <- ktable$B %in% x
+        kox <- ktable$ko[ss]
+        kox <- intersect(kcc, kox) # C level only
+        kcx[kox]
+    })
+    names(kbx) <- kbb
+    kaa <- ktable$ko[ktable$level == "A"]
+    kax <- lapply(kaa, FUN=function(x){
+        ss <- ktable$A %in% x
+        kox <- ktable$ko[ss]
+        kox <- intersect(kbb, kox) # B level only
+        kbx[kox]
+    })
+    names(kax) <- kaa
+    kax
 }

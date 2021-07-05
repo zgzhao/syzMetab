@@ -4608,9 +4608,6 @@ D      AT3G56860 UBA2A; UBP1-associated protein 2A	K12741 HNRNPA1_3; heterogeneo
 D      AT2G41060 RNA-binding (RRM/RBD/RNP motifs) family protein	K12741 HNRNPA1_3; heterogeneous nuclear ribonucleoprotein A1/A3
 D      AT1G17640 RNA-binding (RRM/RBD/RNP motifs) family protein	K12741 HNRNPA1_3; heterogeneous nuclear ribonucleoprotein A1/A3
 D      AT3G13224 RNA-binding (RRM/RBD/RNP motifs) family protein	K12741 HNRNPA1_3; heterogeneous nuclear ribonucleoprotein A1/A3
-D      AT1G60650 AtRZ-1b; RNA-binding (RRM/RBD/RNP motifs) family protein with retrovirus zinc finger-like domain-containing protein	K12885 RBMX; heterogeneous nuclear ribonucleoprotein G
-D      AT3G26420 ATRZ-1A; RNA-binding (RRM/RBD/RNP motifs) family protein with retrovirus zinc finger-like domain-containing protein	K12885 RBMX; heterogeneous nuclear ribonucleoprotein G
-D      AT5G04280 AtRZ-1c; RNA-binding (RRM/RBD/RNP motifs) family protein with retrovirus zinc finger-like domain-containing protein	K12885 RBMX; heterogeneous nuclear ribonucleoprotein G
 D      AT1G02840 SR34; RNA-binding (RRM/RBD/RNP motifs) family protein	K12890 SRSF1; serine/arginine-rich splicing factor 1
 D      AT1G09140 SR30; SERINE-ARGININE PROTEIN 30	K12890 SRSF1; serine/arginine-rich splicing factor 1
 D      AT3G49430 SR34a; SER/ARG-rich protein 34A	K12890 SRSF1; serine/arginine-rich splicing factor 1
@@ -10557,9 +10554,6 @@ D      AT3G56860 UBA2A; UBP1-associated protein 2A	K12741 HNRNPA1_3; heterogeneo
 D      AT2G41060 RNA-binding (RRM/RBD/RNP motifs) family protein	K12741 HNRNPA1_3; heterogeneous nuclear ribonucleoprotein A1/A3
 D      AT1G17640 RNA-binding (RRM/RBD/RNP motifs) family protein	K12741 HNRNPA1_3; heterogeneous nuclear ribonucleoprotein A1/A3
 D      AT3G13224 RNA-binding (RRM/RBD/RNP motifs) family protein	K12741 HNRNPA1_3; heterogeneous nuclear ribonucleoprotein A1/A3
-D      AT1G60650 AtRZ-1b; RNA-binding (RRM/RBD/RNP motifs) family protein with retrovirus zinc finger-like domain-containing protein	K12885 RBMX; heterogeneous nuclear ribonucleoprotein G
-D      AT3G26420 ATRZ-1A; RNA-binding (RRM/RBD/RNP motifs) family protein with retrovirus zinc finger-like domain-containing protein	K12885 RBMX; heterogeneous nuclear ribonucleoprotein G
-D      AT5G04280 AtRZ-1c; RNA-binding (RRM/RBD/RNP motifs) family protein with retrovirus zinc finger-like domain-containing protein	K12885 RBMX; heterogeneous nuclear ribonucleoprotein G
 D      AT1G02840 SR34; RNA-binding (RRM/RBD/RNP motifs) family protein	K12890 SRSF1; serine/arginine-rich splicing factor 1
 D      AT1G09140 SR30; SERINE-ARGININE PROTEIN 30	K12890 SRSF1; serine/arginine-rich splicing factor 1
 D      AT3G49430 SR34a; SER/ARG-rich protein 34A	K12890 SRSF1; serine/arginine-rich splicing factor 1
@@ -12604,6 +12598,7 @@ D      AT2G27900 coiled-coil protein	K23288 VPS50; syndetin
 D      AT3G05520 CPA; Subunits of heterodimeric actin filament capping protein Capz superfamily	K10364 CAPZA; capping protein (actin filament) muscle Z-line, alpha
 D      AT1G71790 CPB; Subunits of heterodimeric actin filament capping protein Capz superfamily	K10365 CAPZB; capping protein (actin filament) muscle Z-line, beta
 D      AT1G20540 Transducin/WD40 repeat-like superfamily protein	K23289 EIPR1; EARP and GARP complex-interacting protein 1
+D      AT5G11640 Thioredoxin superfamily protein	K25112 TMX2; thioredoxin-related transmembrane protein 2
 D      AT2G44610 RAB6A; Ras-related small GTP-binding family protein	K07893 RAB6A; Ras-related protein Rab-6A
 D      AT5G10260 RABH1e; RAB GTPase homolog H1E	K07893 RAB6A; Ras-related protein Rab-6A
 D      AT2G22290 RABH1d; RAB GTPase homolog H1D	K07893 RAB6A; Ras-related protein Rab-6A
@@ -16767,18 +16762,6 @@ D      AT1G56340 CRT1a; calreticulin 1a	K08057 CALR; calreticulin
 D      AT1G08450 CRT3; calreticulin 3	K08057 CALR; calreticulin
 D      AT4G01040 Glycosyl hydrolase superfamily protein	K17525 CHID1; chitinase domain-containing protein 1
 C    04990 Domain-containing proteins not elsewhere classified [BR:ath04990]
-D      AT1G60860 AGD2; ARF-GAP domain 2	K12489 ACAP; Arf-GAP with coiled-coil, ANK repeat and PH domain-containing protein
-D      AT1G10870 AGD4; ARF-GAP domain 4	K12489 ACAP; Arf-GAP with coiled-coil, ANK repeat and PH domain-containing protein
-D      AT5G13300 SFC; ARF GTPase-activating protein	K12489 ACAP; Arf-GAP with coiled-coil, ANK repeat and PH domain-containing protein
-D      AT5G61980 AGD1; ARF-GAP domain 1	K12489 ACAP; Arf-GAP with coiled-coil, ANK repeat and PH domain-containing protein
-D      AT4G33650 DRP3A; dynamin-related protein 3A	K17065 DNM1L; dynamin 1-like protein [EC:3.6.5.5]
-D      AT2G14120 DRP3B; dynamin related protein	K17065 DNM1L; dynamin 1-like protein [EC:3.6.5.5]
-D      AT1G59610 DL3; dynamin-like 3	K01528 DNM1_3; dynamin 1/3 [EC:3.6.5.5]
-D      AT1G10290 ADL6; dynamin-like protein 6	K01528 DNM1_3; dynamin 1/3 [EC:3.6.5.5]
-D      AT1G10180 LOW protein: exocyst complex component-like protein	K19986 EXOC8; exocyst complex component 8
-D      AT1G10385 Vps51/Vps67 family (components of vesicular transport) protein	K19986 EXOC8; exocyst complex component 8
-D      AT5G49830 EXO84B; exocyst complex component 84B	K19986 EXOC8; exocyst complex component 8
-D      AT1G21630 Calcium-binding EF hand family protein	K12472 EPS15; epidermal growth factor receptor substrate 15
 D      AT4G27790 Calcium-binding EF hand family protein	K23901 CALU; calumenin
 D      AT5G08580 Calcium-binding EF hand family protein	K23901 CALU; calumenin
 D      AT4G32060 calcium-binding EF hand family protein	K22827 MICU1; calcium uptake protein 1, mitochondrial
@@ -16816,6 +16799,8 @@ D      AT4G38120 ARM repeat superfamily protein	K24815 HEATR6; HEAT repeat-conta
 D      AT2G36810 ARM repeat superfamily protein	K24816 MROH1; maestro heat-like repeat-containing protein family member 1
 D      AT4G33945 ARM repeat superfamily protein	K24166 ARMC6; armadillo repeat-containing protein 6
 D      AT3G55160 thyroid adenoma-associated-like protein	K24169 THADA; thyroid adenoma-associated protein
+D      AT5G37130 Protein prenylyltransferase superfamily protein	K24935 TTC27; tetratricopeptide repeat protein 27
+D      AT3G04500 RNA-binding (RRM/RBD/RNP motifs) family protein	K25079 RBM42; RNA-binding protein 42
 D      AT1G34770 melanoma-associated antigen G1-like protein	K24127 MAGE; melanoma-associated antigen
 B  09185 Viral protein families
 C    03200 Viral proteins
@@ -17448,4 +17433,4 @@ D      AT5G12960 proline-tRNA ligase (DUF1680)	K09955 K09955; uncharacterized pr
 !
 #
 #[ KO | BRITE | KEGG2 | KEGG ]
-#Last updated: June 11, 2021
+#Last updated: June 29, 2021

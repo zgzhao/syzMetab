@@ -64,7 +64,9 @@ setClass("KDataSet",
                  entries="EntryList",
                  reactions="ReactionList",
                  relations="RelationList",
-                 graphics="GraphicList"))
+                 graphics="GraphicList",
+                 chemicals="data.frame"
+                 ))
 
 setMethod("initialize", "KDataSet", function(.Object, ko, d.path) {
     if(missing(ko) || is.empty(ko)) {
@@ -82,6 +84,7 @@ setMethod("initialize", "KDataSet", function(.Object, ko, d.path) {
         .Object@graphics  <- .parseGraphicsList(kinfo)
     }
     .Object@pathInfo <- as.list(xml_attrs(kdata))
+    .Object@chemicals <- .parseCPD(ko, d.path)
     return(.Object)
 })
 

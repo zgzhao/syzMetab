@@ -48,7 +48,7 @@ gg <- make_ggraph("ko00010")
 plot(gg)
 chem1 <- c("C00031", "C00221", "C00267", "C01172", "C01451", "C06186")
 chem2 <- "C00022"
-gb <- make_bgraph(gm, s=chem1, t=chem2)
+gb <- make_bgraph(gm, s=chem1, t=chem2, minimal=FALSE)
 plot(gb)
 }
 \author{
